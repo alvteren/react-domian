@@ -3,6 +3,7 @@ import "./App.css";
 import constants from "./constants";
 import Header from "./Header";
 import WishList from "./objects/WishList";
+import Add from "./objects/WishList/Add";
 
 import styled, { ThemeProvider } from "styled-components";
 
@@ -32,6 +33,7 @@ class App extends Component {
               <Header />
               <Main>
                 <Route exact={true} path="/" component={WishList} />
+                <Route path="/crm/objects/show/:id" component={Add} />
               </Main>
             </div>
           </ThemeProvider>

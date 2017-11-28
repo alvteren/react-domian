@@ -1,23 +1,12 @@
-var mockApiData = [
-  {
-    id: 1,
-    name: "Track 1"
-  },
-  {
-    id: 2,
-    name: "Track 2"
-  },
-  {
-    id: 3,
-    name: "Track 3"
-  },
-  {
-    id: 4,
-    name: "Track 4"
+import { fetchObjects as fetchObjectsApi } from "../../api";
+
+const fetchObjects = ({ filter, offset }) => async dispatch => {
+  try {
+    dispatch({ type: "FETCH_OBJECTS_START" });
+    const objects = await fetchObjectsApi({ filter, offset });
+    dispatch({ type: "FETCH_OBJECTS_SUCCESS", payload: objects });
+  } catch (err) {
+    dispatch({ type: "FETCH_OBJECTS_ERROR", payload: err, error: true });
   }
-];
-export const getObjects = () => dispatch => {
-  setTimeout(() => {
-    dispatch({ type: "FETCH_OBJECT_SUCCESS", payload: mockApiData });
-  }, 2000);
 };
+export default fetchObjects;
