@@ -1,0 +1,64 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "material-ui/styles";
+import { TablePagination } from "material-ui/Table";
+
+import { changeRowsPerPage, changePage } from "../actions/table";
+
+import { connect } from "react-redux";
+
+const styles = theme => ({
+  root: {
+    border: "1px solid #f00"
+  },
+  spacer: {
+    flex: "0 0 auto"
+  }
+});
+
+const Pagination = props => {
+  const { classes, rowsPerPage, page, count } = props;
+
+  const handleChangePage = (event, page) => {
+    props.onChangePage(page);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    props.onChangeRowsPerPage(event.target.value);
+  };
+
+  return (
+    <TablePagination
+      classes={classes}
+      labelRowsPerPage="Строк на странице"
+      count={count}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+      labelDisplayedRows={({ from, to, count }) => `${from}-${to} из ${count}`}
+    />
+  );
+};
+const mapStateToProps = (state, ownProps) => {
+  const { count, rowsPerPage, page } = state.tables.data[ownProps.id];
+  return { count, rowsPerPage, page };
+};
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const tableId = ownProps.id;
+  return {
+    onChangePage: page => {
+      dispatch(changePage({ id: tableId, page }));
+    },
+    onChangeRowsPerPage: rowsPerPage => {
+      dispatch(changeRowsPerPage({ id: tableId, rowsPerPage }));
+    }
+  };
+};
+Pagination.propTypes = {
+  id: PropTypes.string.isRequired,
+  classes: PropTypes.object.isRequired
+};
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(Pagination)
+);
