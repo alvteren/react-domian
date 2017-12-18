@@ -1,12 +1,8 @@
 import React from "react";
 import classNames from "classnames";
 import { withStyles } from "material-ui/styles";
-import Toolbar from "material-ui/Toolbar";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
-import Tooltip from "material-ui/Tooltip";
+import { Toolbar, Typography, IconButton, Tooltip, Grid } from "material-ui";
 import DeleteIcon from "material-ui-icons/Delete";
-import FilterListIcon from "material-ui-icons/FilterList";
 import { connect } from "react-redux";
 
 const toolbarStyles = theme => ({
@@ -23,19 +19,19 @@ const toolbarStyles = theme => ({
           color: theme.palette.secondary.A100,
           backgroundColor: theme.palette.secondary.A700
         },
-  spacer: {
-    flex: "1 1 100%"
-  },
+
   actions: {
     color: theme.palette.text.secondary
   },
   title: {
-    flex: "0 0 auto"
+    display: "flex",
+    alignItems: "center",
+    height: "100%"
   }
 });
 
 const EnhancedToolbar = props => {
-  const { numSelected, classes, tooltipTitle, onDeleteSelectedData } = props;
+  const { numSelected, classes, onDeleteSelectedData, filterComponent } = props;
 
   return (
     <Toolbar
@@ -43,34 +39,33 @@ const EnhancedToolbar = props => {
         [classes.highlight]: numSelected > 0
       })}
     >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography type="subheading">{numSelected} выбрано</Typography>
-        ) : (
-          <Typography type="title">{tooltipTitle}</Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Удалить">
-            <IconButton aria-label="Delete" onClick={onDeleteSelectedData}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Фильтр">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
+      <Grid container spacer={8}>
+        <Grid item xs={10} md={11}>
+          <div className={classes.title}>
+            {numSelected > 0 ? (
+              <Typography type="subheading">{numSelected} выбрано</Typography>
+            ) : (
+              <Typography type="title">{filterComponent}</Typography>
+            )}
+          </div>
+        </Grid>
+        <Grid item xs={2} md={1}>
+          <div className={classes.actions}>
+            {numSelected > 0 && (
+              <Tooltip title="Удалить">
+                <IconButton aria-label="Delete" onClick={onDeleteSelectedData}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </div>
+        </Grid>
+      </Grid>
     </Toolbar>
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { tooltipTitle } = state.tables.data[ownProps.id];
+  const { tooltipTitle } = state.tables[ownProps.id];
   return { tooltipTitle };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

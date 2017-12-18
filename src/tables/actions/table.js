@@ -26,3 +26,6 @@ export const changeRowsPerPage = props => dispatch => {
 export const requestSort = props => dispatch => {
   dispatch({ type: "TABLE_REQUEST_SORT", payload: props });
 };
+export const clearData = props => dispatch => {
+  dispatch({ type: "TABLE_CLEAR_DATA", payload: props });
+};

@@ -18,6 +18,7 @@ import Head from "./Head";
 import Pagination from "./Pagination";
 
 import toArray from "lodash/toArray";
+
 import {
   fetchTableHeaders,
   toggleRow,
@@ -47,37 +48,32 @@ class EnhancedTable extends React.Component {
     super(props);
 
     props.init();
-
-    this.handleRequestSort = this.handleRequestSort.bind(this);
-    this.handleSelectAllClick = this.handleSelectAllClick.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.isSelected = this.isSelected.bind(this);
   }
-  handleRequestSort(event, property) {
+  handleRequestSort = (event, property) => {
     this.props.onRequestSort(property);
-  }
+  };
 
-  handleSelectAllClick(event, checked) {
+  handleSelectAllClick = (event, checked) => {
     this.props.onToggleAllRow(checked);
-  }
+  };
 
-  handleKeyDown(event, id) {
+  handleKeyDown = (event, id) => {
     if (keycode(event) === "space") {
       this.handleClick(event, id);
     }
-  }
+  };
 
-  handleClick(event, id) {
+  handleClick = (event, id) => {
     this.props.onToggleRow(id);
-  }
+  };
 
-  handleClickDetailObject(event) {
+  handleClickDetailObject = event => {
     event.stopPropagation();
-  }
+  };
 
-  isSelected(id) {
+  isSelected = id => {
     return this.props.selected.indexOf(id) !== -1;
-  }
+  };
 
   render() {
     const {
@@ -87,17 +83,26 @@ class EnhancedTable extends React.Component {
       selected,
       rowsPerPage,
       page,
-      status,
+      loading,
       headerData,
+      filterComponent,
+      onChangePage,
       onDeleteSelectedData
     } = this.props;
 
     const arData = toArray(data);
-    const emptyRows =
-      arData.length > 0
-        ? rowsPerPage -
-          Math.min(rowsPerPage, arData.length - page * rowsPerPage)
-        : 0;
+    const emptyRows = () => {
+      if (loading.data && arData.length > 0) {
+        return (
+          rowsPerPage -
+          Math.min(rowsPerPage, arData.length - page * rowsPerPage) -
+          1
+        );
+      }
+      return (
+        rowsPerPage - Math.min(rowsPerPage, arData.length - page * rowsPerPage)
+      );
+    };
 
     const arHeaderData = toArray(headerData);
 
@@ -129,6 +134,7 @@ class EnhancedTable extends React.Component {
           numSelected={selected.length}
           id={id}
           onDeleteSelectedData={onDeleteSelectedData}
+          filterComponent={filterComponent}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table}>
@@ -184,27 +190,25 @@ class EnhancedTable extends React.Component {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={arHeaderData.length} />
-                </TableRow>
-              )}
-              {arData.length === 0 && (
+              {(arData.length === 0 || loading.data) && (
                 <TableRow>
                   <TableCell
-                    colSpan={arHeaderData.length}
+                    colSpan={arHeaderData.length + 2}
                     style={{ textAlign: "center" }}
                   >
-                    {status === "loading"
-                      ? "Данные загружаются..."
-                      : "Данных нет"}
+                    {loading.data ? "Данные загружаются..." : "Данных нет"}
                   </TableCell>
+                </TableRow>
+              )}
+              {emptyRows() > 0 && (
+                <TableRow style={{ height: 49 * emptyRows() }}>
+                  <TableCell colSpan={arHeaderData.length} />
                 </TableRow>
               )}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <Pagination id={id} />
+                <Pagination id={id} onChangePage={onChangePage} />
               </TableRow>
             </TableFooter>
           </Table>
@@ -219,14 +223,24 @@ EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
-  const table = state.tables.data[ownProps.id];
-  const { headers, selected, rowsPerPage, page, data, status, count } = table;
+  const table = state.tables[ownProps.id];
+  const {
+    headers,
+    selected,
+    rowsPerPage,
+    page,
+    data,
+    status,
+    count,
+    loading
+  } = table;
   return {
     headerData: headers,
     count,
     selected,
     rowsPerPage,
     page,
+    loading,
     status,
     data
   };

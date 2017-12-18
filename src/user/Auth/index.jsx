@@ -6,7 +6,7 @@ class Auth extends React.Component {
   constructor(props) {
     super(props);
     // if (!props.isAuthorized) {
-    // props.authorize({login:"admin",password:"159753"});
+    // props.authorize({login:"adm",password:"159753"});
     // props.authorizeBy(1);
     // }
   }

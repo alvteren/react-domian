@@ -4,7 +4,7 @@ import { fetchWish, removeFromWish } from "../actions/wish";
 import EnhancedTable from "../Table";
 
 const mapStateToProps = state => {
-  const { wishId, selected } = state.tables.data.wish;
+  const { wishId, selected } = state.tables.wish;
   return { wishId, selected };
 };
 

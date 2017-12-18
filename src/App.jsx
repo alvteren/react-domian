@@ -1,13 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import constants from "./constants";
 
 import Header from "./Header";
 
 import WishList from "./tables/WishList";
-import Add from "./tables/WishList/Add";
-import Add from "./desktop/Desktop";
+import SaleList from "./tables/SaleList";
+import Desktop from "./desktop/Desktop";
 
-import Auth from "./user/Auth";
+// import Auth from "./user/Auth";
 
 import { ThemeProvider } from "styled-components";
 
@@ -20,15 +20,17 @@ import thunk from "redux-thunk";
 import { routerReducer } from "react-router-redux";
 import { reducers as tablesReducers } from "./tables/reducers";
 import { reducers as userReducers } from "./user/reducers";
+import { reducers as desktopReducers } from "./desktop/reducers";
 
 import registerServiceWorker from "./registerServiceWorker";
 const reducers = combineReducers({
   tables: tablesReducers,
   user: userReducers,
+  desktop: desktopReducers,
   routing: routerReducer
 });
 
-const store = createStore(
+export const store = createStore(
   reducers,
   composeWithDevTools(applyMiddleware(thunk))
 );
@@ -39,18 +41,14 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <ThemeProvider theme={{ constants }}>
-            <div>
-              <Auth>
-                <div>
-                  <Header />
-                  <main>
-                    <Route exact path="/" component={Desktop} />
-                    <Route path="/crm/sale/wish/" component={WishList} />
-                    <Route path="/crm/sale/show/:id/" component={Add} />
-                  </main>
-                </div>
-              </Auth>
-            </div>
+            <Fragment>
+              <Header />
+              <main>
+                <Route exact path="/" component={Desktop} />
+                <Route path="/crm/sale" component={SaleList} />
+                <Route path="/crm/sale/wish" component={WishList} />
+              </main>
+            </Fragment>
           </ThemeProvider>
         </Router>
       </Provider>

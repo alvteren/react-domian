@@ -1,9 +1,11 @@
 import { combineReducers } from "redux";
 
 import filterObjects from "./filter";
-import data from "./data";
+import wish from "./wish";
+import objects from "./objects";
 
 export const reducers = combineReducers({
   filterObjects,
-  data
+  objects,
+  wish
 });

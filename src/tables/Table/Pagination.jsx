@@ -7,6 +7,8 @@ import { changeRowsPerPage, changePage } from "../actions/table";
 
 import { connect } from "react-redux";
 
+import { get } from "lodash";
+
 const styles = theme => ({
   root: {
     border: "1px solid #f00"
@@ -41,7 +43,7 @@ const Pagination = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { count, rowsPerPage, page } = state.tables.data[ownProps.id];
+  const { count, rowsPerPage, page } = state.tables[ownProps.id];
   return { count, rowsPerPage, page };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -49,6 +51,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChangePage: page => {
       dispatch(changePage({ id: tableId, page }));
+      const onChangePage = get(ownProps, "onChangePage", null);
+      if (onChangePage) {
+        onChangePage(page);
+      }
     },
     onChangeRowsPerPage: rowsPerPage => {
       dispatch(changeRowsPerPage({ id: tableId, rowsPerPage }));
@@ -57,7 +63,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 Pagination.propTypes = {
   id: PropTypes.string.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  rowsPerPage: PropTypes.number.isRequired
 };
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(Pagination)
