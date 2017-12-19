@@ -65,7 +65,7 @@ const EnhancedToolbar = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { tooltipTitle } = state.tables[ownProps.id];
+  const { tooltipTitle } = state.crm[ownProps.id];
   return { tooltipTitle };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

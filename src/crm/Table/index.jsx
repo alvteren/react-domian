@@ -223,7 +223,7 @@ EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
-  const table = state.tables[ownProps.id];
+  const table = state.crm[ownProps.id];
   const {
     headers,
     selected,

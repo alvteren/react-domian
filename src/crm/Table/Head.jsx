@@ -66,7 +66,7 @@ const Head = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { order, orderBy, tooltipTitle } = state.tables[ownProps.id];
+  const { order, orderBy, tooltipTitle } = state.crm[ownProps.id];
   return { order, orderBy, tooltipTitle };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

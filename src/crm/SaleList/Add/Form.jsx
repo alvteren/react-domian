@@ -166,7 +166,7 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fields, fieldsSections } = state.tables.objects;
+  const { fields, fieldsSections } = state.crm.objects;
   return { fields, fieldsSections };
 };
 const mapDispatchToProps = (dispatch, props) => {

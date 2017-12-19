@@ -3,8 +3,8 @@ import constants from "./constants";
 
 import Header from "./Header";
 
-import WishList from "./tables/WishList";
-import SaleList from "./tables/SaleList";
+import WishList from "./crm/WishList";
+import SaleList from "./crm/SaleList";
 import Desktop from "./desktop/Desktop";
 
 // import Auth from "./user/Auth";
@@ -21,7 +21,7 @@ import thunk from "redux-thunk";
 import { routerReducer, routerMiddleware } from "react-router-redux";
 import createHistory from "history/createBrowserHistory";
 
-import { reducers as tablesReducers } from "./tables/reducers";
+import { reducers as crmReducers } from "./crm/reducers";
 import { reducers as userReducers } from "./user/reducers";
 import { reducers as desktopReducers } from "./desktop/reducers";
 import { reducer as formReducer } from "redux-form";
@@ -31,7 +31,7 @@ const history = createHistory();
 const middleware = routerMiddleware(history);
 
 const reducers = combineReducers({
-  tables: tablesReducers,
+  crm: crmReducers,
   user: userReducers,
   desktop: desktopReducers,
   routing: routerReducer,

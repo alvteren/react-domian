@@ -51,14 +51,7 @@ class SaleList extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {
-    filter,
-    page,
-    rowsPerPage,
-    orderBy,
-    order,
-    data
-  } = state.tables.objects;
+  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm.objects;
   return {
     filter,
     page,

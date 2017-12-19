@@ -43,7 +43,7 @@ const Pagination = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { count, rowsPerPage, page } = state.tables[ownProps.id];
+  const { count, rowsPerPage, page } = state.crm[ownProps.id];
   return { count, rowsPerPage, page };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

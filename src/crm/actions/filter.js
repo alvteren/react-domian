@@ -30,7 +30,7 @@ export const fetchChips = props => async dispatch => {
 export const applyFilter = props => async (dispatch, getState) => {
   const { id } = props;
 
-  const { filter, rowsPerPage, order, orderBy, page } = getState().tables[id];
+  const { filter, rowsPerPage, order, orderBy, page } = getState().crm[id];
 
   dispatch(clearData({ id }));
   if (page === 0) {
