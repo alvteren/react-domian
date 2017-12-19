@@ -34,16 +34,15 @@ class SaleList extends React.Component {
           filterComponent={<Filter id="objects" />}
         />
         <Tooltip title="Добавить объект" placement="top">
-          <Link to="/crm/sale/add">
-            <Button
-              fab
-              color="primary"
-              aria-label="add"
-              className={classes.buttonAdd}
-            >
-              <AddIcon />
-            </Button>
-          </Link>
+          <Button
+            fab
+            component={props => <Link to="/crm/sale/add" {...props} />}
+            color="primary"
+            aria-label="add"
+            className={classes.buttonAdd}
+          >
+            <AddIcon />
+          </Button>
         </Tooltip>
         <Route path="/crm/sale/add" component={Add} />
       </Fragment>
@@ -52,7 +51,22 @@ class SaleList extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return state.tables.objects;
+  const {
+    filter,
+    page,
+    rowsPerPage,
+    orderBy,
+    order,
+    data
+  } = state.tables.objects;
+  return {
+    filter,
+    page,
+    rowsPerPage,
+    orderBy,
+    order,
+    data
+  };
 };
 const mergeProps = (stateProps, dispatchProps) => {
   const { filter, page, rowsPerPage, orderBy, order, data } = stateProps;
