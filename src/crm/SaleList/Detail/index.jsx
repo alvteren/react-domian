@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import Form from "./Form";
+import Card from "./Card";
 
 import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
 import Button from "material-ui/Button";
@@ -37,8 +37,6 @@ class Add extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
-    console.log(this.props);
-
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
@@ -47,13 +45,14 @@ class Add extends React.Component {
   };
 
   render() {
-    const { fullScreen, onClick, classes } = this.props;
+    const { fullScreen, onClick, classes, ...other } = this.props;
     return (
       <Dialog
         fullScreen={fullScreen}
         open={this.state.open}
         onClose={this.handleClose}
         transition={Transition}
+        {...other}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -65,20 +64,12 @@ class Add extends React.Component {
               <CloseIcon />
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
-              Добавление объекта
+              Объект
             </Typography>
-            <Button
-              raised
-              color="accent"
-              onClick={this.handleClickSave}
-              className={classes.buttonSave}
-            >
-              Сохранить
-            </Button>
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Form />
+          <Card />
         </DialogContent>
       </Dialog>
     );

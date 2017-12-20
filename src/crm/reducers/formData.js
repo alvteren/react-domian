@@ -1,4 +1,4 @@
-import { omit, keyBy } from "lodash";
+import { keyBy } from "lodash";
 export default (state, { type, payload }) => {
   let newstate = null;
   if (state) {

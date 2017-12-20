@@ -11,20 +11,26 @@ import Desktop from "./desktop/Desktop";
 
 import { ThemeProvider } from "styled-components";
 
-import { BrowserRouter, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
-import { routerReducer, routerMiddleware } from "react-router-redux";
+import {
+  routerReducer,
+  routerMiddleware,
+  ConnectedRouter
+} from "react-router-redux";
 import createHistory from "history/createBrowserHistory";
 
 import { reducers as crmReducers } from "./crm/reducers";
 import { reducers as userReducers } from "./user/reducers";
 import { reducers as desktopReducers } from "./desktop/reducers";
+import { reducers as appReducers } from "./app/reducers";
 import { reducer as formReducer } from "redux-form";
+
 import registerServiceWorker from "./registerServiceWorker";
 
 const history = createHistory();
@@ -35,7 +41,8 @@ const reducers = combineReducers({
   user: userReducers,
   desktop: desktopReducers,
   routing: routerReducer,
-  form: formReducer
+  form: formReducer,
+  app: appReducers
 });
 
 export const store = createStore(
@@ -47,7 +54,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <BrowserRouter>
+        <ConnectedRouter history={history}>
           <ThemeProvider theme={{ constants }}>
             <Fragment>
               <Header />
@@ -58,7 +65,7 @@ class App extends Component {
               </main>
             </Fragment>
           </ThemeProvider>
-        </BrowserRouter>
+        </ConnectedRouter>
       </Provider>
     );
   }

@@ -27,6 +27,7 @@ import {
 } from "../actions/table";
 
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
   root: {
@@ -65,10 +66,6 @@ class EnhancedTable extends React.Component {
 
   handleClick = (event, id) => {
     this.props.onToggleRow(id);
-  };
-
-  handleClickDetailObject = event => {
-    event.stopPropagation();
   };
 
   isSelected = id => {
@@ -167,12 +164,9 @@ class EnhancedTable extends React.Component {
                       </TableCell>
                       <TableCell>
                         <Tooltip title="Подробнее" enterDelay={300}>
-                          <a
-                            href={row.url}
-                            onClick={this.handleClickDetailObject}
-                          >
+                          <Link to={row.url}>
                             <PageviewIcon />
-                          </a>
+                          </Link>
                         </Tooltip>
                       </TableCell>
                       {arHeaderData.map(column => {

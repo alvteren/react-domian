@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { fetchObjects } from "../actions/objects";
 import EnhancedTable from "../Table";
 import Add from "./Add";
+import Detail from "./Detail";
 import Filter from "../Filter";
 import { withStyles } from "material-ui/styles";
 import { Button, Tooltip } from "material-ui";
@@ -45,6 +46,7 @@ class SaleList extends React.Component {
           </Button>
         </Tooltip>
         <Route path="/crm/sale/add" component={Add} />
+        <Route path="/crm/sale/show/:id" component={Detail} />
       </Fragment>
     );
   }
