@@ -19,7 +19,6 @@ const chips = {
       searchable: "2к квартира двухкомнатная",
       type: "type"
     },
-
     section_137: {
       id: "section_137",
       label: "Квартиры",
@@ -32,6 +31,29 @@ const chips = {
       avatar: "AT",
       searchable: "александр терентьев разработчик",
       type: "user"
+    }
+  },
+  presetsChips: {
+    archive: {
+      id: "archive",
+      label: "Архив",
+      searchable: "объекты из архива",
+      type: "active",
+      value: "N"
+    },
+    domian: {
+      id: "domian",
+      label: "Домиан",
+      searchable: "объекты домиан",
+      type: "agency",
+      value: 19368
+    },
+    my: {
+      id: "my",
+      label: "Мои объекты",
+      searchable: "мои объекты",
+      type: "user",
+      value: 0
     }
   }
 };
@@ -46,8 +68,8 @@ const list = {
       id: "section",
       label: "Раздел"
     },
-    typeDeal: {
-      id: "typeDeal",
+    type_deal: {
+      id: "type_deal",
       label: "Тип сделки"
     },
     source: {
@@ -66,16 +88,16 @@ const list = {
       id: "address",
       label: "Адрес"
     },
-    date: {
-      id: "date",
+    date_create: {
+      id: "date_create",
       label: "Дата"
     },
-    square: {
-      id: "square",
+    s_flat: {
+      id: "s_flat",
       label: "Площадь"
     },
-    squareArea: {
-      id: "squareArea",
+    s_area: {
+      id: "s_area",
       label: "Площадь участка"
     }
   },
@@ -86,119 +108,45 @@ const list = {
   page: 0,
   rowsPerPage: 5,
   tooltipTitle: "Объекты",
-  orderBy: "date",
+  orderBy: "date_create",
   order: "desc"
 };
-
-const form = {
-  fields: {
-    type_deal: {
-      type: "select",
-      label: "Тип сделки",
-      value: "rent",
-      hint: "test",
-      required: true,
-      items: {
-        rent: {
-          value: "rent",
-          label: "Аренда"
-        },
-        sale: {
-          value: "sale",
-          label: "Продажа"
-        }
-      }
-    },
-    section: {
-      type: "select",
-      label: "Раздел",
-      value: "apartments",
-      required: true,
-      items: {
-        apartments: {
-          value: "apartments",
-          label: "Квартиры"
-        },
-        homes: {
-          value: "sale",
-          label: "Дома"
-        },
-        areas: {
-          value: "areas",
-          label: "Участки"
-        },
-        commercia: {
-          value: "commercia",
-          label: "Коммерция"
-        }
-      }
-    },
-    type_apartment: {
-      type: "select",
-      label: "Тип квартиры",
-      value: "rooms1",
-      required: true,
-      items: {
-        guest: {
-          value: "guest",
-          label: "Гостинка"
-        },
-        room: {
-          value: "room",
-          label: "Комната"
-        },
-        studio: {
-          value: "studio",
-          label: "Студия"
-        },
-        rooms1: {
-          value: "rooms1",
-          label: "Однокомнатная"
-        },
-        rooms2: {
-          value: "rooms2",
-          label: "Двухкомнатная"
-        },
-        rooms3: {
-          value: "rooms3",
-          label: "Трехкомнатная"
-        },
-        rooms4: {
-          value: "rooms4",
-          label: "Четырехкомнатная"
-        },
-        rooms5: {
-          value: "rooms5",
-          label: "Пятикомнатная и более"
-        }
-      }
-    },
-    type_realty: {
-      type: "select",
-      label: "Тип недвижимости",
-      value: "",
-      required: true,
-      items: {
-        second: {
-          value: "second",
-          label: "Вторичка"
-        },
-        newbuilding: {
-          value: "newbuilding",
-          label: "Новостройка"
-        },
-        newbuilding_part: {
-          value: "newbuilding_part",
-          label: "Новостройка Дольщик"
-        }
-      }
-    },
-    district: {
-      type: "select",
-      label: "Район",
-      value: "",
-      required: true,
-      items: {
+const fields = {
+  type_deal: {
+    type: "select",
+    label: "Тип сделки",
+    hint: "test",
+    required: true,
+    items: {}
+  },
+  section: {
+    type: "select",
+    label: "Раздел",
+    value: "apartments",
+    required: true,
+    items: {}
+  },
+  type_apartment: {
+    type: "select",
+    label: "Тип квартиры",
+    value: "rooms1",
+    required: true,
+    items: {}
+  },
+  type_realty: {
+    type: "select",
+    label: "Тип недвижимости",
+    value: "",
+    required: true,
+    items: {}
+  },
+  district: {
+    type: "select",
+    label: "Район",
+    value: "",
+    required: true,
+    items: {
+      /* 
         district_1: {
           value: "district_1",
           label: "Район1"
@@ -210,16 +158,17 @@ const form = {
         district_3: {
           value: "district_3",
           label: "Район3"
-        }
-      }
-    },
-    subdistrict: {
-      type: "select",
-      depended: "district",
-      label: "Подрайон",
-      value: "",
-      required: true,
-      items: {
+        } */
+    }
+  },
+  subdistrict: {
+    type: "select",
+    depended: "district",
+    label: "Подрайон",
+    value: "",
+    required: true,
+    items: {
+      /* 
         second: {
           link: "district_1",
           value: "second",
@@ -234,98 +183,105 @@ const form = {
           link: "district_2",
           value: "newbuilding_part",
           label: "Подрайон3"
-        }
-      }
-    },
-    s_all: {
-      type: "text",
-      label: "Площадь общая",
-      value: "",
-      required: true
-    },
-    s_live: {
-      type: "text",
-      label: "Площадь жилая",
-      value: "",
-      required: true
-    },
-    s_kitchen: {
-      type: "text",
-      label: "Площадь кухни",
-      value: "",
-      required: true
-    },
-    s_area: {
-      type: "text",
-      label: "Площадь участка",
-      value: "",
-      required: true
-    },
-    contact_name: {
-      type: "text",
-      label: "Контактное лицо",
-      value: "",
-      hint: "Поле отображается только Вам",
-      required: true
-    },
-    contact_phone: {
-      type: "text",
-      label: "Контактный телефон",
-      value: "",
-      hint: "Поле отображается только Вам",
-      required: true
-    },
-    contact_home_phone: {
-      type: "text",
-      label: "Дом. телефон",
-      hint: "Поле отображается только Вам",
-      value: ""
-    },
-    contact_email: {
-      type: "text",
-      label: "E-mail",
-      hint: "Поле отображается только Вам",
-      value: ""
-    },
-    publish_name: {
-      type: "text",
-      label: "Имя для выгрузки",
-      value: "",
-      required: true
-    },
-    publish_phone: {
-      type: "text",
-      label: "Телефон для выгрузки",
-      value: "",
-      required: true
-    },
-    is_real: {
-      type: "switch",
-      label: "Реальный объект",
-      value: false
-    },
-    is_exclusive: {
-      type: "switch",
-      depended: "is_real",
-      link: true,
-      label: "Эксклюзив",
-      value: false
-    },
-    number_contract: {
-      type: "text",
-      label: "Номер договора",
-      depended: "is_exclusive",
-      link: true,
-      value: "",
-      required: true
-    },
-    area_number: {
-      type: "text",
-      label: "Кадастровый номер",
-      hint: "Выгружается на внешние площадки",
-      value: ""
+        } */
     }
   },
+  s_all: {
+    type: "text",
+    label: "Площадь общая",
+    value: "",
+    required: true
+  },
+  s_flat: {
+    type: "text",
+    label: "Площадь",
+    value: "",
+    required: true
+  },
+  s_live: {
+    type: "text",
+    label: "Площадь жилая",
+    value: "",
+    required: true
+  },
+  s_kitchen: {
+    type: "text",
+    label: "Площадь кухни",
+    value: "",
+    required: true
+  },
+  s_area: {
+    type: "text",
+    label: "Площадь участка",
+    value: "",
+    required: true
+  },
+  contact_name: {
+    type: "text",
+    label: "Контактное лицо",
+    value: "",
+    hint: "Поле отображается только Вам",
+    required: true
+  },
+  contact_phone: {
+    type: "text",
+    label: "Контактный телефон",
+    value: "",
+    hint: "Поле отображается только Вам",
+    required: true
+  },
+  contact_home_phone: {
+    type: "text",
+    label: "Дом. телефон",
+    hint: "Поле отображается только Вам",
+    value: ""
+  },
+  contact_email: {
+    type: "text",
+    label: "E-mail",
+    hint: "Поле отображается только Вам",
+    value: ""
+  },
+  publish_name: {
+    type: "text",
+    label: "Имя для выгрузки",
+    value: "",
+    required: true
+  },
+  publish_phone: {
+    type: "text",
+    label: "Телефон для выгрузки",
+    value: "",
+    required: true
+  },
+  is_real: {
+    type: "switch",
+    label: "Реальный объект",
+    value: false
+  },
+  is_exclusive: {
+    type: "switch",
+    depended: "is_real",
+    link: true,
+    label: "Эксклюзив",
+    value: false
+  },
+  number_contract: {
+    type: "text",
+    label: "Номер договора",
+    depended: "is_exclusive",
+    link: true,
+    value: "",
+    required: true
+  },
+  area_number: {
+    type: "text",
+    label: "Кадастровый номер",
+    hint: "Выгружается на внешние площадки",
+    value: ""
+  }
+};
+const form = {
   fieldsSections: {
     main: {
       name: "Основная информация",
@@ -367,6 +323,17 @@ const form = {
         area_number: true
       }
     }
+  },
+  // values for form of editing
+  editValues: {},
+  // values for detail card
+  detail: {},
+  filterFields: {
+    type_apartment: null,
+    type_deal: null,
+    section: null,
+    district: null,
+    subdistrict: null
   }
 };
 
@@ -374,9 +341,11 @@ export const initialState = {
   ...chips,
   ...list,
   ...form,
+  fields,
   filter: {},
   cacheQuery: [],
   loading: {
+    card: false,
     form: false,
     chips: false,
     data: true

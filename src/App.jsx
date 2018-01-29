@@ -6,6 +6,7 @@ import Header from "./Header";
 import WishList from "./crm/WishList";
 import SaleList from "./crm/SaleList";
 import Desktop from "./desktop/Desktop";
+import AlianceList from "./aliance/List";
 
 // import Auth from "./user/Auth";
 
@@ -61,7 +62,8 @@ class App extends Component {
               <main>
                 <Route exact path="/" component={Desktop} />
                 <Route path="/crm/sale" component={SaleList} />
-                <Route path="/crm/sale/wish" component={WishList} />
+                <Route path="/aliance" component={AlianceList} />
+                <Route exact path="/crm/sale/wish" component={WishList} />
               </main>
             </Fragment>
           </ThemeProvider>

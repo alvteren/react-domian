@@ -36,7 +36,10 @@ export default withStyles(styles)(props => {
         </Link>
       </Grid>
       <Grid item xs={6} sm={3} lg={2}>
-        1231
+        <Link to="/aliance">
+          <BookmarkBorderIcon className={classes.iconBookmark} />
+          <h3 className={classes.title}>Альянсы</h3>
+        </Link>
       </Grid>
     </Grid>
   );

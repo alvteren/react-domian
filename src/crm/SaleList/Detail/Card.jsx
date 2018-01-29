@@ -2,17 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, filter, size } from "lodash";
-
-import { saveToStore } from "../Add/Field";
-
 import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Typography from "material-ui/Typography";
-import Field from "../Add/Field";
+import Field from "../../Field";
 
 import { map } from "lodash";
 const styles = theme => ({

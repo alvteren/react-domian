@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { map } from "lodash";
 
-import Field from "./Field";
+import Field from "../../Field";
 
 import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";

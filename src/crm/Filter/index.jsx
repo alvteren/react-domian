@@ -7,41 +7,23 @@ import { map, get, size } from "lodash";
 import { deleteChip, fetchChips } from "../actions/filter";
 import SearchResult from "./SearchResult";
 
-const styles = theme => ({
-  filterTextField: {
-    width: 300
-  },
-  chip: {
-    margin: theme.spacing.unit / 2
-  },
-  chipAdd: {
-    margin: theme.spacing.unit / 2,
-    cursor: "pointer",
-    "&:hover .material-icons": {
-      opacity: 1
-    },
-    "& .material-icons": {
-      opacity: 0.8,
-      transition: "1s"
-    }
-  },
+import styles from "./Filter.module.css";
+
+const muiStyles = theme => ({
   chipsWrapper: {
     display: "flex",
-    flexWrap: "wrap"
-  },
-  filterWrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "baseline"
-  },
-  textFieldWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    position: "relative"
+    flexWrap: "nowrap",
+    overflowX: "auto",
+    overflowY: "hidden",
+    padding: theme.spacing.unit,
+    [theme.breakpoints.up("md")]: {
+      overflowX: "visible",
+      flexWrap: "wrap"
+    }
   }
 });
 
-const WAIT_INTERVAL = 1000;
+const WAIT_INTERVAL = 500;
 
 class Filter extends React.Component {
   constructor(props) {
@@ -54,7 +36,8 @@ class Filter extends React.Component {
     };
   }
   componentWillReceiveProps(newProps) {
-    const hasChips = size(newProps.chips) > 0;
+    const hasChips =
+      size(newProps.chips) > 0 || size(newProps.presetsChips) > 0;
     this.setState({ hasChips });
   }
   componentWillMount() {
@@ -75,12 +58,13 @@ class Filter extends React.Component {
     });
   };
   onCloseSearchResult = () => {
-    this.setState({
-      open: false
-    });
+    this.handleRequestClose();
   };
   onFocus = () => {
     this.state.hasChips && this.openPopover();
+  };
+  onFocusOut = () => {
+    // setTimeout(this.handleRequestClose, 200);
   };
   handleRequestClose = () => {
     this.setState({
@@ -89,31 +73,24 @@ class Filter extends React.Component {
   };
 
   render() {
-    const {
-      classes,
-      value,
-      selectedChips,
-      onDeleteChip,
-      chips,
-      loading
-    } = this.props;
+    const { id, classes, value, selectedChips, onDeleteChip } = this.props;
 
     const { open } = this.state;
 
     return (
-      <div className={classes.filterWrapper}>
-        <div className={classes.textFieldWrapper}>
+      <div className={styles.filterWrapper}>
+        <div className={styles.textFieldWrapper}>
           <TextField
             id="searchField"
             label="Поиск"
-            className={classes.filterTextField}
+            className={styles.filterTextField}
             value={value}
             onChange={this.handleChange}
             onFocus={this.onFocus}
+            onBlur={this.onFocusOut}
           />
           <SearchResult
-            chips={chips}
-            loading={loading.chips}
+            id={id}
             open={open}
             onClose={this.onCloseSearchResult}
           />
@@ -137,7 +114,7 @@ class Filter extends React.Component {
                   onDeleteChip(chip.id);
                 }}
                 key={chip.id}
-                className={classes.chip}
+                className={styles.chip}
               />
             );
           })}
@@ -161,7 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     status,
     count,
     chips,
-    loading,
+    presetsChips,
     selectedChips
   } = table;
   return {
@@ -173,7 +150,7 @@ const mapStateToProps = (state, ownProps) => {
     status,
     data,
     chips,
-    loading,
+    presetsChips,
     selectedChips
   };
 };
@@ -192,5 +169,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(Filter)
+  withStyles(muiStyles)(Filter)
 );

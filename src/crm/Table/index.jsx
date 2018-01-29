@@ -105,7 +105,7 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
-      const currency = row.currency;
+      const currency = row.currency || "RUB";
       if (value != null) {
         if (id === "price") {
           return new Intl.NumberFormat("ru-Ru", {
@@ -113,7 +113,7 @@ class EnhancedTable extends React.Component {
             currency: currency,
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
-          }).format(value);
+          }).format(value * 1);
         }
         if (id === "contacts") {
           return <span className={classes.nowrap}>{value}</span>;

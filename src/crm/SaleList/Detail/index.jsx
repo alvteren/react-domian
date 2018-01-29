@@ -5,7 +5,6 @@ import { withStyles } from "material-ui/styles";
 import Card from "./Card";
 
 import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
-import Button from "material-ui/Button";
 import AppBar from "material-ui/AppBar";
 import Toolbar from "material-ui/Toolbar";
 import IconButton from "material-ui/IconButton";
@@ -45,14 +44,13 @@ class Add extends React.Component {
   };
 
   render() {
-    const { fullScreen, onClick, classes, ...other } = this.props;
+    const { fullScreen, classes } = this.props;
     return (
       <Dialog
         fullScreen={fullScreen}
         open={this.state.open}
         onClose={this.handleClose}
         transition={Transition}
-        {...other}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>

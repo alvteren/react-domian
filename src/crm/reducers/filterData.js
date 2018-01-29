@@ -11,6 +11,15 @@ export default (state, { type, payload }) => {
       };
       newstate.filter.chips = newSelectedChips;
     }
+    if (type === "CHIPS_ADDED_SUCCESS") {
+      const { chip } = payload;
+      const newSelectedChips = { ...state.selectedChips, [chip.id]: chip };
+      newstate = {
+        ...state,
+        selectedChips: newSelectedChips
+      };
+      newstate.filter.chips = newSelectedChips;
+    }
     if (type === "CHIPS_FETCH_STARTED") {
       newstate = {
         ...state,

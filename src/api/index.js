@@ -15,9 +15,24 @@ export const fetchObjects = async props => {
   return response.json();
 };
 
+export const fetchObject = async id => {
+  const response = await fetch(baseURL + "/v1/object/" + id, {
+    credentials: "include",
+    mode: "cors"
+  });
+  return response.json();
+};
+
 export const fetchSettings = async props => {
   const params = objectToQuery(props);
   const response = await fetch(baseURL + "/v1/settings/?" + params, {
+    credentials: "include",
+    mode: "cors"
+  });
+  return response.json();
+};
+export const fetchObjectFields = async props => {
+  const response = await fetch(baseURL + "/v1/object/", {
     credentials: "include",
     mode: "cors"
   });

@@ -1,0 +1,16 @@
+.filterTextField {
+  min-width: 300px !important;
+}
+.chip {
+  margin: 4px;
+}
+.filterWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.textFieldWrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}

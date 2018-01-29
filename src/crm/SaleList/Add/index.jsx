@@ -37,7 +37,6 @@ class Add extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
-    console.log(this.props);
 
     this.props.history.push("/crm/sale");
   };
@@ -47,7 +46,7 @@ class Add extends React.Component {
   };
 
   render() {
-    const { fullScreen, onClick, classes } = this.props;
+    const { fullScreen, classes } = this.props;
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -101,6 +100,6 @@ Add.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(withMobileDialog()(Add))
+export default withMobileDialog()(
+  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Add))
 );

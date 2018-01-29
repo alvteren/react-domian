@@ -18,10 +18,10 @@ export default (state, { type, payload }) => {
     }
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value } = payload;
-      const newFieldState = { [name]: { ...state.fields[name], value } };
+      const newValuesState = { [name]: value };
       newstate = {
         ...state,
-        fields: { ...state.fields, ...newFieldState }
+        values: { ...state.values, ...newValuesState }
       };
     }
   }
