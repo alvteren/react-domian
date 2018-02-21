@@ -8,7 +8,6 @@ import { selectChip } from "../actions/filter";
 import Form from "./Form";
 
 const styles = theme => {
-  console.log("theme", theme);
   return {
     searchWrapper: {
       position: "absolute",
@@ -33,7 +32,8 @@ const styles = theme => {
       alignItems: "center",
       overflowX: "auto",
       [theme.breakpoints.up("md")]: {
-        overflowX: "visible"
+        overflowX: "visible",
+        flexWrap: "wrap"
       }
     },
     chip: {
@@ -81,7 +81,11 @@ class SearchResult extends React.Component {
                   return (
                     <Chip
                       {...chipProps}
-                      label={chip.label}
+                      label={
+                        Boolean(chip.propName)
+                          ? `${chip.propName}: ${chip.label}`
+                          : chip.label
+                      }
                       key={chip.id}
                       className={classes.chip}
                       onClick={() => this.props.onApplyChips(chip)}
@@ -104,7 +108,11 @@ class SearchResult extends React.Component {
                   return (
                     <Chip
                       {...chipProps}
-                      label={chip.label}
+                      label={
+                        Boolean(chip.propName)
+                          ? `${chip.propName}: ${chip.label}`
+                          : chip.label
+                      }
                       key={chip.id}
                       className={classes.chip}
                       onClick={() => this.props.onApplyChips(chip)}
@@ -140,7 +148,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // dispatch(fetchChips({ id: tableId, query }));
     },
     onApplyChips: chip => {
-      console.log("onApplyChips");
       dispatch(selectChip({ id: tableId, chip }));
     }
   };

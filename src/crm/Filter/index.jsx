@@ -109,7 +109,11 @@ class Filter extends React.Component {
             return (
               <Chip
                 {...chipProps}
-                label={chip.label}
+                label={
+                  Boolean(chip.propName)
+                    ? `${chip.propName}: ${chip.label}`
+                    : chip.label
+                }
                 onDelete={() => {
                   onDeleteChip(chip.id);
                 }}

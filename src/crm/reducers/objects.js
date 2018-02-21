@@ -6,33 +6,7 @@ import formData from "./formData";
 
 const chips = {
   chips: {},
-  selectedChips: {
-    type_premises_1: {
-      id: "type_premises_1",
-      label: "1к квартира",
-      searchable: "1к квартира однокомнатная",
-      type: "type"
-    },
-    type_premises_2: {
-      id: "type_premises_2",
-      label: "2к квартира",
-      searchable: "2к квартира двухкомнатная",
-      type: "type"
-    },
-    section_137: {
-      id: "section_137",
-      label: "Квартиры",
-      searchable: "квартира квартиры",
-      type: "section"
-    },
-    user_1: {
-      id: "user_1",
-      label: "Александр Терентьев",
-      avatar: "AT",
-      searchable: "александр терентьев разработчик",
-      type: "user"
-    }
-  },
+  selectedChips: {},
   presetsChips: {
     archive: {
       id: "archive",
