@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { withStyles } from "material-ui/styles";
 import { ListItemIcon, ListItemText } from "material-ui/List";
-import AddObjectIcon from "material-ui-icons/LocationCity";
+import GroupAddIcon from "material-ui-icons/GroupAdd";
 
 const styles = theme => ({
   menuItem: {
@@ -21,25 +21,39 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { classes, ...other } = props;
+  const { classes, linkedTelegram, onShowDialogTelegram, ...other } = props;
+
+  const handleClickAlianceAdd = () => {
+    props.onClose();
+    if (!linkedTelegram) {
+      onShowDialogTelegram();
+    }
+  };
 
   return (
     <Menu {...other}>
       <MenuItem
         component={Link}
-        to="/aliance/add"
+        to="/alliance/add"
+        className={classes.menuItem}
+        onClick={handleClickAlianceAdd}
+      >
+        <ListItemIcon>
+          <GroupAddIcon />
+        </ListItemIcon>
+        <ListItemText inset primary="Создать альянс" />
+      </MenuItem>
+      {/*  <MenuItem
+        component={Link}
+        to="/alliance/join"
         className={classes.menuItem}
         onClick={props.onClose}
       >
-        <ListItemIcon className={classes.icon}>
-          <AddObjectIcon />
+        <ListItemIcon>
+          <GroupAddIcon />
         </ListItemIcon>
-        <ListItemText
-          classes={{ text: classes.text }}
-          inset
-          primary="Создать альянс"
-        />
-      </MenuItem>
+        <ListItemText inset primary="Пригласить в альянс" />
+      </MenuItem> */}
     </Menu>
   );
 };

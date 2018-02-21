@@ -1,0 +1,26 @@
+.appBar {
+  position: relative !important;
+}
+.flex {
+  flex: 1 !important;
+}
+.buttonSave {
+  margin-left: 16px !important;
+}
+.dialogContent {
+  padding-top: 16px;
+}
+.progressWrapper {
+  height: 5px;
+}
+.userCard {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  padding: 8px;
+  min-width: 250px;
+}
+.username {
+  padding-left: 8px;
+}

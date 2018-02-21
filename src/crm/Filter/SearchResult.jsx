@@ -60,8 +60,8 @@ class SearchResult extends React.Component {
         {loading && (
           <LinearProgress
             className={classes.loader}
-            mode="query"
-            thickness={1}
+            color="secondary"
+            variant="query"
           />
         )}
         {open && (

@@ -33,7 +33,7 @@ const Pagination = props => {
     <TablePagination
       classes={classes}
       labelRowsPerPage="Строк на странице"
-      count={count}
+      count={parseInt(count, 10)}
       rowsPerPage={rowsPerPage}
       page={page}
       onChangePage={handleChangePage}

@@ -3,3 +3,43 @@
   bottom: 16px;
   right: 16px;
 }
+.buttonMore {
+  margin-left: 8px;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.wrapper {
+  padding: 16px;
+  margin: 8px;
+}
+.wrapperMyAliance {
+  position: relative;
+  padding: 16px;
+  border: 3px solid #d50000 !important;
+  margin: 8px;
+}
+.tabs {
+  margin-bottom: 10px;
+}
+.alianceName {
+  margin-left: 8px !important;
+}
+.alianceMembersCount {
+  font-size: 0.8em;
+  color: #ccc;
+  white-space: nowrap;
+}
+.labelMyAliance {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 5px;
+  background: #d50000;
+  color: #fff;
+  font-size: 0.8em;
+}
+.wrapperButtons {
+  text-align: right;
+}
