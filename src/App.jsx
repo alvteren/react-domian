@@ -7,6 +7,8 @@ import WishList from "./crm/WishList";
 import SaleList from "./crm/SaleList";
 import Desktop from "./desktop/Desktop";
 import AlianceList from "./aliance/List";
+import TelegramLink from "./aliance/TelegramLink";
+import Auth from "./user/Auth";
 
 // import Auth from "./user/Auth";
 
@@ -30,6 +32,7 @@ import { reducers as crmReducers } from "./crm/reducers";
 import { reducers as userReducers } from "./user/reducers";
 import { reducers as desktopReducers } from "./desktop/reducers";
 import { reducers as appReducers } from "./app/reducers";
+import { reducers as alianceReducer } from "./aliance/reducers";
 import { reducer as formReducer } from "redux-form";
 
 import registerServiceWorker from "./registerServiceWorker";
@@ -43,6 +46,7 @@ const reducers = combineReducers({
   desktop: desktopReducers,
   routing: routerReducer,
   form: formReducer,
+  aliance: alianceReducer,
   app: appReducers
 });
 
@@ -55,19 +59,26 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <ThemeProvider theme={{ constants }}>
-            <Fragment>
-              <Header />
-              <main>
-                <Route exact path="/" component={Desktop} />
-                <Route path="/crm/sale" component={SaleList} />
-                <Route path="/aliance" component={AlianceList} />
-                <Route exact path="/crm/sale/wish" component={WishList} />
-              </main>
-            </Fragment>
-          </ThemeProvider>
-        </ConnectedRouter>
+        <ThemeProvider theme={{ constants }}>
+          <Auth>
+            <ConnectedRouter history={history}>
+              <Fragment>
+                <Header />
+                <main>
+                  <Route exact path="/" component={Desktop} />
+                  <Route path="/crm/sale" component={SaleList} />
+                  <Route path="/alliance" component={AlianceList} />
+                  <Route exact path="/crm/sale/wish" component={WishList} />
+                  <Route
+                    exact
+                    path="/telegram/?link=:id"
+                    component={TelegramLink}
+                  />
+                </main>
+              </Fragment>
+            </ConnectedRouter>
+          </Auth>
+        </ThemeProvider>
       </Provider>
     );
   }

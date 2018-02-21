@@ -8,10 +8,12 @@ const mapStateToProps = state => {
   return { wishId, selected };
 };
 
-const mergeProps = (stateProps, dispatchProps) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { wishId, selected } = stateProps;
   const { dispatch } = dispatchProps;
   return {
+    ...stateProps,
+    ...ownProps,
     init: () => {
       dispatch(fetchWish({ wishId }));
     },

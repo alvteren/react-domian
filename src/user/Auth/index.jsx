@@ -1,19 +1,25 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { authorizeBy } from "../actions/auth";
+import { getCurrentUser } from "../actions/auth";
+import AuthForm from "./AuthForm";
 
 class Auth extends React.Component {
   constructor(props) {
     super(props);
-    // if (!props.isAuthorized) {
-    // props.authorize({login:"adm",password:"159753"});
-    // props.authorizeBy(1);
-    // }
+    const { isAuthorized, onInit } = props;
+    if (isAuthorized === null) {
+      onInit();
+    }
   }
 
   render() {
     const props = this.props;
-    return <div>{props.isAuthorized && <div>{props.children}</div>}</div>;
+    return (
+      <Fragment>
+        {props.isAuthorized === true && <div>{props.children}</div>}
+        {props.isAuthorized === false && <AuthForm />}
+      </Fragment>
+    );
   }
 }
 
@@ -25,8 +31,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    authorizeBy: userId => {
-      dispatch(authorizeBy(userId));
+    onInit: () => {
+      dispatch(getCurrentUser());
     }
   };
 };

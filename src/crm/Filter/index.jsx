@@ -110,7 +110,7 @@ class Filter extends React.Component {
               <Chip
                 {...chipProps}
                 label={chip.label}
-                onRequestDelete={() => {
+                onDelete={() => {
                   onDeleteChip(chip.id);
                 }}
                 key={chip.id}

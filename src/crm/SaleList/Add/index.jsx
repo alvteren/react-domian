@@ -57,20 +57,25 @@ class Add extends React.Component {
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton
-              color="contrast"
+              color="inherit"
               onClick={this.handleClose}
               aria-label="Close"
             >
               <CloseIcon />
             </IconButton>
-            <Typography type="title" color="inherit" className={classes.flex}>
+            <Typography
+              variant="title"
+              color="inherit"
+              className={classes.flex}
+            >
               Добавление объекта
             </Typography>
             <Button
-              raised
-              color="accent"
+              variant="raised"
+              color="secondary"
               onClick={this.handleClickSave}
               className={classes.buttonSave}
+              autoFocus
             >
               Сохранить
             </Button>

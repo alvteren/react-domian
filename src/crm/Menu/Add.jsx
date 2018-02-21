@@ -31,14 +31,10 @@ const MenuAdd = props => {
         className={classes.menuItem}
         onClick={props.onClose}
       >
-        <ListItemIcon className={classes.icon}>
+        <ListItemIcon>
           <AddObjectIcon />
         </ListItemIcon>
-        <ListItemText
-          classes={{ text: classes.text }}
-          inset
-          primary="Добавить объект"
-        />
+        <ListItemText primary="Добавить объект" />
       </MenuItem>
     </Menu>
   );

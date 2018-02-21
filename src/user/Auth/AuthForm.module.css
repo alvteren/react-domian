@@ -1,0 +1,14 @@
+.appBar {
+  position: relative !important;
+}
+.flex {
+  flex: 1 !important;
+}
+.buttonSave {
+  margin-left: 16px !important;
+}
+.dialogContent {
+}
+.progressWrapper {
+  height: 5px;
+}

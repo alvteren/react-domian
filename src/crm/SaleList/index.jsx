@@ -48,7 +48,7 @@ class SaleList extends React.Component {
           filterComponent={<Filter id="objects" />}
         />
         <Button
-          fab
+          variant="fab"
           color="primary"
           aria-label="add"
           className={classes.buttonAdd}
@@ -79,11 +79,13 @@ const mapStateToProps = (state, ownProps) => {
     data
   };
 };
-const mergeProps = (stateProps, dispatchProps) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { filter, page, rowsPerPage, orderBy, order, data } = stateProps;
   const { dispatch } = dispatchProps;
 
   return {
+    ...ownProps,
+    ...stateProps,
     onInit: () => {
       dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
     },
