@@ -19,7 +19,7 @@ const chips = {
       id: "domian",
       label: "Домиан",
       searchable: "объекты домиан",
-      type: "agency",
+      type: "company",
       value: 19368
     },
     my: {
@@ -27,7 +27,7 @@ const chips = {
       label: "Мои объекты",
       searchable: "мои объекты",
       type: "user",
-      value: 0
+      value: "self"
     }
   }
 };

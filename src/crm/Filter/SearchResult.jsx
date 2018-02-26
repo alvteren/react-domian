@@ -19,7 +19,6 @@ const styles = theme => {
         width: `calc(100vw - ${theme.spacing.unit * 6}px)`
       },
       [theme.breakpoints.up("md")]: {
-        // [`@media screen and (min-width: ${theme.breakpoints.values.md}px)`]: {
         width: "50vw"
       },
       zIndex: 100,

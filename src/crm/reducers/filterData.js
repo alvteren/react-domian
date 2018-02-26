@@ -1,4 +1,4 @@
-import { omit, keyBy } from "lodash";
+import { omit, keyBy, toArray } from "lodash";
 export default (state, { type, payload }) => {
   let newstate = null;
   if (state) {
@@ -9,7 +9,12 @@ export default (state, { type, payload }) => {
         ...state,
         selectedChips: newSelectedChips
       };
-      newstate.filter.chips = newSelectedChips;
+      const array = toArray(newSelectedChips);
+      const object = array.reduce((result, currentValue) => {
+        return { ...result, [currentValue.type]: currentValue.value };
+      }, {});
+
+      newstate.filter.chips = object;
     }
     if (type === "CHIPS_ADDED_SUCCESS") {
       const { chip } = payload;
@@ -18,8 +23,21 @@ export default (state, { type, payload }) => {
         ...state,
         selectedChips: newSelectedChips
       };
-      newstate.filter.chips = newSelectedChips;
+      const array = toArray(newSelectedChips);
+      const object = array.reduce((result, currentValue) => {
+        const newValues =
+          result[currentValue.type] == null
+            ? [currentValue.value]
+            : [...result[currentValue.type], currentValue.value];
+        return {
+          ...result,
+          [currentValue.type]: newValues
+        };
+      }, {});
+
+      newstate.filter.chips = object;
     }
+
     if (type === "CHIPS_FETCH_STARTED") {
       newstate = {
         ...state,
