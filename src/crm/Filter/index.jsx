@@ -109,6 +109,7 @@ class Filter extends React.Component {
             return (
               <Chip
                 {...chipProps}
+
                 label={
                   Boolean(chip.propName)
                     ? `${chip.propName}: ${chip.label}`
