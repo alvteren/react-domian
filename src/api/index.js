@@ -15,8 +15,9 @@ export const fetchObjects = async props => {
   return response.json();
 };
 
-export const fetchObject = async id => {
-  const response = await fetch(baseURL + "/v1/object/" + id, {
+export const fetchObject = async props => {
+  const params = objectToQuery(props);
+  const response = await fetch(baseURL + "/v1/object/?" + params, {
     credentials: "include",
     mode: "cors"
   });
@@ -33,6 +34,14 @@ export const fetchSettings = async props => {
 };
 export const fetchObjectFields = async props => {
   const response = await fetch(baseURL + "/v1/object/", {
+    credentials: "include",
+    mode: "cors"
+  });
+  return response.json();
+};
+export const fetchObjectField = async props => {
+  const params = objectToQuery(props);
+  const response = await fetch(baseURL + "/v1/object/field/?" + params, {
     credentials: "include",
     mode: "cors"
   });

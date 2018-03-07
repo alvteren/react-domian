@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, filter, size, map } from "lodash";
+import { get, filter, size, map, isObject } from "lodash";
 
 import { saveToStore } from "../actions/form";
 
@@ -30,8 +30,10 @@ class Field extends React.Component {
     this.setState({ edit: true, needSave: true });
   };
   onSave = e => {
-    this.props.handleChange(e);
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
+  };
+  onChange = e => {
+    this.props.handleChange(e);
   };
 
   render() {
@@ -45,7 +47,10 @@ class Field extends React.Component {
     if (edit) {
       const getVisibleValues = () => {
         if (get(field, "depended", null) !== null) {
-          const linkedValue = get(values, field.depended, null);
+          let linkedValue = get(values, field.depended, null);
+          if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
+            linkedValue = linkedValue.id;
+          }
           if (get(field, "items", false)) {
             return filter(field.items, {
               link: linkedValue
@@ -61,9 +66,10 @@ class Field extends React.Component {
       const formControl = needSave
         ? classes.formControlWithButton
         : classes.formControl;
-      console.log("Form", visibleValues);
+
       if (visibleValues) {
         if (field.type === "select" && size(visibleValues) > 0) {
+          const bNativeSelect = size(visibleValues) > 4;
           return (
             <Grid item xs={12} sm={6}>
               <div className={classes.valueWrapper}>
@@ -72,12 +78,17 @@ class Field extends React.Component {
                     {field.label}
                   </InputLabel>
                   <Select
-                    value={value ? value : ""}
-                    onChange={this.onSave}
+                    value={value}
+                    onChange={this.onChange}
+                    native={bNativeSelect}
                     input={<Input name={id} id={id} />}
                   >
                     {map(visibleValues, item => {
-                      return (
+                      return bNativeSelect ? (
+                        <option value={item.value} key={item.value}>
+                          {item.label}
+                        </option>
+                      ) : (
                         <MenuItem value={item.value} key={item.value}>
                           {item.label}
                         </MenuItem>
@@ -90,7 +101,7 @@ class Field extends React.Component {
                   <IconButton
                     onClick={this.onSave}
                     className={classes.buttonSave}
-                    color="accent"
+                    color="inherit"
                   >
                     <Done />
                   </IconButton>
@@ -108,7 +119,7 @@ class Field extends React.Component {
                 required={field.required}
                 name={id}
                 label={field.label}
-                onChange={this.onSave}
+                onChange={this.onChange}
                 value={value}
                 helperText={get(field, "hint", "")}
               />
@@ -133,7 +144,7 @@ class Field extends React.Component {
                   <Switch
                     name={id}
                     checked={value}
-                    onChange={this.onSave}
+                    onChange={this.onChange}
                     aria-label={id}
                   />
                 }
@@ -153,16 +164,18 @@ class Field extends React.Component {
         }
       }
     } else {
-      if (value) {
+      if (field) {
         if (field.type === "image") {
         } else {
           const formatValue = () => {
             if (field.type === "select") {
-              return field.items[value].label;
+              const listValue = field.hasOwnProperty("items")
+                ? get(field.items, value, null)
+                : null;
+              return listValue ? listValue.label : "";
             }
             return value;
           };
-
           return (
             <Grid item xs={12} sm={6}>
               <div className={classes.valueWrapper} onClick={this.onStartEdit}>
@@ -186,23 +199,35 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fields, values } = state.crm.objects;
-  const { id } = ownProps;
+  const { fields, data, values } = state.crm.objects;
+  const { id, match } = ownProps;
+  const objectId = match.params.id;
+  const field = get(fields, id, false);
+  const objectValues = get(values, objectId, null);
+  const value = objectValues != null ? get(objectValues, id, null) : null;
+
   return {
-    field: get(fields, id, false),
-    values,
-    value: get(values, id, null)
+    objectId,
+    field,
+    values: objectValues,
+    value
   };
 };
-const mapDispatchToProps = (dispatch, props) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { dispatch } = dispatchProps;
+  const { field, values } = stateProps;
+  const elementId = stateProps.objectId;
+
   return {
+    ...ownProps,
+    ...stateProps,
     handleChange: e => {
       const { name, value } = e.target;
-      dispatch(saveToStore({ id: "objects", name, value }));
+      dispatch(saveToStore({ id: "objects", elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
       const { name } = e.target;
-      dispatch(saveToStore({ id: "objects", name, value: checked }));
+      dispatch(saveToStore({ id: "objects", elementId, name, value: checked }));
     }
   };
 };
@@ -227,7 +252,8 @@ const styles = theme => ({
     whiteSpace: `nowrap`
   },
   value: {
-    width: `calc(100% - 48px)`
+    width: `calc(100% - 48px)`,
+    padding: 0
   },
   buttonEdit: {
     opacity: 0.1,
@@ -243,6 +269,6 @@ Field.propTypes = {
   classes: PropTypes.object.isRequired,
   field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, null, mergeProps)(
   withStyles(styles)(Field)
 );

@@ -89,21 +89,20 @@ const fields = {
   type_deal: {
     type: "select",
     label: "Тип сделки",
-    hint: "test",
     required: true,
     items: {}
   },
   section: {
     type: "select",
     label: "Раздел",
-    value: "apartments",
+    value: "",
     required: true,
     items: {}
   },
   type_apartment: {
     type: "select",
     label: "Тип квартиры",
-    value: "rooms1",
+    value: "",
     required: true,
     items: {}
   },
@@ -354,7 +353,13 @@ export default (state = initialState, { type, payload }) => {
         };
       }
     }
-
+    if (type === "DETAIL_FETCH_DATA_SUCCESS") {
+      const { values } = payload;
+      return {
+        ...state,
+        values: { [values.id]: values }
+      };
+    }
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {

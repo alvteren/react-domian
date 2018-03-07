@@ -17,7 +17,7 @@ import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
 import Pagination from "./Pagination";
 
-import toArray from "lodash/toArray";
+import { toArray, isObject } from "lodash";
 
 import {
   fetchTableHeaders,
@@ -117,6 +117,10 @@ class EnhancedTable extends React.Component {
         }
         if (id === "contacts") {
           return <span className={classes.nowrap}>{value}</span>;
+        }
+
+        if (isObject(value) && value.hasOwnProperty("label")) {
+          return value.label;
         }
 
         return value;

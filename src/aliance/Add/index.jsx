@@ -27,7 +27,8 @@ const Add = props => {
     props.history.push("/alliance");
   };
 
-  const handleClickSave = () => {
+  const handleSave = e => {
+    e.preventDefault();
     const value = document.getElementById("name_aliance").value;
     props.onSave({ name: value });
     handleClose();
@@ -40,33 +41,40 @@ const Add = props => {
       onClose={handleClose}
       transition={Transition}
     >
-      <AppBar className={styles.appBar}>
-        <Toolbar>
-          <IconButton color="inherit" onClick={handleClose} aria-label="Close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="title" color="inherit" className={styles.flex}>
-            Создать альянс
-          </Typography>
-          <Button
-            variant="raised"
-            color="secondary"
-            onClick={handleClickSave}
-            className={styles.buttonSave}
-          >
-            Сохранить
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <DialogContent className={styles.dialogContent}>
-        <TextField
-          required
-          id="name_aliance"
-          label="Название альянса"
-          margin="normal"
-          autoFocus
-        />
-      </DialogContent>
+      <form onSubmit={handleSave}>
+        <AppBar className={styles.appBar}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              onClick={handleClose}
+              aria-label="Close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="title" color="inherit" className={styles.flex}>
+              Создать альянс
+            </Typography>
+            <Button
+              type="submit"
+              variant="raised"
+              color="secondary"
+              onClick={handleSave}
+              className={styles.buttonSave}
+            >
+              Сохранить
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <DialogContent className={styles.dialogContent}>
+          <TextField
+            required
+            id="name_aliance"
+            label="Название альянса"
+            margin="normal"
+            autoFocus
+          />
+        </DialogContent>
+      </form>
     </Dialog>
   );
 };

@@ -25,7 +25,6 @@ export const authorizeBy = userId => async dispatch => {
 };
 export const authorize = props => async dispatch => {
   const { login, password } = props;
-  console.log(login, password);
   try {
     dispatch({ type: "USER_AUTHORIZE_START" });
     const data = await authorizeApi({ login, password });

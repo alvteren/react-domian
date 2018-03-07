@@ -52,7 +52,12 @@ class Card extends React.Component {
         <div>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={currentEdit === id} />
+              <Field
+                id={id}
+                key={id}
+                edit={currentEdit === id}
+                match={this.props.match}
+              />
             ))}
           </Grid>
         </div>

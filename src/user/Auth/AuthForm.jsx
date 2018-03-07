@@ -35,33 +35,35 @@ const AuthForm = props => {
 
   return (
     <Dialog fullScreen={fullScreen} open={true} transition={Transition}>
-      <AppBar className={styles.appBar}>
-        <Toolbar>
-          <Typography variant="title" color="inherit" className={styles.flex}>
-            Авторизация
-          </Typography>
-          <Button
-            variant="raised"
-            color="secondary"
-            onClick={onSubmitAuth}
-            className={styles.buttonSave}
-          >
-            Войти
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <div className={styles.progressWrapper}>
-        {status === "loading" && (
-          <LinearProgress variant="query" thickness={1} />
-        )}
-      </div>
-      <DialogContent className={styles.dialogContent}>
-        <form onSubmit={onSubmitAuth}>
+      <form onSubmit={onSubmitAuth}>
+        <AppBar className={styles.appBar}>
+          <Toolbar>
+            <Typography variant="title" color="inherit" className={styles.flex}>
+              Авторизация
+            </Typography>
+            <Button
+              variant="raised"
+              color="secondary"
+              onClick={onSubmitAuth}
+              className={styles.buttonSave}
+              type="submit"
+            >
+              Войти
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <div className={styles.progressWrapper}>
+          {status === "loading" && (
+            <LinearProgress variant="query" thickness={1} />
+          )}
+        </div>
+        <DialogContent className={styles.dialogContent}>
           <Grid container>
             <Grid item xs={12} sm={6}>
               <TextField
                 required
                 id="login"
+                name="login"
                 label="Логин"
                 margin="normal"
                 autoFocus
@@ -74,13 +76,14 @@ const AuthForm = props => {
                 type="password"
                 required
                 id="password"
+                name="password"
                 label="Пароль"
                 margin="normal"
               />
             </Grid>
           </Grid>
-        </form>
-      </DialogContent>
+        </DialogContent>
+      </form>
     </Dialog>
   );
 };

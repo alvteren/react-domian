@@ -6,7 +6,6 @@ const TelegramLink = props => {
   return <div />;
 };
 const mapStateToProps = (state, ownProps) => {
-  console.log("ownProps", ownProps);
   // const { link } = ownProps.match.params;
   const { telegram } = state;
 
@@ -15,7 +14,6 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  console.log("ownProps", ownProps);
   const { link } = ownProps.match.params;
   return {
     onInit: () => {

@@ -12,6 +12,10 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 
+import { get, size } from "lodash";
+
+import { fetchObject } from "../../actions/objects";
+
 const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
@@ -55,7 +59,7 @@ class Add extends React.Component {
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton
-              color="contrast"
+              color="inherit"
               onClick={this.handleClose}
               aria-label="Close"
             >
@@ -67,7 +71,7 @@ class Add extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Card />
+          <Card match={this.props.match} />
         </DialogContent>
       </Dialog>
     );
@@ -75,10 +79,21 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+  const { id } = ownProps.match.params;
+  const { values } = state.crm.objects;
+  return { id, values };
 };
-const mapDispatchToProps = (dispatch, props) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { id, values } = stateProps;
+  const { dispatch } = dispatchProps;
+  const objectValues = get(values, id, null);
+
+  if (objectValues == null || size(objectValues) === 0) {
+    dispatch(fetchObject(id));
+  }
   return {
+    ...stateProps,
+    ...ownProps,
     onSave: () => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
     }
@@ -91,5 +106,5 @@ Add.propTypes = {
 };
 
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(withMobileDialog()(Add))
+  connect(mapStateToProps, null, mergeProps)(withMobileDialog()(Add))
 );

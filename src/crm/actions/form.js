@@ -1,7 +1,7 @@
 export const saveToStore = props => async dispatch => {
-  const { id, name, value } = props;
+  const { id, elementId, name, value } = props;
   dispatch({
     type: "FORM_SAVE_TO_STORE",
-    payload: { id, name, value }
+    payload: { id, elementId, name, value }
   });
 };

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { fetchObjects } from "../actions/objects";
+import { fetchObjects, fetchObjectFields } from "../actions/objects";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
@@ -87,6 +87,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     onInit: () => {
+      dispatch(fetchObjectFields());
       dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
     },
     onChangePage: newPage => {

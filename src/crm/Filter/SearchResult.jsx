@@ -119,7 +119,6 @@ class SearchResult extends React.Component {
                   );
                 })}
             </div>
-            <Form id={id} />
           </div>
         )}
       </Fragment>

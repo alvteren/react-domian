@@ -17,11 +17,16 @@ export default (state, { type, payload }) => {
       };
     }
     if (type === "FORM_SAVE_TO_STORE") {
-      const { name, value } = payload;
-      const newValuesState = { [name]: value };
+      const { name, value, elementId } = payload;
       newstate = {
         ...state,
-        values: { ...state.values, ...newValuesState }
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            [name]: value
+          }
+        }
       };
     }
   }
