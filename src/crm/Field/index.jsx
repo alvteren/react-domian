@@ -6,6 +6,10 @@ import { get, filter, size, map, isObject } from "lodash";
 
 import { saveToStore } from "../actions/form";
 
+import styles from "./Field.module.css";
+
+import Dropzone from "react-dropzone";
+
 import { withStyles } from "material-ui/styles";
 import { TextField, Select, Grid, Switch, IconButton } from "material-ui";
 import Input, { InputLabel } from "material-ui/Input";
@@ -34,6 +38,10 @@ class Field extends React.Component {
   };
   onChange = e => {
     this.props.handleChange(e);
+  };
+
+  onImageDrop = acceptedFiles => {
+    console.log(acceptedFiles);
   };
 
   render() {
@@ -162,10 +170,75 @@ class Field extends React.Component {
             </Grid>
           );
         }
+        if (field.type === "image") {
+          return (
+            <Grid item xs={12}>
+              <div>
+                <span>Фото</span>
+                {needSave && (
+                  <IconButton
+                    onClick={this.onSave}
+                    className={classes.buttonSave}
+                    color="primary"
+                  >
+                    <Done />
+                  </IconButton>
+                )}
+              </div>
+              {size(value) > 0 && (
+                <div className={styles.containerPhoto}>
+                  {map(value, arPhoto => {
+                    return (
+                      <div
+                        className={styles.previewPhoto}
+                        style={{ backgroundImage: `url(${arPhoto.preview})` }}
+                        key={arPhoto.value}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+              <Dropzone
+                multiple={false}
+                accept="image/*"
+                onDrop={this.onImageDrop}
+              >
+                <p>Drop an image or click to select a file to upload.</p>
+              </Dropzone>
+            </Grid>
+          );
+        }
       }
     } else {
       if (field) {
         if (field.type === "image") {
+          return (
+            <Grid item xs={12}>
+              <div>
+                <span>Фото</span>
+
+                <IconButton
+                  onClick={this.onStartEdit}
+                  className={classes.buttonEdit}
+                >
+                  <ModeEditIcon />
+                </IconButton>
+              </div>
+              {size(value) > 0 && (
+                <div>
+                  {map(value, arPhoto => {
+                    return (
+                      <div
+                        className={styles.previewPhoto}
+                        style={{ backgroundImage: `url(${arPhoto.preview})` }}
+                        key={arPhoto.value}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </Grid>
+          );
         } else {
           const formatValue = () => {
             if (field.type === "select") {
@@ -231,7 +304,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   };
 };
-const styles = theme => ({
+const stylesMUI = theme => ({
   formControl: {
     minWidth: 200,
     width: "100%",
@@ -258,7 +331,10 @@ const styles = theme => ({
   buttonEdit: {
     opacity: 0.1,
     marginLeft: theme.spacing.unit,
-    cursor: "pointer"
+    cursor: "pointer",
+    "&:hover": {
+      opacity: 1
+    }
   },
   buttonSave: {
     maxWidth: 48,
@@ -270,5 +346,5 @@ Field.propTypes = {
   field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
 export default connect(mapStateToProps, null, mergeProps)(
-  withStyles(styles)(Field)
+  withStyles(stylesMUI)(Field)
 );

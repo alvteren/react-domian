@@ -273,7 +273,8 @@ const form = {
         s_all: true,
         s_live: true,
         s_kitchen: true,
-        s_area: true
+        s_area: true,
+        photo: true
       }
     },
     contact: {
