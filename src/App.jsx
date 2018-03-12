@@ -12,7 +12,14 @@ import Auth from "./user/Auth";
 
 // import Auth from "./user/Auth";
 
-import { ThemeProvider } from "styled-components";
+import { JssProvider } from "react-jss";
+import { create } from "jss";
+import preset from "jss-preset-default";
+
+import createGenerateClassName from "material-ui/styles/createGenerateClassName";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { createMuiTheme } from "material-ui/styles";
+import blue from "material-ui/colors/blue";
 
 import { Route } from "react-router-dom";
 
@@ -55,30 +62,43 @@ export const store = createStore(
   composeWithDevTools(applyMiddleware(thunk, middleware))
 );
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue
+  }
+});
+
+// Configure JSS
+const jss = create(preset());
+jss.options.createGenerateClassName = createGenerateClassName;
+jss.options.insertionPoint = "insertion-point-jss";
+
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <ThemeProvider theme={{ constants }}>
-          <Auth>
-            <ConnectedRouter history={history}>
-              <Fragment>
-                <Header />
-                <main>
-                  <Route exact path="/" component={Desktop} />
-                  <Route path="/crm/sale" component={SaleList} />
-                  <Route path="/alliance" component={AlianceList} />
-                  <Route exact path="/crm/sale/wish" component={WishList} />
-                  <Route
-                    exact
-                    path="/telegram/?link=:id"
-                    component={TelegramLink}
-                  />
-                </main>
-              </Fragment>
-            </ConnectedRouter>
-          </Auth>
-        </ThemeProvider>
+        <JssProvider jss={jss}>
+          <MuiThemeProvider theme={theme}>
+            <Auth>
+              <ConnectedRouter history={history}>
+                <Fragment>
+                  <Header />
+                  <main>
+                    <Route exact path="/" component={Desktop} />
+                    <Route path="/crm/sale" component={SaleList} />
+                    <Route path="/alliance" component={AlianceList} />
+                    <Route exact path="/crm/sale/wish" component={WishList} />
+                    <Route
+                      exact
+                      path="/telegram/?link=:id"
+                      component={TelegramLink}
+                    />
+                  </main>
+                </Fragment>
+              </ConnectedRouter>
+            </Auth>
+          </MuiThemeProvider>
+        </JssProvider>
       </Provider>
     );
   }

@@ -1,5 +1,5 @@
 .buttonAdd {
-  position: fixed !important;
+  position: fixed;
   bottom: 16px;
   right: 16px;
 }
@@ -17,14 +17,14 @@
 .wrapperMyAliance {
   position: relative;
   padding: 16px;
-  border: 3px solid #d50000 !important;
+  border: 3px solid #d50000;
   margin: 8px;
 }
 .tabs {
   margin-bottom: 10px;
 }
 .alianceName {
-  margin-left: 8px !important;
+  margin-left: 8px;
 }
 .alianceMembersCount {
   font-size: 0.8em;

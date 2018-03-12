@@ -1,11 +1,11 @@
 .appBar {
-  position: relative !important;
+  position: relative;
 }
 .flex {
-  flex: 1 !important;
+  flex: 1;
 }
 .buttonSave {
-  margin-left: 16px !important;
+  margin-left: 16px;
 }
 .dialogContent {
 }
