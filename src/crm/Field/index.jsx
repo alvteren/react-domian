@@ -4,17 +4,26 @@ import PropTypes from "prop-types";
 
 import { get, filter, size, map, isObject } from "lodash";
 
-import { saveToStore } from "../actions/form";
-
+import { saveToStore, saveFile } from "../actions/form";
+import Gallery from "../../app/Gallery";
 import styles from "./Field.module.css";
 
 import Dropzone from "react-dropzone";
 
 import { withStyles } from "material-ui/styles";
-import { TextField, Select, Grid, Switch, IconButton } from "material-ui";
+import {
+  TextField,
+  Select,
+  Grid,
+  Switch,
+  IconButton,
+  Hidden,
+  Button
+} from "material-ui";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
+import PhotoCamera from "material-ui-icons/PhotoCamera";
 import Done from "material-ui-icons/Done";
 import {
   FormControl,
@@ -40,19 +49,76 @@ class Field extends React.Component {
     this.props.handleChange(e);
   };
 
+  onChangeFile = e => {
+    e.target.files.map(file => {
+      this.props.saveFile(file);
+      return true;
+    });
+  };
+
   onImageDrop = acceptedFiles => {
-    console.log(acceptedFiles);
+    acceptedFiles.map(file => {
+      this.props.saveFile(file);
+      return true;
+    });
   };
 
   render() {
-    const { id, field, values, value, classes } = this.props;
+    const { id, field, values, value, classes, can } = this.props;
 
     const { edit, needSave } = this.state;
+    const canEdit = get(can, "edit", false);
 
     if (field === false) {
       return <span />;
     }
-    if (edit) {
+    if (field.type === "image") {
+      return (
+        <Grid item xs={12}>
+          <div className={styles.photoTitle}>
+            <span>Фото</span>
+          </div>
+          {canEdit && (
+            <Fragment>
+              <Hidden only={["xs", "sm"]}>
+                <Dropzone
+                  className={styles.dropZone}
+                  activeClassName={styles.dropZoneActive}
+                  acceptClassName={styles.dropZoneAccept}
+                  rejectClassName={styles.dropZoneReject}
+                  multiple={true}
+                  accept="image/*"
+                  onDrop={this.onImageDrop}
+                >
+                  Перетащите один или несколько файлов в эту область{" "}
+                  <span className={styles.link}>
+                    или выберите файл на компьютере
+                  </span>
+                </Dropzone>
+              </Hidden>
+              <Hidden only={["md", "lg"]}>
+                <label className={styles.labelFile}>
+                  <input
+                    className={styles.inputFile}
+                    name={id}
+                    type="file"
+                    id={id}
+                    multiple
+                    onChange={this.onChangeFile}
+                  />
+                  <Button variant="raised" color="primary" component="span">
+                    Добавить фото
+                    <PhotoCamera className={classes.iconButton} />
+                  </Button>
+                </label>
+              </Hidden>
+            </Fragment>
+          )}
+          <Gallery slides={value} />
+        </Grid>
+      );
+    }
+    if (edit && canEdit) {
       const getVisibleValues = () => {
         if (get(field, "depended", null) !== null) {
           let linkedValue = get(values, field.depended, null);
@@ -170,101 +236,41 @@ class Field extends React.Component {
             </Grid>
           );
         }
-        if (field.type === "image") {
-          return (
-            <Grid item xs={12}>
-              <div>
-                <span>Фото</span>
-                {needSave && (
-                  <IconButton
-                    onClick={this.onSave}
-                    className={classes.buttonSave}
-                    color="primary"
-                  >
-                    <Done />
-                  </IconButton>
-                )}
-              </div>
-              {size(value) > 0 && (
-                <div className={styles.containerPhoto}>
-                  {map(value, arPhoto => {
-                    return (
-                      <div
-                        className={styles.previewPhoto}
-                        style={{ backgroundImage: `url(${arPhoto.preview})` }}
-                        key={arPhoto.value}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-              <Dropzone
-                multiple={false}
-                accept="image/*"
-                onDrop={this.onImageDrop}
-              >
-                <p>Drop an image or click to select a file to upload.</p>
-              </Dropzone>
-            </Grid>
-          );
-        }
       }
     } else {
       if (field) {
-        if (field.type === "image") {
-          return (
-            <Grid item xs={12}>
-              <div>
-                <span>Фото</span>
+        const formatValue = () => {
+          if (field.type === "select") {
+            const listValue = field.hasOwnProperty("items")
+              ? get(field.items, value, null)
+              : null;
+            return listValue ? listValue.label : "";
+          }
+          return value;
+        };
+        return (
+          <Grid item xs={12} sm={6}>
+            <div
+              className={classes.valueWrapper}
+              onClick={() => {
+                canEdit && this.onStartEdit();
+              }}
+            >
+              <ListItem className={classes.value}>
+                <ListItemText
+                  primary={<Fragment>{formatValue()}</Fragment>}
+                  secondary={field.label}
+                />
+              </ListItem>
 
-                <IconButton
-                  onClick={this.onStartEdit}
-                  className={classes.buttonEdit}
-                >
-                  <ModeEditIcon />
-                </IconButton>
-              </div>
-              {size(value) > 0 && (
-                <div>
-                  {map(value, arPhoto => {
-                    return (
-                      <div
-                        className={styles.previewPhoto}
-                        style={{ backgroundImage: `url(${arPhoto.preview})` }}
-                        key={arPhoto.value}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </Grid>
-          );
-        } else {
-          const formatValue = () => {
-            if (field.type === "select") {
-              const listValue = field.hasOwnProperty("items")
-                ? get(field.items, value, null)
-                : null;
-              return listValue ? listValue.label : "";
-            }
-            return value;
-          };
-          return (
-            <Grid item xs={12} sm={6}>
-              <div className={classes.valueWrapper} onClick={this.onStartEdit}>
-                <ListItem className={classes.value}>
-                  <ListItemText
-                    primary={<Fragment>{formatValue()}</Fragment>}
-                    secondary={field.label}
-                  />
-                </ListItem>
+              {canEdit && (
                 <IconButton className={classes.buttonEdit}>
                   <ModeEditIcon />
                 </IconButton>
-              </div>
-            </Grid>
-          );
-        }
+              )}
+            </div>
+          </Grid>
+        );
       }
     }
 
@@ -272,23 +278,24 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fields, data, values } = state.crm.objects;
+  const { fields, values } = state.crm.objects;
   const { id, match } = ownProps;
   const objectId = match.params.id;
   const field = get(fields, id, false);
   const objectValues = get(values, objectId, null);
   const value = objectValues != null ? get(objectValues, id, null) : null;
+  const can = objectValues != null ? get(objectValues, "can", {}) : {};
 
   return {
     objectId,
     field,
     values: objectValues,
-    value
+    value,
+    can
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { field, values } = stateProps;
   const elementId = stateProps.objectId;
 
   return {
@@ -301,6 +308,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     handleChangeSwitch: (e, checked) => {
       const { name } = e.target;
       dispatch(saveToStore({ id: "objects", elementId, name, value: checked }));
+    },
+    saveFile: file => {
+      dispatch(saveFile({ id: "objects", elementId, name: "photo", file }));
     }
   };
 };
@@ -339,6 +349,9 @@ const stylesMUI = theme => ({
   buttonSave: {
     maxWidth: 48,
     flex: "1 1 auto"
+  },
+  iconButton: {
+    marginLeft: theme.spacing.unit
   }
 });
 Field.propTypes = {

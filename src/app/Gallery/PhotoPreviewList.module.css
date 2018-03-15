@@ -1,0 +1,31 @@
+.previewPhoto {
+  min-width: 160px;
+  width: 160px;
+  height: 90px;
+  background-size: cover;
+  position: relative;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.previewPhoto:hover:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 255, 0.2);
+  cursor: pointer;
+}
+.containerPhoto {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+@media screen and (min-width: 768px) {
+  .containerPhoto {
+    overflow-x: hidden;
+    flex-wrap: wrap;
+  }
+}

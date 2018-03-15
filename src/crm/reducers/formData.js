@@ -29,6 +29,19 @@ export default (state, { type, payload }) => {
         }
       };
     }
+    if (type === "FORM_SAVE_FILE") {
+      const { name, value, elementId } = payload;
+      newstate = {
+        ...state,
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            [name]: [...state.values[elementId][name], value]
+          }
+        }
+      };
+    }
   }
   if (newstate) {
     return { ...state, ...newstate };

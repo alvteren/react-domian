@@ -9,7 +9,7 @@ import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Field from "../../Field";
 
-import { map } from "lodash";
+import { map, get } from "lodash";
 const styles = theme => ({
   root: {},
   container: {
@@ -30,7 +30,7 @@ class Card extends React.Component {
     this.setState({ openedSection: value });
   };
   render() {
-    const { fieldsSections, classes } = this.props;
+    const { fieldsSections, canViewContacts, classes } = this.props;
     const { openedSection, currentEdit } = this.state;
 
     return (
@@ -45,7 +45,9 @@ class Card extends React.Component {
             scrollButtons="auto"
           >
             {map(fieldsSections, (section, code) => {
-              return <Tab label={section.name} value={code} key={code} />;
+              if (canViewContacts || code !== "contact") {
+                return <Tab label={section.name} value={code} key={code} />;
+              }
             })}
           </Tabs>
         </AppBar>
@@ -67,7 +69,11 @@ class Card extends React.Component {
 }
 const mapStateToProps = (state, ownProps) => {
   const { fieldsSections } = state.crm.objects;
-  return { fieldsSections };
+  const { id } = ownProps.match.params;
+  const values = get(state.crm.objects.values, id, null);
+  const can = get(values, "can", null);
+  const canViewContacts = get(can, "view_contacts", false);
+  return { fieldsSections, canViewContacts };
 };
 
 Card.propTypes = {

@@ -3,6 +3,7 @@ import constants from "./constants";
 
 import Header from "./Header";
 
+// import PhotoBig from "./app/PhotoBig";
 import WishList from "./crm/WishList";
 import SaleList from "./crm/SaleList";
 import Desktop from "./desktop/Desktop";
@@ -75,6 +76,7 @@ class App extends Component {
                     component={TelegramLink}
                   />
                 </main>
+                {/* <PhotoBig /> */}
               </Fragment>
             </ConnectedRouter>
           </Auth>

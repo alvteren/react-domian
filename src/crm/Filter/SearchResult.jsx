@@ -5,8 +5,6 @@ import { size, map, get } from "lodash";
 import { connect } from "react-redux";
 import { selectChip } from "../actions/filter";
 
-import Form from "./Form";
-
 const styles = theme => {
   return {
     searchWrapper: {
@@ -51,7 +49,7 @@ const styles = theme => {
 };
 class SearchResult extends React.Component {
   render() {
-    const { classes, chips, loading, open, id, presetsChips } = this.props;
+    const { classes, chips, loading, open, presetsChips } = this.props;
     const hasChips = size(chips) > 0;
     const hasPresetsChips = size(presetsChips) > 0;
     return (
