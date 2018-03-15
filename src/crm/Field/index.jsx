@@ -187,31 +187,6 @@ class Field extends React.Component {
             </Grid>
           );
         }
-        if (field.type === "text") {
-          return (
-            <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-              <TextField
-                className={formControl}
-                fullWidth
-                required={field.required}
-                name={id}
-                label={field.label}
-                onChange={this.onChange}
-                value={value}
-                helperText={get(field, "hint", "")}
-              />
-              {needSave && (
-                <IconButton
-                  onClick={this.onSave}
-                  className={classes.buttonSave}
-                  color="primary"
-                >
-                  <Done />
-                </IconButton>
-              )}
-            </Grid>
-          );
-        }
         if (field.type === "switch") {
           return (
             <Grid item xs={12} sm={6} className={classes.valueWrapper}>
@@ -239,6 +214,30 @@ class Field extends React.Component {
             </Grid>
           );
         }
+        return (
+          <Grid item xs={12} sm={6} className={classes.valueWrapper}>
+            <TextField
+              type={field.type}
+              className={formControl}
+              fullWidth
+              required={field.required}
+              name={id}
+              label={field.label}
+              onChange={this.onChange}
+              value={value}
+              helperText={get(field, "hint", "")}
+            />
+            {needSave && (
+              <IconButton
+                onClick={this.onSave}
+                className={classes.buttonSave}
+                color="primary"
+              >
+                <Done />
+              </IconButton>
+            )}
+          </Grid>
+        );
       }
     } else {
       if (field) {
