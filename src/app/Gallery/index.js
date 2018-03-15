@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { toArray } from "lodash";
 import PhotoBig from "./PhotoBig";
 import PhotoPreviewList from "./PhotoPreviewList";
@@ -28,7 +28,7 @@ class Gallery extends React.Component {
       });
 
     return (
-      <Fragment>
+      <div data-exclude-swipe={true}>
         <PhotoPreviewList value={arSlides} openPhoto={this.openGallery} />
         {currentSlide != null && (
           <PhotoBig
@@ -37,7 +37,7 @@ class Gallery extends React.Component {
             hidePhoto={this.closeGallery}
           />
         )}
-      </Fragment>
+      </div>
     );
   }
 }

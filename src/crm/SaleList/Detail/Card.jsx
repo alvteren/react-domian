@@ -32,20 +32,43 @@ class Card extends React.Component {
     this.setState({ openedSection: value });
   };
 
-  prevTab = () => {
-    const key = this.getKeyCurrentTab();
-    if (key > 0) {
-      const viewingTabs = this.getViewingTabs();
-      const newTab = viewingTabs[key - 1];
-      this.setState({ openedSection: newTab.value });
+  checkExcludeNodes = node => {
+    const checkHorizontalScroll = node => {
+      return (
+        node.hasAttribute("data-exclude-swipe") &&
+        node.getAttribute("data-exclude-swipe")
+      );
+    };
+    if (checkHorizontalScroll(node)) {
+      return true;
+    }
+    let parent = node;
+    while ((parent = parent.parentElement) != null) {
+      if (checkHorizontalScroll(parent)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  prevTab = event => {
+    if (!this.checkExcludeNodes(event.target)) {
+      const key = this.getKeyCurrentTab();
+      if (key > 0) {
+        const viewingTabs = this.getViewingTabs();
+        const newTab = viewingTabs[key - 1];
+        this.setState({ openedSection: newTab.value });
+      }
     }
   };
-  nexTab = () => {
-    const key = this.getKeyCurrentTab();
-    const viewingTabs = this.getViewingTabs();
-    if (key + 1 < viewingTabs.length) {
-      const newTab = viewingTabs[key + 1];
-      this.setState({ openedSection: newTab.value });
+  nexTab = event => {
+    if (!this.checkExcludeNodes(event.target)) {
+      const key = this.getKeyCurrentTab();
+      const viewingTabs = this.getViewingTabs();
+      if (key + 1 < viewingTabs.length) {
+        const newTab = viewingTabs[key + 1];
+        this.setState({ openedSection: newTab.value });
+      }
     }
   };
 

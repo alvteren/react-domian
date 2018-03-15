@@ -7,6 +7,7 @@ import { omit } from "lodash";
 const TabContainer = props => {
   return (
     <Swipeable
+      style={{ minHeight: "calc(100vh - 145px)" }}
       onSwipedLeft={props.onSwipedLeft}
       onSwipedRight={props.onSwipedRight}
       {...omit(props, "children")}

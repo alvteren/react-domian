@@ -240,7 +240,10 @@ class Field extends React.Component {
         );
       }
     } else {
-      if (field) {
+      const isShowField =
+        field &&
+        (canEdit || (value !== null && value !== "" && size(value) > 0));
+      if (isShowField) {
         const formatValue = () => {
           if (field.type === "select") {
             const listValue = field.hasOwnProperty("items")
