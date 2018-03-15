@@ -23,7 +23,7 @@ import {
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
-import PhotoCamera from "material-ui-icons/PhotoCamera";
+import AddAPhotoIcon from "material-ui-icons/AddAPhoto";
 import Done from "material-ui-icons/Done";
 import {
   FormControl,
@@ -49,18 +49,21 @@ class Field extends React.Component {
     this.props.handleChange(e);
   };
 
+  handleFiles = files => {
+    if (files.length) {
+      map(files, file => {
+        this.props.saveFile(file);
+        return true;
+      });
+    }
+  };
+
   onChangeFile = e => {
-    e.target.files.map(file => {
-      this.props.saveFile(file);
-      return true;
-    });
+    this.handleFiles(e.target.files);
   };
 
   onImageDrop = acceptedFiles => {
-    acceptedFiles.map(file => {
-      this.props.saveFile(file);
-      return true;
-    });
+    this.handleFiles(acceptedFiles);
   };
 
   render() {
@@ -108,7 +111,7 @@ class Field extends React.Component {
                   />
                   <Button variant="raised" color="primary" component="span">
                     Добавить фото
-                    <PhotoCamera className={classes.iconButton} />
+                    <AddAPhotoIcon className={classes.iconButton} />
                   </Button>
                 </label>
               </Hidden>

@@ -9,7 +9,8 @@ export const saveToStore = props => async dispatch => {
 export const saveFile = props => async dispatch => {
   const { id, elementId, name, file } = props;
   const result = await uploadFile(file);
-  const value = { ...result, preview: file.preview, src: file.preview };
+  const { preview } = file;
+  const value = preview ? { ...result, src: preview } : result;
   dispatch({
     type: "FORM_SAVE_FILE",
     payload: { id, elementId, name, value }

@@ -1,17 +1,13 @@
 import React, { Component, Fragment } from "react";
-import constants from "./constants";
 
 import Header from "./Header";
 
-// import PhotoBig from "./app/PhotoBig";
 import WishList from "./crm/WishList";
 import SaleList from "./crm/SaleList";
 import Desktop from "./desktop/Desktop";
 import AlianceList from "./aliance/List";
 import TelegramLink from "./aliance/TelegramLink";
 import Auth from "./user/Auth";
-
-// import Auth from "./user/Auth";
 
 import { JssProvider } from "react-jss";
 import { create } from "jss";

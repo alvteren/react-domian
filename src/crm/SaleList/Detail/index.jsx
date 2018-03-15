@@ -10,7 +10,9 @@ import Toolbar from "material-ui/Toolbar";
 import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
+import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import Slide from "material-ui/transitions/Slide";
+import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
@@ -63,7 +65,12 @@ class Add extends React.Component {
               onClick={this.handleClose}
               aria-label="Close"
             >
-              <CloseIcon />
+              <Hidden only={["md", "lg"]}>
+                <ArrowBackIcon />
+              </Hidden>
+              <Hidden only={["xs", "sm"]}>
+                <CloseIcon />
+              </Hidden>
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
               Объект
