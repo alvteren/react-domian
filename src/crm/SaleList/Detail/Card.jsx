@@ -7,9 +7,11 @@ import { Grid } from "material-ui";
 
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Field from "../../Field";
 
-import { map, get } from "lodash";
+import Field from "../../Field";
+import TabContainer from "../../../app/TabContainer";
+
+import { map, get, reduce, findIndex } from "lodash";
 const styles = theme => ({
   root: {},
   container: {
@@ -29,9 +31,48 @@ class Card extends React.Component {
   handleChangeTab = (event, value) => {
     this.setState({ openedSection: value });
   };
+
+  prevTab = () => {
+    const key = this.getKeyCurrentTab();
+    if (key > 0) {
+      const viewingTabs = this.getViewingTabs();
+      const newTab = viewingTabs[key - 1];
+      this.setState({ openedSection: newTab.value });
+    }
+  };
+  nexTab = () => {
+    const key = this.getKeyCurrentTab();
+    const viewingTabs = this.getViewingTabs();
+    if (key + 1 < viewingTabs.length) {
+      const newTab = viewingTabs[key + 1];
+      this.setState({ openedSection: newTab.value });
+    }
+  };
+
+  getKeyCurrentTab = () => {
+    const viewingTabs = this.getViewingTabs();
+    const { openedSection } = this.state;
+    return findIndex(viewingTabs, { value: openedSection });
+  };
+
+  getViewingTabs = () => {
+    const { fieldsSections, canViewContacts } = this.props;
+    return reduce(
+      fieldsSections,
+      (result, value, key) => {
+        if (canViewContacts || key !== "contact") {
+          return [...result, { label: value.name, value: key }];
+        }
+        return result;
+      },
+      []
+    );
+  };
+
   render() {
-    const { fieldsSections, canViewContacts, classes } = this.props;
+    const { fieldsSections, classes } = this.props;
     const { openedSection, currentEdit } = this.state;
+    const viewingTabs = this.getViewingTabs();
 
     return (
       <div className={classes.root}>
@@ -44,14 +85,14 @@ class Card extends React.Component {
             scrollable
             scrollButtons="auto"
           >
-            {map(fieldsSections, (section, code) => {
-              if (canViewContacts || code !== "contact") {
-                return <Tab label={section.name} value={code} key={code} />;
-              }
+            {map(viewingTabs, tab => {
+              return (
+                <Tab label={tab.label} value={tab.value} key={tab.value} />
+              );
             })}
           </Tabs>
         </AppBar>
-        <div>
+        <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
               <Field
@@ -62,7 +103,7 @@ class Card extends React.Component {
               />
             ))}
           </Grid>
-        </div>
+        </TabContainer>
       </div>
     );
   }
