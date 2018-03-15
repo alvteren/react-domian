@@ -16,7 +16,7 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-import { fetchObject } from "../../actions/objects";
+import { fetchObject, onInitObject } from "../../actions/objects";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -36,6 +36,10 @@ const styles = theme => ({
 });
 
 class Add extends React.Component {
+  constructor(props) {
+    super(props);
+    props.onInit();
+  }
   state = {
     open: true
   };
@@ -103,6 +107,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSave: () => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
+    },
+    onInit: () => {
+      dispatch(onInitObject({ id }));
     }
   };
 };

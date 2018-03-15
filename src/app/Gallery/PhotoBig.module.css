@@ -42,3 +42,17 @@
   color: #fff;
   z-index: 1450;
 }
+.deleteButton {
+  margin-left: -24px;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  color: #fff;
+  z-index: 1450;
+  background-color: #000;
+}
+@media screen and (min-width: 768px) {
+  .deleteButton {
+    bottom: 80px;
+  }
+}

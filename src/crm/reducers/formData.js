@@ -1,4 +1,4 @@
-import { keyBy } from "lodash";
+import { keyBy, omit, toArray } from "lodash";
 export default (state, { type, payload }) => {
   let newstate = null;
   if (state) {
@@ -38,6 +38,27 @@ export default (state, { type, payload }) => {
           [elementId]: {
             ...state.values[elementId],
             [name]: [...state.values[elementId][name], value]
+          }
+        }
+      };
+    }
+    if (type === "DETAIL_INIT") {
+      const { current } = payload;
+      newstate = {
+        ...state,
+        current
+      };
+    }
+    if (type === "DELETE_PHOTO") {
+      const { elementId, index } = payload;
+      const omitPhotos = omit(state.values[elementId].photo, index);
+
+      newstate = {
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            photo: toArray(omitPhotos)
           }
         }
       };

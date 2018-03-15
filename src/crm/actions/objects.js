@@ -40,6 +40,13 @@ export const fetchObject = id => async dispatch => {
     dispatch({ type: "DETAIL_FETCH_DATA_ERROR", payload: err, error: true });
   }
 };
+export const onInitObject = props => async dispatch => {
+  const { id } = props;
+  dispatch({
+    type: "DETAIL_INIT",
+    payload: { id: "objects", current: id }
+  });
+};
 
 export const fetchObjectFields = () => async dispatch => {
   try {

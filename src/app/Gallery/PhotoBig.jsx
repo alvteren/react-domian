@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+import { connect } from "react-redux";
+import { deletePhoto } from "../actions/photo";
 
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -10,6 +12,7 @@ import { Backdrop, Portal, Hidden } from "material-ui";
 
 import IconButton from "material-ui/IconButton";
 import CloseIcon from "material-ui-icons/Close";
+import DeleteIcon from "material-ui-icons/DeleteForever";
 
 const PhotoBig = props => {
   const { index, items, hidePhoto } = props;
@@ -24,12 +27,19 @@ const PhotoBig = props => {
       </Fragment>
     );
   };
+
+  let _imageGallery;
+
+  const onClickDelete = () => {
+    props.deletePhoto(_imageGallery.getCurrentIndex());
+  };
+
   return (
     <Fragment>
       {index != null &&
         items && (
           <Portal>
-            <div className={styles.container}>
+            <div className={styles.container} data-exclude-swipe={true}>
               <div className={styles.imageGallery}>
                 <IconButton
                   size="large"
@@ -40,6 +50,15 @@ const PhotoBig = props => {
                 >
                   <CloseIcon />
                 </IconButton>
+                <IconButton
+                  size="large"
+                  className={styles.deleteButton}
+                  color="inherit"
+                  onClick={onClickDelete}
+                  aria-label="Close"
+                >
+                  <DeleteIcon />
+                </IconButton>
                 <Hidden only={["xs", "sm"]}>
                   <ImageGallery
                     items={items}
@@ -48,6 +67,7 @@ const PhotoBig = props => {
                     startIndex={index}
                     renderItem={renderImage}
                     showPlayButton={false}
+                    ref={i => (_imageGallery = i)}
                   />
                 </Hidden>
                 <Hidden only={["md", "lg"]}>
@@ -62,6 +82,7 @@ const PhotoBig = props => {
                     showPlayButton={false}
                     showNav={false}
                     showBullets={true}
+                    ref={i => (_imageGallery = i)}
                   />
                 </Hidden>
               </div>
@@ -72,5 +93,22 @@ const PhotoBig = props => {
   );
 };
 
-// export default connect(mapToStateProps, mapDispatchToProps)(PhotoBig);
-export default PhotoBig;
+const mapToStateProps = state => {
+  const { current } = state.crm.objects;
+
+  return { current };
+};
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { dispatch } = dispatchProps;
+  const { current } = stateProps;
+  return {
+    ...stateProps,
+    ...ownProps,
+    deletePhoto: index => {
+      dispatch(deletePhoto({ id: "objects", index, elementId: current }));
+    }
+  };
+};
+
+export default connect(mapToStateProps, null, mergeProps)(PhotoBig);
+// export default PhotoBig;
