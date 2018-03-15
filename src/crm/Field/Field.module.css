@@ -1,25 +1,30 @@
-.previewPhoto {
-  width: 160px;
-  height: 90px;
-  background-size: cover;
-  position: relative;
+.dropZone {
+  width: 100%;
+  padding: 16px;
+  font-size: 14px;
+  color: #999;
+  border: 2px dashed currentColor;
+  margin-bottom: 8px;
+  cursor: pointer;
 }
-.previewPhoto:hover:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 255, 0.2);
+.dropZone .link {
+  color: #2196f3;
 }
-.containerPhoto {
-  display: flex;
-  flex-wrap: nowrap;
-  margin-right: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
+.dropZoneActive {
+  color: #000;
 }
-@media screen and (min-width: 768px) {
-  overflow-x: hidden;
+.dropZoneAccept {
+  color: #009688;
+}
+.dropZoneReject {
+  color: #f44336;
+}
+.inputFile {
+  display: none;
+}
+.labelFile {
+  display: inline-block;
+}
+.photoTitle {
+  margin-bottom: 8px;
 }

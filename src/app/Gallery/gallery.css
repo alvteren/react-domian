@@ -1,0 +1,32 @@
+.image-gallery-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.9);
+}
+.image-gallery-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.image-gallery-image {
+  max-height: calc(100vh - 70px);
+}
+.image-gallery,
+.image-gallery-content,
+.image-gallery-slide-wrapper,
+.image-gallery-swipe,
+.image-gallery-slides,
+.image-gallery-slide {
+  height: 100%;
+  max-width: 100vw;
+}
+.image-gallery-index {
+  left: 0;
+  right: auto;
+}
+@media screen and (min-width: 768px) {
+  .image-gallery-content {
+    height: calc(100% - 70px);
+  }
+}
