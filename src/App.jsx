@@ -17,6 +17,7 @@ import createGenerateClassName from "material-ui/styles/createGenerateClassName"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { createMuiTheme } from "material-ui/styles";
 import blue from "material-ui/colors/blue";
+import green from "material-ui/colors/green";
 
 import { Route } from "react-router-dom";
 
@@ -61,7 +62,13 @@ export const store = createStore(
 
 const theme = createMuiTheme({
   palette: {
-    primary: blue
+    primary: blue,
+    secondary: {
+      light: green[200],
+      main: green[500],
+      dark: green[800],
+      contrastText: "#fff"
+    }
   }
 });
 

@@ -5,31 +5,18 @@ import PropTypes from "prop-types";
 import { get, filter, size, map, isObject } from "lodash";
 
 import { saveToStore, saveFile } from "../actions/form";
-import Gallery from "../../app/Gallery";
+
+import FieldViewImage from "./view/Image";
+import FieldEditImage from "./edit/Image";
+import FieldEditSelect from "./edit/SelectField";
+import SwitchFieldEdit from "./edit/SwitchField";
+
 import styles from "./Field.module.css";
 
-import Dropzone from "react-dropzone";
-
 import { withStyles } from "material-ui/styles";
-import {
-  TextField,
-  Select,
-  Grid,
-  Switch,
-  IconButton,
-  Hidden,
-  Button
-} from "material-ui";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
+import { TextField, Grid, IconButton } from "material-ui";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
-import AddAPhotoIcon from "material-ui-icons/AddAPhoto";
 import Done from "material-ui-icons/Done";
-import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText
-} from "material-ui/Form";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
@@ -81,43 +68,8 @@ class Field extends React.Component {
           <div className={styles.photoTitle}>
             <span>Фото</span>
           </div>
-          {canEdit && (
-            <Fragment>
-              <Hidden only={["xs", "sm"]}>
-                <Dropzone
-                  className={styles.dropZone}
-                  activeClassName={styles.dropZoneActive}
-                  acceptClassName={styles.dropZoneAccept}
-                  rejectClassName={styles.dropZoneReject}
-                  multiple={true}
-                  accept="image/*"
-                  onDrop={this.onImageDrop}
-                >
-                  Перетащите один или несколько файлов в эту область{" "}
-                  <span className={styles.link}>
-                    или выберите файл на компьютере
-                  </span>
-                </Dropzone>
-              </Hidden>
-              <Hidden only={["md", "lg"]}>
-                <label className={styles.labelFile}>
-                  <input
-                    className={styles.inputFile}
-                    name={id}
-                    type="file"
-                    id={id}
-                    multiple
-                    onChange={this.onChangeFile}
-                  />
-                  <Button variant="raised" color="primary" component="span">
-                    Добавить фото
-                    <AddAPhotoIcon className={classes.iconButton} />
-                  </Button>
-                </label>
-              </Hidden>
-            </Fragment>
-          )}
-          <Gallery slides={value} />
+          {canEdit && <FieldEditImage id={id} />}
+          <FieldViewImage value={value} />
         </Grid>
       );
     }
@@ -146,34 +98,17 @@ class Field extends React.Component {
 
       if (visibleValues) {
         if (field.type === "select" && size(visibleValues) > 0) {
-          const bNativeSelect = size(visibleValues) > 4;
           return (
             <Grid item xs={12} sm={6}>
               <div className={classes.valueWrapper}>
-                <FormControl fullWidth className={formControl} key={id}>
-                  <InputLabel htmlFor={id} required={field.required}>
-                    {field.label}
-                  </InputLabel>
-                  <Select
-                    value={value}
-                    onChange={this.onChange}
-                    native={bNativeSelect}
-                    input={<Input name={id} id={id} />}
-                  >
-                    {map(visibleValues, item => {
-                      return bNativeSelect ? (
-                        <option value={item.value} key={item.value}>
-                          {item.label}
-                        </option>
-                      ) : (
-                        <MenuItem value={item.value} key={item.value}>
-                          {item.label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                  {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
-                </FormControl>
+                <FieldEditSelect
+                  id={id}
+                  value={value}
+                  field={field}
+                  visibleValues={visibleValues}
+                  onChange={this.onChange}
+                  formControl={formControl}
+                />
                 {needSave && (
                   <IconButton
                     onClick={this.onSave}
@@ -190,18 +125,14 @@ class Field extends React.Component {
         if (field.type === "switch") {
           return (
             <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-              <FormControlLabel
-                className={formControl}
-                control={
-                  <Switch
-                    name={id}
-                    checked={value}
-                    onChange={this.onChange}
-                    aria-label={id}
-                  />
-                }
-                label={field.label}
+              <SwitchFieldEdit
+                formControl={formControl}
+                id={id}
+                value={value}
+                onChange={this.onChange}
+                field={field}
               />
+
               {needSave && (
                 <IconButton
                   onClick={this.onSave}
@@ -250,6 +181,9 @@ class Field extends React.Component {
               ? get(field.items, value, null)
               : null;
             return listValue ? listValue.label : "";
+          }
+          if (field.type === "switch") {
+            return value === true || value === "Y" ? "Да" : "Нет";
           }
           return value;
         };
