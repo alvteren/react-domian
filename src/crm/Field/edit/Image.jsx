@@ -6,7 +6,7 @@ import { Hidden, Button } from "material-ui";
 import AddAPhotoIcon from "material-ui-icons/AddAPhoto";
 
 const Image = props => {
-  const { id } = props;
+  const { id, onChangeFile, onImageDrop } = props;
   return (
     <Fragment>
       <Hidden only={["xs", "sm"]}>
@@ -17,7 +17,7 @@ const Image = props => {
           rejectClassName={styles.dropZoneReject}
           multiple={true}
           accept="image/*"
-          onDrop={this.onImageDrop}
+          onDrop={onImageDrop}
         >
           Перетащите один или несколько файлов в эту область{" "}
           <span className={styles.link}>или выберите файл на компьютере</span>
@@ -31,7 +31,7 @@ const Image = props => {
             type="file"
             id={id}
             multiple
-            onChange={this.onChangeFile}
+            onChange={onChangeFile}
           />
           <Button variant="raised" color="primary" component="span">
             Добавить фото

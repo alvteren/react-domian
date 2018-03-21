@@ -10,6 +10,7 @@ import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
+import LocationFieldEdit from "./edit/Location";
 
 import styles from "./Field.module.css";
 
@@ -68,7 +69,13 @@ class Field extends React.Component {
           <div className={styles.photoTitle}>
             <span>Фото</span>
           </div>
-          {canEdit && <FieldEditImage id={id} />}
+          {canEdit && (
+            <FieldEditImage
+              id={id}
+              onChangeFile={this.onChangeFile}
+              onImageDrop={this.onImageDrop}
+            />
+          )}
           <FieldViewImage value={value} />
         </Grid>
       );
@@ -145,6 +152,30 @@ class Field extends React.Component {
             </Grid>
           );
         }
+        if (field.type === "location") {
+          return (
+            <Grid item xs={12} sm={6} className={classes.valueWrapper}>
+              <LocationFieldEdit
+                formControl={formControl}
+                id={id}
+                value={value}
+                onChange={this.onChange}
+                field={field}
+              />
+
+              {needSave && (
+                <IconButton
+                  onClick={this.onSave}
+                  className={classes.buttonSave}
+                  color="primary"
+                >
+                  <Done />
+                </IconButton>
+              )}
+            </Grid>
+          );
+        }
+
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
             <TextField
@@ -184,6 +215,9 @@ class Field extends React.Component {
           }
           if (field.type === "switch") {
             return value === true || value === "Y" ? "Да" : "Нет";
+          }
+          if (field.type === "location") {
+            return value.name;
           }
           return value;
         };

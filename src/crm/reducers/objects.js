@@ -263,6 +263,7 @@ const form = {
         section: true,
         type_apartment: true,
         type_realty: true,
+        location: true,
         district: true,
         subdistrict: true
       }

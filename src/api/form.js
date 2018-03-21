@@ -1,4 +1,5 @@
 import "whatwg-fetch";
+import objectToQuery from "./objectToQuery";
 
 const baseURL =
   process.env.NODE_ENV === "production"
@@ -16,5 +17,14 @@ export const uploadFile = async file => {
   };
 
   const response = await fetch(baseURL + "/v1/file/upload/", params);
+  return response.json();
+};
+
+export const fetchSearchResult = async props => {
+  const params = objectToQuery(props);
+  const response = await fetch(baseURL + "/v1/location/search/?" + params, {
+    credentials: "include"
+  });
+
   return response.json();
 };

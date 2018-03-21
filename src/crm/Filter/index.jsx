@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { map, get, size } from "lodash";
 import { deleteChip, fetchChips } from "../actions/filter";
 import SearchResult from "./SearchResult";
+import delayedAction from "../../util/delayedAction";
 
 import styles from "./Filter.module.css";
 
@@ -23,8 +24,6 @@ const muiStyles = theme => ({
   }
 });
 
-const WAIT_INTERVAL = 500;
-
 class Filter extends React.Component {
   constructor(props) {
     super(props);
@@ -41,15 +40,14 @@ class Filter extends React.Component {
     this.setState({ hasChips });
   }
   componentWillMount() {
-    this.timer = null;
+    this.delay = new delayedAction();
   }
   handleChange = event => {
     const { value } = event.target;
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
+    this.delay.do(() => {
       this.openPopover();
       this.props.onFilterChange(value);
-    }, WAIT_INTERVAL);
+    });
   };
   openPopover = () => {
     this.setState({
@@ -109,7 +107,6 @@ class Filter extends React.Component {
             return (
               <Chip
                 {...chipProps}
-
                 label={
                   Boolean(chip.propName)
                     ? `${chip.propName}: ${chip.label}`
