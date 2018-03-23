@@ -2,7 +2,8 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, filter, size, map, isObject } from "lodash";
+import { get, filter, size, isObject, forEach } from "lodash";
+import { noStrictIncludes } from "../../util/collection";
 
 import { saveToStore, saveFile } from "../actions/form";
 
@@ -39,9 +40,8 @@ class Field extends React.Component {
 
   handleFiles = files => {
     if (files.length) {
-      map(files, file => {
+      forEach(files, file => {
         this.props.saveFile(file);
-        return true;
       });
     }
   };
@@ -59,10 +59,33 @@ class Field extends React.Component {
 
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
+    const isDepended = get(field, "depended", null) !== null;
+
+    const getVisibleValues = () => {
+      if (isDepended) {
+        if (values == null) return null;
+        let linkedValue = get(values, field.depended, null);
+        if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
+          linkedValue = linkedValue.id;
+        }
+
+        if (get(field, "items", false)) {
+          const items = filter(field.items, item => {
+            return noStrictIncludes(item.link, linkedValue);
+          });
+          return size(items) > 0 ? items : null;
+        } else {
+          return noStrictIncludes(field.link, linkedValue) ? true : null;
+        }
+      }
+
+      return get(field, "items", true);
+    };
 
     if (field === false) {
       return <span />;
     }
+
     if (field.type === "image") {
       return (
         <Grid item xs={12}>
@@ -80,56 +103,46 @@ class Field extends React.Component {
         </Grid>
       );
     }
-    if (edit && canEdit) {
-      const getVisibleValues = () => {
-        if (get(field, "depended", null) !== null) {
-          let linkedValue = get(values, field.depended, null);
-          if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
-            linkedValue = linkedValue.id;
-          }
-          if (get(field, "items", false)) {
-            return filter(field.items, {
-              link: linkedValue
-            });
-          } else {
-            return linkedValue === field.link;
-          }
-        }
 
-        return get(field, "items", true);
-      };
-      const visibleValues = getVisibleValues();
+    const visibleValues = getVisibleValues();
+
+    if (edit && canEdit) {
       const formControl = needSave
         ? classes.formControlWithButton
         : classes.formControl;
 
       if (visibleValues) {
-        if (field.type === "select" && size(visibleValues) > 0) {
-          return (
-            <Grid item xs={12} sm={6}>
-              <div className={classes.valueWrapper}>
-                <FieldEditSelect
-                  id={id}
-                  value={value}
-                  field={field}
-                  visibleValues={visibleValues}
-                  onChange={this.onChange}
-                  formControl={formControl}
-                />
-                {needSave && (
-                  <IconButton
-                    onClick={this.onSave}
-                    className={classes.buttonSave}
-                    color="inherit"
-                  >
-                    <Done />
-                  </IconButton>
-                )}
-              </div>
-            </Grid>
-          );
+        if (field.type === "select") {
+          if (size(visibleValues) > 0) {
+            return (
+              <Grid item xs={12} sm={6}>
+                <div className={classes.valueWrapper}>
+                  <FieldEditSelect
+                    id={id}
+                    value={value}
+                    field={field}
+                    visibleValues={visibleValues}
+                    onChange={this.onChange}
+                    formControl={formControl}
+                  />
+                  {needSave && (
+                    <IconButton
+                      onClick={this.onSave}
+                      className={classes.buttonSave}
+                      color="inherit"
+                    >
+                      <Done />
+                    </IconButton>
+                  )}
+                </div>
+              </Grid>
+            );
+          } else {
+            return <span />;
+          }
         }
         if (field.type === "switch") {
+          console.log(value);
           return (
             <Grid item xs={12} sm={6} className={classes.valueWrapper}>
               <SwitchFieldEdit
@@ -175,7 +188,34 @@ class Field extends React.Component {
             </Grid>
           );
         }
-
+        if (field.type === "textarea") {
+          return (
+            <Grid item xs={12} sm={12} className={classes.valueWrapper}>
+              <TextField
+                type="text"
+                className={formControl}
+                fullWidth
+                required={field.required}
+                name={id}
+                label={field.label}
+                onChange={this.onChange}
+                value={value}
+                multiline
+                rowsMax="4"
+                helperText={get(field, "hint", "")}
+              />
+              {needSave && (
+                <IconButton
+                  onClick={this.onSave}
+                  className={classes.buttonSave}
+                  color="primary"
+                >
+                  <Done />
+                </IconButton>
+              )}
+            </Grid>
+          );
+        }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
             <TextField
@@ -202,10 +242,12 @@ class Field extends React.Component {
         );
       }
     } else {
-      const isShowField =
+      const isShowedField =
         field &&
-        (canEdit || (value !== null && value !== "" && size(value) > 0));
-      if (isShowField) {
+        ((canEdit && isDepended && visibleValues !== null) ||
+          (canEdit && !isDepended));
+      console.log(field, isShowedField);
+      if (isShowedField) {
         const formatValue = () => {
           if (field.type === "select") {
             const listValue = field.hasOwnProperty("items")
@@ -221,8 +263,9 @@ class Field extends React.Component {
           }
           return value;
         };
+        const col = field.type === "textarea" ? 12 : 6;
         return (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={col}>
             <div
               className={classes.valueWrapper}
               onClick={() => {
@@ -291,8 +334,7 @@ const stylesMUI = theme => ({
   formControl: {
     minWidth: 200,
     width: "100%",
-    flexBasis: "auto",
-    whiteSpace: "nowrap"
+    flexBasis: "auto"
   },
   valueWrapper: {
     display: "flex",
@@ -304,8 +346,7 @@ const stylesMUI = theme => ({
   },
   formControlWithButton: {
     width: `calc(100% - 48px)`,
-    flexBasis: "auto",
-    whiteSpace: `nowrap`
+    flexBasis: "auto"
   },
   value: {
     width: `calc(100% - 48px)`,

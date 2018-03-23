@@ -93,6 +93,7 @@ class Card extends React.Component {
   };
 
   render() {
+    console.log("rerender Card");
     const { fieldsSections, classes } = this.props;
     const { openedSection, currentEdit } = this.state;
     const viewingTabs = this.getViewingTabs();
@@ -137,7 +138,7 @@ const mapStateToProps = (state, ownProps) => {
   const values = get(state.crm.objects.values, id, null);
   const can = get(values, "can", null);
   const canViewContacts = get(can, "view_contacts", false);
-  return { fieldsSections, canViewContacts };
+  return { fieldsSections, canViewContacts, values };
 };
 
 Card.propTypes = {

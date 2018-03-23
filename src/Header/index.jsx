@@ -32,7 +32,9 @@ class Header extends React.Component {
     this.setState({ open: !this.state.open });
   };
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    if (this.state.open) {
+      this.setState({ open: false });
+    }
   };
   handleMenuItemCollapseToggle = id => {
     const isOpened = this.state.openMenu[id];

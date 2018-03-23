@@ -99,20 +99,6 @@ const fields = {
     required: true,
     items: {}
   },
-  type_apartment: {
-    type: "select",
-    label: "Тип квартиры",
-    value: "",
-    required: true,
-    items: {}
-  },
-  type_realty: {
-    type: "select",
-    label: "Тип недвижимости",
-    value: "",
-    required: true,
-    items: {}
-  },
   district: {
     type: "select",
     label: "Район",
@@ -261,21 +247,53 @@ const form = {
       fields: {
         type_deal: true,
         section: true,
-        type_apartment: true,
-        type_realty: true,
+        type_premises: true,
+        type_object: true,
+        type_obj_commercia: true,
+        type_obj_area: true,
+        type_obj_houses: true,
         location: true,
         district: true,
-        subdistrict: true
+        subdistrict: true,
+        street_string: true,
+        house_number: true,
+        house_number_hidden: true,
+        number_corp: true,
+        number_office: true,
+        price: true,
+        currency: true,
+        etage: true,
+        etage_max: true,
+        count_rooms: true,
+        s_all: true,
+        s_live: true,
+        s_kitchen: true,
+        s_area: true,
+        description: true,
+        video: true
       }
     },
     more: {
       name: "Подробнее",
       fields: {
-        s_all: true,
-        s_live: true,
-        s_kitchen: true,
-        s_area: true,
-        photo: true
+        photo: true,
+        condition_object: true,
+        type_material: true,
+        wall_material: true,
+        distance_to_city: true,
+        year_build: true,
+        wc: true,
+        torg: true,
+        ipoteka: true,
+        balcony: true,
+        phone: true,
+        security: true,
+        gas: true,
+        water: true,
+        electricity: true,
+        canalisation: true,
+        internet: true,
+        comment: true
       }
     },
     contact: {
@@ -342,16 +360,18 @@ export default (state = initialState, { type, payload }) => {
     const newFormState = formData(state, { type, payload });
 
     if (type === "FORM_SAVE_TO_STORE") {
-      const { name, value } = payload;
-
+      const { name, value, elementId } = payload;
       if (name === "is_real" && value === false) {
-        const newFieldState = {
-          is_real: { ...state.fields.is_real, value: false },
-          is_exclusive: { ...state.fields.is_exclusive, value: false }
-        };
         return {
           ...state,
-          fields: { ...state.fields, ...newFieldState }
+          values: {
+            ...state.values,
+            [elementId]: {
+              ...state.values[elementId],
+              [name]: value,
+              is_exclusive: false
+            }
+          }
         };
       }
     }
