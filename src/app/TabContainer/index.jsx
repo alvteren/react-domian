@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import Swipeable from "react-swipeable";
 
 import { omit } from "lodash";
+import styles from "./index.module.css";
 
 const TabContainer = props => {
   return (
     <Swipeable
-      style={{ minHeight: "calc(100vh - 200px)" }}
+      className={styles.wrapper}
       onSwipedLeft={props.onSwipedLeft}
       onSwipedRight={props.onSwipedRight}
       {...omit(props, "children")}

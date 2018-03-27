@@ -28,3 +28,19 @@ export const fetchSearchResult = async props => {
 
   return response.json();
 };
+
+export const saveToServer = async props => {
+  const formData = {
+    id: props.elementId,
+    fields: { [props.name]: props.value }
+  };
+  const params = {
+    method: "POST",
+    credentials: "include",
+    mode: "cors",
+    body: JSON.stringify(formData)
+  };
+
+  const response = await fetch(baseURL + "/v1/object/", params);
+  return response.json();
+};

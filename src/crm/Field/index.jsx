@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { get, filter, size, isObject, forEach } from "lodash";
 import { noStrictIncludes } from "../../util/collection";
 
-import { saveToStore, saveFile } from "../actions/form";
+import { saveToStore, saveFile, saveToServer } from "../actions/form";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
@@ -31,7 +31,8 @@ class Field extends React.Component {
   onStartEdit = () => {
     this.setState({ edit: true, needSave: true });
   };
-  onSave = e => {
+  onSave = id => e => {
+    this.props.saveToServer(id);
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
@@ -65,7 +66,9 @@ class Field extends React.Component {
       if (isDepended) {
         if (values == null) return null;
         let linkedValue = get(values, field.depended, null);
-        if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
+        if (isObject(linkedValue) && linkedValue.hasOwnProperty("value")) {
+          linkedValue = linkedValue.value;
+        } else if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
           linkedValue = linkedValue.id;
         }
 
@@ -127,7 +130,7 @@ class Field extends React.Component {
                   />
                   {needSave && (
                     <IconButton
-                      onClick={this.onSave}
+                      onClick={this.onSave(id)}
                       className={classes.buttonSave}
                       color="inherit"
                     >
@@ -142,7 +145,6 @@ class Field extends React.Component {
           }
         }
         if (field.type === "switch") {
-          console.log(value);
           return (
             <Grid item xs={12} sm={6} className={classes.valueWrapper}>
               <SwitchFieldEdit
@@ -155,7 +157,7 @@ class Field extends React.Component {
 
               {needSave && (
                 <IconButton
-                  onClick={this.onSave}
+                  onClick={this.onSave(id)}
                   className={classes.buttonSave}
                   color="primary"
                 >
@@ -178,7 +180,7 @@ class Field extends React.Component {
 
               {needSave && (
                 <IconButton
-                  onClick={this.onSave}
+                  onClick={this.onSave(id)}
                   className={classes.buttonSave}
                   color="primary"
                 >
@@ -206,7 +208,7 @@ class Field extends React.Component {
               />
               {needSave && (
                 <IconButton
-                  onClick={this.onSave}
+                  onClick={this.onSave(id)}
                   className={classes.buttonSave}
                   color="primary"
                 >
@@ -231,7 +233,7 @@ class Field extends React.Component {
             />
             {needSave && (
               <IconButton
-                onClick={this.onSave}
+                onClick={this.onSave(id)}
                 className={classes.buttonSave}
                 color="primary"
               >
@@ -243,10 +245,11 @@ class Field extends React.Component {
       }
     } else {
       const isShowedField =
-        field &&
-        ((canEdit && isDepended && visibleValues !== null) ||
-          (canEdit && !isDepended));
-      console.log(field, isShowedField);
+        (field &&
+          ((canEdit && isDepended && visibleValues !== null) ||
+            (canEdit && !isDepended))) ||
+        (!canEdit && value != null && value !== "");
+
       if (isShowedField) {
         const formatValue = () => {
           if (field.type === "select") {
@@ -312,21 +315,25 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const elementId = stateProps.objectId;
+  const { objectId: elementId, field } = stateProps;
+  const name = field.id;
 
   return {
     ...ownProps,
     ...stateProps,
     handleChange: e => {
-      const { name, value } = e.target;
+      const { value } = e.target;
       dispatch(saveToStore({ id: "objects", elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      const { name } = e.target;
       dispatch(saveToStore({ id: "objects", elementId, name, value: checked }));
     },
     saveFile: file => {
       dispatch(saveFile({ id: "objects", elementId, name: "photo", file }));
+    },
+    saveToServer: () => {
+      const { value } = stateProps;
+      dispatch(saveToServer({ id: "objects", elementId, name, value }));
     }
   };
 };

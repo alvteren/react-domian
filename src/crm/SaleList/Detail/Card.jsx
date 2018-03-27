@@ -93,7 +93,6 @@ class Card extends React.Component {
   };
 
   render() {
-    console.log("rerender Card");
     const { fieldsSections, classes } = this.props;
     const { openedSection, currentEdit } = this.state;
     const viewingTabs = this.getViewingTabs();

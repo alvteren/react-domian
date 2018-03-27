@@ -1,0 +1,8 @@
+.wrapper {
+  min-height: calc(100vh - 150px);
+}
+@media all and (min-width: 768px) {
+  .wrapper {
+    min-height: 100%;
+  }
+}
