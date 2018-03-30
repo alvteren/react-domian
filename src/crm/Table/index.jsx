@@ -82,6 +82,7 @@ class EnhancedTable extends React.Component {
       page,
       loading,
       headerData,
+      fields,
       filterComponent,
       onChangePage,
       onDeleteSelectedData
@@ -121,6 +122,12 @@ class EnhancedTable extends React.Component {
 
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
+        }
+        console.log(id);
+        if (fields.hasOwnProperty(id) && fields[id].type === "select") {
+          if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
+            return fields[id].items[value].label;
+          }
         }
 
         return value;
@@ -224,6 +231,7 @@ const mapStateToProps = (state, ownProps) => {
   const table = state.crm[ownProps.id];
   const {
     headers,
+    fields,
     selected,
     rowsPerPage,
     page,
@@ -234,6 +242,7 @@ const mapStateToProps = (state, ownProps) => {
   } = table;
   return {
     headerData: headers,
+    fields,
     count,
     selected,
     rowsPerPage,

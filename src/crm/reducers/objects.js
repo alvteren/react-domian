@@ -36,29 +36,29 @@ const chips = {
       type: "wish",
       value: "Y"
     },
-    section_137: {
-      id: "section_137",
+    section_id_137: {
+      id: "section_id_137",
       label: "Квартиры",
       searchable: "квартиры",
       type: "section_id",
       value: "137"
     },
-    section_138: {
-      id: "section_138",
+    section_id_138: {
+      id: "section_id_138",
       label: "Дома",
       searchable: "дома",
       type: "section_id",
       value: "138"
     },
-    section_139: {
-      id: "section_139",
+    section_id_139: {
+      id: "section_id_139",
       label: "Коммерция",
       searchable: "коммерческая недвижимость, коммерция",
       type: "section_id",
       value: "139"
     },
-    section_141: {
-      id: "section_141",
+    section_id_141: {
+      id: "section_id_141",
       label: "Участки",
       searchable: "участки",
       type: "section_id",
@@ -73,8 +73,8 @@ const list = {
       id: "name",
       label: "Наименование"
     },
-    section: {
-      id: "section",
+    section_id: {
+      id: "section_id",
       label: "Раздел"
     },
     type_deal: {
@@ -127,7 +127,7 @@ const fields = {
     required: true,
     items: {}
   },
-  section: {
+  section_id: {
     type: "select",
     label: "Раздел",
     value: "",
@@ -250,7 +250,7 @@ const form = {
       name: "Основная информация",
       fields: {
         type_deal: true,
-        section: true,
+        section_id: true,
         type_premises: true,
         type_object: true,
         type_obj_commercia: true,
@@ -328,7 +328,7 @@ const form = {
   filterFields: {
     type_apartment: null,
     type_deal: null,
-    section: null,
+    section_id: null,
     district: null,
     subdistrict: null
   }
