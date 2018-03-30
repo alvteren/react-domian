@@ -20,6 +20,7 @@ import ObjectIcon from "material-ui-icons/LocationCity";
 
 import styles from "./Header.module.css";
 import UserCard from "../user/UserCard";
+import RightTools from "./RightTools";
 
 class Header extends React.Component {
   state = {
@@ -28,18 +29,26 @@ class Header extends React.Component {
       crm: false
     }
   };
+
   handleDrawerToggle = () => {
     this.setState({ open: !this.state.open });
   };
+
   handleDrawerClose = () => {
     if (this.state.open) {
       this.setState({ open: false });
     }
   };
+
   handleMenuItemCollapseToggle = id => {
     const isOpened = this.state.openMenu[id];
     this.setState({ openMenu: { ...this.state.openMenu, [id]: !isOpened } });
   };
+
+  handleItemLinkClick = e => {
+    this.setState({ open: false });
+  };
+
   render() {
     return (
       <Fragment>
@@ -56,6 +65,7 @@ class Header extends React.Component {
             <Typography variant="title" color="inherit">
               Домианикс
             </Typography>
+            <RightTools />
           </Toolbar>
         </AppBar>
         <ClickAwayListener onClickAway={this.handleDrawerClose}>
@@ -75,10 +85,20 @@ class Header extends React.Component {
               </IconButton>
             </div>
             <Divider />
-            <ListItem button component={Link} to="/">
+            <ListItem
+              button
+              component={Link}
+              to="/"
+              onClick={this.handleItemLinkClick}
+            >
               <ListItemText primary="Рабочий стол" />
             </ListItem>
-            <ListItem button component={Link} to="/alliance">
+            <ListItem
+              button
+              component={Link}
+              to="/alliance"
+              onClick={this.handleItemLinkClick}
+            >
               <ListItemText primary="Альянсы" />
             </ListItem>
             <ListItem
@@ -92,13 +112,23 @@ class Header extends React.Component {
             </ListItem>
             <Collapse in={this.state.openMenu.crm} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItem button component={Link} to="/crm/wish">
+                <ListItem
+                  button
+                  component={Link}
+                  to="/crm/wish"
+                  onClick={this.handleItemLinkClick}
+                >
                   <ListItemIcon>
                     <StarBorderIcon />
                   </ListItemIcon>
                   <ListItemText inset primary="Избранное" />
                 </ListItem>
-                <ListItem button component={Link} to="/crm/sale">
+                <ListItem
+                  button
+                  component={Link}
+                  to="/crm/sale"
+                  onClick={this.handleItemLinkClick}
+                >
                   <ListItemIcon>
                     <ObjectIcon />
                   </ListItemIcon>

@@ -14,3 +14,14 @@
   flex-direction: column;
   position: relative;
 }
+.presetsChipsWrapper {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+@media (min-width: 960px) {
+  .presetsChipsWrapper {
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
+}

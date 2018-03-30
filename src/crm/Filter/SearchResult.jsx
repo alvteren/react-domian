@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
-import { LinearProgress, Chip, Avatar } from "material-ui";
+import { LinearProgress, Avatar } from "material-ui";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import { withStyles } from "material-ui/styles";
 import { size, map, get } from "lodash";
 import { connect } from "react-redux";
@@ -8,16 +9,12 @@ import { selectChip } from "../actions/filter";
 const styles = theme => {
   return {
     searchWrapper: {
-      position: "absolute",
-      top: "100%",
-      left: 0,
-      padding: theme.spacing.unit,
-      width: `calc(100vw - ${theme.spacing.unit * 4}px)`,
-      [theme.breakpoints.up("sm")]: {
-        width: `calc(100vw - ${theme.spacing.unit * 6}px)`
-      },
       [theme.breakpoints.up("md")]: {
-        width: "50vw"
+        position: "absolute",
+        top: "100%",
+        width: "100%",
+        maxHeight: "calc(100vh - 200px)",
+        overflowY: "auto"
       },
       zIndex: 100,
       background: "#fff",
@@ -49,9 +46,9 @@ const styles = theme => {
 };
 class SearchResult extends React.Component {
   render() {
-    const { classes, chips, loading, open, presetsChips } = this.props;
+    const { classes, chips, loading, open, onChange } = this.props;
     const hasChips = size(chips) > 0;
-    const hasPresetsChips = size(presetsChips) > 0;
+
     return (
       <Fragment>
         {loading && (
@@ -61,64 +58,44 @@ class SearchResult extends React.Component {
             variant="query"
           />
         )}
-        {open && (
-          <div className={classes.searchWrapper}>
-            <div className={classes.flex}>
-              {hasPresetsChips &&
-                map(presetsChips, chip => {
-                  const chipProps = {};
-                  const avatar = get(chip, "avatar", null);
-                  if (avatar) {
-                    if (("" + avatar).indexOf("/") !== -1) {
-                      chipProps.avatar = <Avatar src={avatar} />;
-                    } else {
-                      chipProps.avatar = <Avatar>{avatar}</Avatar>;
-                    }
-                  }
-                  return (
-                    <Chip
-                      {...chipProps}
-                      label={
-                        Boolean(chip.propName)
-                          ? `${chip.propName}: ${chip.label}`
-                          : chip.label
-                      }
-                      key={chip.id}
-                      className={classes.chip}
-                      onClick={() => this.props.onApplyChips(chip)}
-                    />
-                  );
-                })}
+        {open &&
+          hasChips && (
+            <div className={classes.searchWrapper}>
+              <div className={classes.flex}>
+                {hasChips && (
+                  <List>
+                    {map(chips, chip => {
+                      const avatar = get(chip, "avatar", null);
+
+                      return (
+                        <ListItem
+                          key={chip.id}
+                          button
+                          onClick={() => {
+                            this.props.onApplyChips(chip);
+                            onChange && onChange();
+                          }}
+                        >
+                          {avatar &&
+                            ("" + avatar).indexOf("/") !== -1 && (
+                              <Avatar src={avatar} />
+                            )}
+                          {avatar &&
+                            ("" + avatar).indexOf("/") === -1 && (
+                              <Avatar>{avatar}</Avatar>
+                            )}
+                          <ListItemText
+                            primary={chip.label}
+                            secondary={chip.propName}
+                          />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                )}
+              </div>
             </div>
-            <div className={classes.flex}>
-              {hasChips &&
-                map(chips, chip => {
-                  const chipProps = {};
-                  const avatar = get(chip, "avatar", null);
-                  if (avatar) {
-                    if (("" + avatar).indexOf("/") !== -1) {
-                      chipProps.avatar = <Avatar src={avatar} />;
-                    } else {
-                      chipProps.avatar = <Avatar>{avatar}</Avatar>;
-                    }
-                  }
-                  return (
-                    <Chip
-                      {...chipProps}
-                      label={
-                        Boolean(chip.propName)
-                          ? `${chip.propName}: ${chip.label}`
-                          : chip.label
-                      }
-                      key={chip.id}
-                      className={classes.chip}
-                      onClick={() => this.props.onApplyChips(chip)}
-                    />
-                  );
-                })}
-            </div>
-          </div>
-        )}
+          )}
       </Fragment>
     );
   }
@@ -126,11 +103,10 @@ class SearchResult extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const table = state.crm[ownProps.id];
-  const { chips, loading, presetsChips } = table;
+  const { chips, loading } = table;
   return {
     chips,
-    loading: loading.chips,
-    presetsChips
+    loading: loading.chips
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

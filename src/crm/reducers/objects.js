@@ -28,6 +28,41 @@ const chips = {
       searchable: "мои объекты",
       type: "user",
       value: "self"
+    },
+    wish: {
+      id: "wish",
+      label: "Избранное",
+      searchable: "избранные объекты",
+      type: "wish",
+      value: "Y"
+    },
+    section_137: {
+      id: "section_137",
+      label: "Квартиры",
+      searchable: "квартиры",
+      type: "section_id",
+      value: "137"
+    },
+    section_138: {
+      id: "section_138",
+      label: "Дома",
+      searchable: "дома",
+      type: "section_id",
+      value: "138"
+    },
+    section_139: {
+      id: "section_139",
+      label: "Коммерция",
+      searchable: "коммерческая недвижимость, коммерция",
+      type: "section_id",
+      value: "139"
+    },
+    section_141: {
+      id: "section_141",
+      label: "Участки",
+      searchable: "участки",
+      type: "section_id",
+      value: "141"
     }
   }
 };
@@ -104,21 +139,7 @@ const fields = {
     label: "Район",
     value: "",
     required: true,
-    items: {
-      /* 
-        district_1: {
-          value: "district_1",
-          label: "Район1"
-        },
-        district_2: {
-          value: "district_2",
-          label: "Район2"
-        },
-        district_3: {
-          value: "district_3",
-          label: "Район3"
-        } */
-    }
+    items: {}
   },
   subdistrict: {
     type: "select",
@@ -126,24 +147,7 @@ const fields = {
     label: "Подрайон",
     value: "",
     required: true,
-    items: {
-      /* 
-        second: {
-          link: "district_1",
-          value: "second",
-          label: "Подрайон1"
-        },
-        newbuilding: {
-          link: "district_1",
-          value: "newbuilding",
-          label: "Подрайон2"
-        },
-        newbuilding_part: {
-          link: "district_2",
-          value: "newbuilding_part",
-          label: "Подрайон3"
-        } */
-    }
+    items: {}
   },
   s_all: {
     type: "text",
@@ -330,11 +334,23 @@ const form = {
   }
 };
 
+const rightTools = {
+  search: {
+    id: "search",
+    title: "Поиск"
+  },
+  filter: {
+    id: "filter",
+    title: "Фильтр"
+  }
+};
+
 export const initialState = {
   ...chips,
   ...list,
   ...form,
   fields,
+  rightTools,
   filter: {},
   cacheQuery: [],
   loading: {

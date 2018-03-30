@@ -1,11 +1,15 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { TextField, Chip, Avatar } from "material-ui";
+import { TextField, Chip, Avatar, Hidden } from "material-ui";
 import { connect } from "react-redux";
 import { map, get, size } from "lodash";
-import { deleteChip, fetchChips } from "../actions/filter";
+
+import { deleteChip, fetchChips, selectChip } from "../actions/filter";
+
 import SearchResult from "./SearchResult";
+import SearchResultMobile from "./SearchResultMobile";
+
 import delayedAction from "../../util/delayedAction";
 
 import styles from "./Filter.module.css";
@@ -17,9 +21,19 @@ const muiStyles = theme => ({
     overflowX: "auto",
     overflowY: "hidden",
     padding: theme.spacing.unit,
+    width: "calc(100% + 16px)",
     [theme.breakpoints.up("md")]: {
+      width: "100%",
       overflowX: "visible",
       flexWrap: "wrap"
+    }
+  },
+  chipPreset: {
+    background: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    margin: theme.spacing.unit / 2,
+    "&:hover, &:focus": {
+      background: theme.palette.primary.dark
     }
   }
 });
@@ -45,8 +59,10 @@ class Filter extends React.Component {
   handleChange = event => {
     const { value } = event.target;
     this.delay.do(() => {
-      this.openPopover();
-      this.props.onFilterChange(value);
+      if (("" + value).length > 0) {
+        this.openPopover();
+        this.props.onFilterChange(value);
+      }
     });
   };
   openPopover = () => {
@@ -62,7 +78,7 @@ class Filter extends React.Component {
     this.state.hasChips && this.openPopover();
   };
   onFocusOut = () => {
-    // setTimeout(this.handleRequestClose, 200);
+    setTimeout(this.handleRequestClose, 200);
   };
   handleRequestClose = () => {
     this.setState({
@@ -71,57 +87,100 @@ class Filter extends React.Component {
   };
 
   render() {
-    const { id, classes, value, selectedChips, onDeleteChip } = this.props;
+    const {
+      id,
+      classes,
+      value,
+      selectedChips,
+      onDeleteChip,
+      onFilterChange,
+      presetsChips
+    } = this.props;
+    const hasPresetsChips = size(presetsChips) > 0;
 
     const { open } = this.state;
 
     return (
-      <div className={styles.filterWrapper}>
-        <div className={styles.textFieldWrapper}>
-          <TextField
-            id="searchField"
-            label="Поиск"
-            className={styles.filterTextField}
-            value={value}
-            onChange={this.handleChange}
-            onFocus={this.onFocus}
-            onBlur={this.onFocusOut}
-          />
-          <SearchResult
-            id={id}
-            open={open}
-            onClose={this.onCloseSearchResult}
-          />
+      <Fragment>
+        <div className={styles.filterWrapper}>
+          <Hidden smDown>
+            <div className={styles.textFieldWrapper}>
+              <TextField
+                id="searchField"
+                label="Поиск"
+                className={styles.filterTextField}
+                value={value}
+                onChange={this.handleChange}
+                onFocus={this.onFocus}
+                onBlur={this.onFocusOut}
+              />
+              <SearchResult
+                id={id}
+                open={open}
+                onClose={this.onCloseSearchResult}
+              />
+            </div>
+          </Hidden>
+          <Hidden mdUp>
+            <SearchResultMobile onFilterChange={onFilterChange} id={id} />
+          </Hidden>
+          <div className={classes.chipsWrapper}>
+            {map(selectedChips, chip => {
+              const chipProps = {};
+              const avatar = get(chip, "avatar", null);
+              if (avatar) {
+                if (("" + avatar).indexOf("/") !== -1) {
+                  chipProps.avatar = <Avatar src={avatar} />;
+                } else {
+                  chipProps.avatar = <Avatar>{avatar}</Avatar>;
+                }
+              }
+              return (
+                <Chip
+                  {...chipProps}
+                  label={
+                    Boolean(chip.propName)
+                      ? `${chip.propName}: ${chip.label}`
+                      : chip.label
+                  }
+                  onDelete={() => {
+                    onDeleteChip(chip.id);
+                  }}
+                  key={chip.id}
+                  className={styles.chip}
+                />
+              );
+            })}
+          </div>
         </div>
         <div className={classes.chipsWrapper}>
-          {map(selectedChips, chip => {
-            const chipProps = {};
-            const avatar = get(chip, "avatar", null);
-            if (avatar) {
-              if (("" + avatar).indexOf("/") !== -1) {
-                chipProps.avatar = <Avatar src={avatar} />;
-              } else {
-                chipProps.avatar = <Avatar>{avatar}</Avatar>;
-              }
-            }
-            return (
-              <Chip
-                {...chipProps}
-                label={
-                  Boolean(chip.propName)
-                    ? `${chip.propName}: ${chip.label}`
-                    : chip.label
+          {hasPresetsChips &&
+            map(presetsChips, chip => {
+              const chipProps = {};
+              const avatar = get(chip, "avatar", null);
+              if (avatar) {
+                if (("" + avatar).indexOf("/") !== -1) {
+                  chipProps.avatar = <Avatar src={avatar} />;
+                } else {
+                  chipProps.avatar = <Avatar>{avatar}</Avatar>;
                 }
-                onDelete={() => {
-                  onDeleteChip(chip.id);
-                }}
-                key={chip.id}
-                className={styles.chip}
-              />
-            );
-          })}
+              }
+              return (
+                <Chip
+                  {...chipProps}
+                  label={
+                    Boolean(chip.propName)
+                      ? `${chip.propName}: ${chip.label}`
+                      : chip.label
+                  }
+                  key={chip.id}
+                  className={classes.chipPreset}
+                  onClick={() => this.props.onApplyChips(chip)}
+                />
+              );
+            })}
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -166,7 +225,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onFilterChange: query => {
       dispatch(fetchChips({ id: tableId, query }));
     },
-    onApplyChips: () => {}
+    onApplyChips: chip => {
+      dispatch(selectChip({ id: tableId, chip }));
+    }
   };
 };
 
