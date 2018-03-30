@@ -16,17 +16,22 @@ const Location = props => {
   const onChangeValue = value => {
     onChange({ target: { name: id, value: value } });
   };
+
+  const locationName =
+    value && value.hasOwnProperty("name") && value.name ? value.name : "";
+  const locationId =
+    value && value.hasOwnProperty("value") && value.value ? value.value : "";
+
   return (
     <Fragment>
       <FormControl fullWidth className={formControl} key={id}>
         <InputLabel htmlFor={id} required={field.required}>
           {field.label}
         </InputLabel>
-        <Input value={value.name} onFocus={onFocus} />
-        <input name={id} id={id} type="hidden" value={value.value} />
+        <Input value={locationName} onFocus={onFocus} />
         {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
       </FormControl>
-      <LocationSearch value={value.value} onChangeValue={onChangeValue} />
+      <LocationSearch value={locationId} onChangeValue={onChangeValue} />
     </Fragment>
   );
 };

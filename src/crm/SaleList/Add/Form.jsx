@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { map } from "lodash";
 
 import Field from "../../Field";
+import TabContainer from "../../../app/TabContainer";
 
 import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
@@ -31,9 +32,52 @@ class Form extends React.Component {
   state = {
     openedSection: "main"
   };
+
   handleChangeTab = (event, value) => {
     this.setState({ openedSection: value });
   };
+
+  checkExcludeNodes = node => {
+    const checkHorizontalScroll = node => {
+      return (
+        node.hasAttribute("data-exclude-swipe") &&
+        node.getAttribute("data-exclude-swipe")
+      );
+    };
+    if (checkHorizontalScroll(node)) {
+      return true;
+    }
+    let parent = node;
+    while ((parent = parent.parentElement) != null) {
+      if (checkHorizontalScroll(parent)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  prevTab = event => {
+    if (!this.checkExcludeNodes(event.target)) {
+      const key = this.getKeyCurrentTab();
+      if (key > 0) {
+        const viewingTabs = this.getViewingTabs();
+        const newTab = viewingTabs[key - 1];
+        this.setState({ openedSection: newTab.value });
+      }
+    }
+  };
+
+  nexTab = event => {
+    if (!this.checkExcludeNodes(event.target)) {
+      const key = this.getKeyCurrentTab();
+      const viewingTabs = this.getViewingTabs();
+      if (key + 1 < viewingTabs.length) {
+        const newTab = viewingTabs[key + 1];
+        this.setState({ openedSection: newTab.value });
+      }
+    }
+  };
+
   render() {
     const { fieldsSections, classes } = this.props;
     const { openedSection } = this.state;
@@ -54,13 +98,13 @@ class Form extends React.Component {
             ))}
           </Tabs>
         </AppBar>
-        <div>
+        <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} />
+              <Field id={id} key={id} edit={true} match={this.props.match} />
             ))}
           </Grid>
-        </div>
+        </TabContainer>
       </div>
     );
   }

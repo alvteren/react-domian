@@ -28,6 +28,7 @@ class Card extends React.Component {
     openedSection: "main",
     currentEdit: ""
   };
+
   handleChangeTab = (event, value) => {
     this.setState({ openedSection: value });
   };
@@ -51,6 +52,7 @@ class Card extends React.Component {
 
     return false;
   };
+
   prevTab = event => {
     if (!this.checkExcludeNodes(event.target)) {
       const key = this.getKeyCurrentTab();
@@ -61,6 +63,7 @@ class Card extends React.Component {
       }
     }
   };
+
   nexTab = event => {
     if (!this.checkExcludeNodes(event.target)) {
       const key = this.getKeyCurrentTab();

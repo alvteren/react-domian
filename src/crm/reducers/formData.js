@@ -1,4 +1,4 @@
-import { keyBy, omit, toArray } from "lodash";
+import { keyBy, omit, toArray, get } from "lodash";
 export default (state, { type, payload }) => {
   let newstate = null;
   if (state) {
@@ -18,12 +18,13 @@ export default (state, { type, payload }) => {
     }
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
+      const oldValues = get(state.values, elementId, {});
       newstate = {
         ...state,
         values: {
           ...state.values,
           [elementId]: {
-            ...state.values[elementId],
+            ...oldValues,
             [name]: value
           }
         }
@@ -31,13 +32,15 @@ export default (state, { type, payload }) => {
     }
     if (type === "FORM_SAVE_FILE") {
       const { name, value, elementId } = payload;
+      const oldValues = get(state.values, elementId, {});
+      const oldFiles = get(oldValues, name, {});
       newstate = {
         ...state,
         values: {
           ...state.values,
           [elementId]: {
-            ...state.values[elementId],
-            [name]: [...state.values[elementId][name], value]
+            ...oldValues,
+            [name]: [...oldFiles, value]
           }
         }
       };

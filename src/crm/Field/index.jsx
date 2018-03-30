@@ -299,11 +299,17 @@ class Field extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const { fields, values } = state.crm.objects;
   const { id, match } = ownProps;
-  const objectId = match.params.id;
+
+  const params = get(match, "params", false);
   const field = get(fields, id, false);
+  const objectId = get(params, "id", 0);
   const objectValues = get(values, objectId, null);
   const value = objectValues != null ? get(objectValues, id, null) : null;
   const can = objectValues != null ? get(objectValues, "can", {}) : {};
+
+  if (objectId === 0) {
+    can.edit = true;
+  }
 
   return {
     objectId,
