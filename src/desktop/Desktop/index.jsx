@@ -54,7 +54,7 @@ export default connect(null, mapDispatchToProps)(
             <h3 className={classes.title}>Альянсы</h3>
           </Link>
         </Grid>
-        <Grid item xs={6} sm={3} lg={2}>
+        {/* <Grid item xs={6} sm={3} lg={2}>
           <h3 className={classes.title}>Авторизация</h3>
           <TextField
             required
@@ -66,7 +66,7 @@ export default connect(null, mapDispatchToProps)(
           <Button variant="raised" color="primary" onClick={authorizeBy}>
             Авторизоваться
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   })
