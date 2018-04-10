@@ -21,7 +21,7 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { classes, linkedTelegram, onShowDialogTelegram, ...other } = props;
+  const { classes, linkedTelegram, onShowDialogTelegram, alianceJoined, ...other } = props;
 
   const handleClickAlianceAdd = () => {
     props.onClose();
@@ -32,17 +32,21 @@ const MenuAdd = props => {
 
   return (
     <Menu {...other}>
-      <MenuItem
-        component={Link}
-        to="/alliance/add"
-        className={classes.menuItem}
-        onClick={handleClickAlianceAdd}
-      >
-        <ListItemIcon>
-          <GroupAddIcon />
-        </ListItemIcon>
-        <ListItemText inset primary="Создать альянс" />
-      </MenuItem>
+      {
+        !alianceJoined && (
+          <MenuItem
+            component={Link}
+            to="/alliance/add"
+            className={classes.menuItem}
+            onClick={handleClickAlianceAdd}
+          >
+            <ListItemIcon>
+              <GroupAddIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Создать альянс" />
+          </MenuItem>
+        )
+      }
       {/*  <MenuItem
         component={Link}
         to="/alliance/join"
