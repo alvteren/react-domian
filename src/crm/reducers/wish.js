@@ -60,27 +60,35 @@ export const initialState = {
 };
 
 export default (state = initialState, { type, payload }) => {
-  if (type === "FETCH_WISH_SUCCESS") {
-    const newValues = {
-      data: keyBy(payload.data, "id"),
-      count: payload.count
-    };
-    return { ...state, ...newValues };
-  }
-  if (type === "ADD_TO_WISH_SUCCESS") {
-    return { ...state, ...{ isAdded: true } };
-  }
-  if (type === "CHECK_ADDED_TO_WISH_SUCCESS") {
-    return { ...state, ...{ isAdded: payload } };
-  }
+  switch (type) {
+    case "FETCH_WISH_SUCCESS":
+      const newValues = {
+        data: keyBy(payload.data, "id"),
+        count: payload.count
+      };
+      return { ...state, ...newValues };
 
-  const id = get(payload, "id", null);
+    case "ADD_TO_WISH_SUCCESS":
+      // Set recently added ID prop to true, because of backend not returns more data about this ObjectID
+      return { ...state, ...{ isAdded: true, data: {...state.data, ...{[payload]:true}} } };
 
-  if (id === "wish") {
-    const newState = tableData(state, { type, payload });
+    case "CHECK_ADDED_TO_WISH_SUCCESS":
+      return { ...state, ...{ isAdded: payload } };
 
-    return { ...state, ...newState };
+    case "REMOVE_FROM_WISH_SUCCESS":
+      const data = JSON.parse(JSON.stringify(state.data));
+      console.log(data);
+      debugger;
+      delete data[payload];
+      return {...state, ...{data}};
+
+    default: {
+      const id = get(payload, "id", null);
+      if (id === "wish") {
+        const newState = tableData(state, { type, payload });
+        return { ...state, ...newState };
+      }
+      return state;
+    }
   }
-
-  return state;
 };

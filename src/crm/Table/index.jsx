@@ -8,10 +8,9 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import Tooltip from "material-ui/Tooltip";
-import Paper from "material-ui/Paper";
-import Checkbox from "material-ui/Checkbox";
-import PageviewIcon from "material-ui-icons/Pageview";
+import { Tooltip, Paper, Checkbox } from "material-ui";
+import { Pageview as PageviewIcon, StarBorder as StarBorderIcon, Star as StarIcon } from "material-ui-icons";
+import { addToWish, removeFromWish, fetchWish } from "../actions/wish";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -50,6 +49,11 @@ class EnhancedTable extends React.Component {
 
     props.init();
   }
+  componentWillMount() {
+    this.props.fetchWish();
+    console.log('FIRE');
+  }
+
   handleRequestSort = (event, property) => {
     this.props.onRequestSort(property);
   };
@@ -72,6 +76,21 @@ class EnhancedTable extends React.Component {
     return this.props.selected.indexOf(id) !== -1;
   };
 
+  addToFavorite = (id) => (e) => {
+      e.stopPropagation();
+      this.props.addToWish(id);
+  };
+
+  removeFromFavorite = (id) => (e) => {
+      e.stopPropagation();
+      this.props.removeFromWish(id);
+  };
+
+  addSelectedtoFavorite = () => {
+    // arrow style for save "this" when it passes to child component
+    this.props.addToWish(this.props.selected);
+  };
+
   render() {
     const {
       id,
@@ -85,7 +104,8 @@ class EnhancedTable extends React.Component {
       fields,
       filterComponent,
       onChangePage,
-      onDeleteSelectedData
+      onDeleteSelectedData,
+      wishData
     } = this.props;
 
     const arData = toArray(data);
@@ -141,6 +161,7 @@ class EnhancedTable extends React.Component {
         <EnhancedToolbar
           numSelected={selected.length}
           id={id}
+          addSelectedToFavorite = {this.addSelectedtoFavorite}
           onDeleteSelectedData={onDeleteSelectedData}
           filterComponent={filterComponent}
         />
@@ -173,11 +194,18 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      <TableCell>
+                      <TableCell padding="none">
                         <Tooltip title="Подробнее" enterDelay={300}>
                           <Link to={row.url}>
                             <PageviewIcon />
                           </Link>
+                        </Tooltip>
+                        <Tooltip title="В избранное" enterDelay={300}>
+                          {
+                            this.props.wishData[row.id] ?
+                              <StarIcon onClick={this.removeFromFavorite(row.id)} style={{cursor: "pointer", color:"#f9a606"}}/> :
+                              <StarBorderIcon style={{cursor: "pointer"}} onClick={this.addToFavorite(row.id)}/>
+                          }
                         </Tooltip>
                       </TableCell>
                       {arHeaderData.map(column => {
@@ -229,6 +257,8 @@ EnhancedTable.propTypes = {
 };
 const mapStateToProps = (state, ownProps) => {
   const table = state.crm[ownProps.id];
+  const wishes = state.crm.wish;
+  const wishData = wishes.data;
   const {
     headers,
     fields,
@@ -249,7 +279,8 @@ const mapStateToProps = (state, ownProps) => {
     page,
     loading,
     status,
-    data
+    data,
+    wishData
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -266,6 +297,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onRequestSort: property => {
       dispatch(requestSort({ id: tableId, orderBy: property }));
+    },
+    addToWish(id) {
+      dispatch(addToWish({ objectsId: id, wishId: 0 }));
+    },
+    removeFromWish(id) {
+      dispatch(removeFromWish({ objectsId: id, wishId: 0 }));
+    },
+    fetchWish() {
+      dispatch(fetchWish({wishId: 0}));
     }
   };
 };
