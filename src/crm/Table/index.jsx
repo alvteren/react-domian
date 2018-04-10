@@ -28,6 +28,8 @@ import {
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
+import tableStyles from './Table.module.css';
+
 const styles = theme => ({
   root: {
     width: "100%",
@@ -43,6 +45,14 @@ const styles = theme => ({
     whiteSpace: "nowrap"
   }
 });
+
+/**
+ * EnhancedTable API:
+ * available props:
+ *   selected [Object] - array of selected objects
+ *   controls [String] - enum:['favorite'] - enable additional control buttons
+ */
+
 class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
@@ -50,8 +60,8 @@ class EnhancedTable extends React.Component {
     props.init();
   }
   componentWillMount() {
-    this.props.fetchWish();
-    console.log('FIRE');
+    // fetch wishList on demand
+    if (this.props.controls.includes('favorite')) this.props.fetchWish();
   }
 
   handleRequestSort = (event, property) => {
@@ -87,7 +97,7 @@ class EnhancedTable extends React.Component {
   };
 
   addSelectedtoFavorite = () => {
-    // arrow style for save "this" when it passes to child component
+    // arrow style for save "this" when it pass to child component
     this.props.addToWish(this.props.selected);
   };
 
@@ -105,7 +115,8 @@ class EnhancedTable extends React.Component {
       filterComponent,
       onChangePage,
       onDeleteSelectedData,
-      wishData
+      wishData,
+      controls
     } = this.props;
 
     const arData = toArray(data);
@@ -200,13 +211,19 @@ class EnhancedTable extends React.Component {
                             <PageviewIcon />
                           </Link>
                         </Tooltip>
-                        <Tooltip title="В избранное" enterDelay={300}>
-                          {
-                            this.props.wishData[row.id] ?
-                              <StarIcon onClick={this.removeFromFavorite(row.id)} style={{cursor: "pointer", color:"#f9a606"}}/> :
-                              <StarBorderIcon style={{cursor: "pointer"}} onClick={this.addToFavorite(row.id)}/>
-                          }
-                        </Tooltip>
+                        {controls.includes('favorite') &&
+                          <Tooltip title="В избранное" enterDelay={300}>
+                            {/*Wrapper needs to anchor Tooltip to current coordinates while Star icons perform changing*/}
+                            {/* ATTENTION!: Sometimes fired both titles: native and UI, maybe cause a bug*/}
+                            <div className={tableStyles.favoriteWrapper}>
+                            {
+                              this.props.wishData[row.id] ?
+                                <StarIcon onClick={this.removeFromFavorite(row.id)} className={tableStyles.favoriteIcon, tableStyles.favoriteIconActive}/> :
+                                <StarBorderIcon className={tableStyles.favoriteIcon} onClick={this.addToFavorite(row.id)}/>
+                            }
+                            </div>
+                          </Tooltip>
+                        }
                       </TableCell>
                       {arHeaderData.map(column => {
                         const value = row[column.id];

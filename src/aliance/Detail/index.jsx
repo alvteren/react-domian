@@ -72,8 +72,11 @@ class Detail extends React.Component {
                       )}
                       <div className={styles.username}>{user.name}</div>
                       <Tooltip title="Задатки">
-                        <div>
-                          <Badge style={{right: "-30px"}} color="primary" badgeContent={user.deposit || 4}/>
+                        <div className={styles.depositBadgeWrapper}>
+                          <Badge color="primary" badgeContent={user.deposit || 0}>
+                            {/*Badge component required a child element*/}
+                            <div></div>
+                          </Badge>
                         </div>
                       </Tooltip>
                     </Paper>

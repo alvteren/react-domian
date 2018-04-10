@@ -70,24 +70,19 @@ export default (state = initialState, { type, payload }) => {
 
     case "ADD_TO_WISH_SUCCESS":
       // Set recently added ID prop to true, because of backend not returns more data about this ObjectID
+      if (Array.isArray(payload)) {
+        const data = Object.assign({}, state.data);
+        payload.forEach((item) => { data[item] = true });
+        return { ...state, data };
+      }
       return { ...state, ...{ isAdded: true, data: {...state.data, ...{[payload]:true}} } };
-
-    case "CHECK_ADDED_TO_WISH_SUCCESS":
-      return { ...state, ...{ isAdded: payload } };
 
     case "REMOVE_FROM_WISH_SUCCESS":
       const data = JSON.parse(JSON.stringify(state.data));
-      console.log(data);
-      debugger;
       delete data[payload];
-      return {...state, ...{data}};
+      return {...state, data};
 
     default: {
-      const id = get(payload, "id", null);
-      if (id === "wish") {
-        const newState = tableData(state, { type, payload });
-        return { ...state, ...newState };
-      }
       return state;
     }
   }
