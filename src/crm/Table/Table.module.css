@@ -1,0 +1,11 @@
+.favoriteWrapper {
+    display: inline-block;
+}
+
+.favoriteIcon {
+    cursor: pointer;
+}
+
+.favoriteIconActive {
+    color: #f9a606;
+}

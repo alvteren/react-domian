@@ -42,7 +42,7 @@ export const removeFromWish = props => async dispatch => {
       payload: { id: "wish" }
     });
     await removeFromWishApi({ wishId, objectsId });
-    dispatch({ type: "REMOVE_FROM_WISH_SUCCESS" });
+    dispatch({ type: "REMOVE_FROM_WISH_SUCCESS", payload: objectsId });
   } catch (err) {
     dispatch({ type: "REMOVE_FROM_WISH_ERROR", payload: err, error: true });
   }

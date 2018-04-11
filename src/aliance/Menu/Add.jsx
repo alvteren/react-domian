@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Menu, { MenuItem } from "material-ui/Menu";
 import { withStyles } from "material-ui/styles";
@@ -21,28 +22,33 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { classes, linkedTelegram, onShowDialogTelegram, ...other } = props;
+  const { linked_telegram, aliance_joined } = props; // from Store
+  const { classes, onShowDialogTelegram, ...other } = props; // from parent
 
   const handleClickAlianceAdd = () => {
     props.onClose();
-    if (!linkedTelegram) {
+    if (!linked_telegram) {
       onShowDialogTelegram();
     }
   };
 
   return (
     <Menu {...other}>
-      <MenuItem
-        component={Link}
-        to="/alliance/add"
-        className={classes.menuItem}
-        onClick={handleClickAlianceAdd}
-      >
-        <ListItemIcon>
-          <GroupAddIcon />
-        </ListItemIcon>
-        <ListItemText inset primary="Создать альянс" />
-      </MenuItem>
+      {
+        !aliance_joined && (
+          <MenuItem
+            component={Link}
+            to="/alliance/add"
+            className={classes.menuItem}
+            onClick={handleClickAlianceAdd}
+          >
+            <ListItemIcon>
+              <GroupAddIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Создать альянс" />
+          </MenuItem>
+        )
+      }
       {/*  <MenuItem
         component={Link}
         to="/alliance/join"
@@ -62,4 +68,12 @@ MenuAdd.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(MenuAdd);
+const mapStateToProps = (state) => {
+  const { linked_telegram, aliance_joined } = state.user.user;
+  return {
+    linked_telegram,
+    aliance_joined
+  }
+};
+
+export default connect(mapStateToProps, null)(withStyles(styles)(MenuAdd));

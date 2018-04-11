@@ -185,7 +185,6 @@ class AlianceList extends React.Component {
           anchorEl={this.state.anchorEl}
           open={open}
           onClose={this.handleClose}
-          linkedTelegram={linked_telegram}
           onShowDialogTelegram={() => {
             this.handleOpenDialog("linkingTelegram");
           }}
