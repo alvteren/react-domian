@@ -172,7 +172,12 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="none">
                         <div className={styles.controlsWrapper}>
                           <Tooltip title="Подробнее" enterDelay={300}>
-                            <Link to={row.url}>
+                            <Link
+                              to={row.url}
+                              onClick={e => {
+                                e.stopPropagation();
+                              }}
+                            >
                               <PageviewIcon />
                             </Link>
                           </Tooltip>

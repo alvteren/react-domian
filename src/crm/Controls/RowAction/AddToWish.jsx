@@ -13,6 +13,7 @@ import styles from "./AddToWish.module.css";
 
 const AddToWish = props => {
   const onClick = event => {
+    event.stopPropagation();
     if (isAdded) {
       props.removeFromWish();
     } else {
@@ -39,7 +40,6 @@ const AddToWish = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  console.log("ownProps", ownProps);
   const { id, entityId } = ownProps;
   const { wish } = state.crm[entityId];
   return {
@@ -52,10 +52,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     addToWish: () => {
-      dispatch(addToWish({ id, entityId }));
+      dispatch(addToWish({ elementsId: [id], entityId }));
     },
     removeFromWish: () => {
-      dispatch(removeFromWish({ id, entityId }));
+      dispatch(removeFromWish({ elementsId: [id], entityId }));
     }
   };
 };

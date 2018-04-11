@@ -30,30 +30,31 @@ export const fetchWish = props => async dispatch => {
 };
 
 export const addToWish = props => async dispatch => {
-  const { objectsId, entityId } = props;
+  const { elementsId, entityId } = props;
   const wishId = get(props, "wishId", 0);
+  console.log("addToWish", props);
 
   try {
     dispatch({ type: ADD_TO_WISH_START, payload: { entityId } });
-    await addToWishApi({ wishId, objectsId, entityId });
+    await addToWishApi({ wishId, elementsId, entityId });
     dispatch({
       type: ADD_TO_WISH_SUCCESS,
-      payload: { objectsId, id: entityId }
+      payload: { elementsId, id: entityId }
     }); // @todo remade "id" to "entityId"
   } catch (err) {
     dispatch({ type: ADD_TO_WISH_ERROR, payload: err, error: true });
   }
 };
 export const removeFromWish = props => async dispatch => {
-  const { objectsId, entityId } = props;
+  const { elementsId, entityId } = props;
   const wishId = get(props, "wishId", 0);
 
   try {
     dispatch({ type: REMOVE_FROM_WISH_START, payload: { entityId } });
-    await removeFromWishApi({ wishId, objectsId, entityId });
+    await removeFromWishApi({ wishId, elementsId, entityId });
     dispatch({
       type: REMOVE_FROM_WISH_SUCCESS,
-      payload: { objectsId, id: entityId } // @todo remade "id" to "entityId"
+      payload: { elementsId, id: entityId } // @todo remade "id" to "entityId"
     });
   } catch (err) {
     dispatch({ type: REMOVE_FROM_WISH_ERROR, payload: err, error: true });
