@@ -1,9 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { withStyles } from "material-ui/styles";
-import { Toolbar, Typography, IconButton, Tooltip } from "material-ui";
-import DeleteIcon from "material-ui-icons/Delete";
-import StarIcon from "material-ui-icons/Star";
+import { Toolbar, Typography } from "material-ui";
 import { connect } from "react-redux";
 
 const toolbarStyles = theme => ({
@@ -34,7 +32,12 @@ const toolbarStyles = theme => ({
 });
 
 const EnhancedToolbar = props => {
-  const { numSelected, classes, onDeleteSelectedData, filterComponent, addSelectedToFavorite } = props;
+  const {
+    numSelected,
+    classes,
+    filterComponent,
+    groupActionsComponent
+  } = props;
 
   return (
     <Toolbar
@@ -44,17 +47,10 @@ const EnhancedToolbar = props => {
     >
       {numSelected > 0 ? (
         <div className={classes.title}>
-          <Typography style={{marginRight: "auto"}} type="subheading">{numSelected} выбрано</Typography>
-          <Tooltip className={classes.actions} title="Добавить в избранное">
-            <IconButton aria-label="Favorite" onClick={addSelectedToFavorite}>
-              <StarIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip className={classes.actions} title="Удалить">
-            <IconButton aria-label="Delete" onClick={onDeleteSelectedData}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <Typography style={{ marginRight: "auto" }} type="subheading">
+            {numSelected} выбрано
+          </Typography>
+          {groupActionsComponent}
         </div>
       ) : (
         <div>{filterComponent}</div>

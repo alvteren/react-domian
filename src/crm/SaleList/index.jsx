@@ -5,6 +5,9 @@ import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
+import GroupActions from "./GroupActions";
+import Controls from "./Controls";
+
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
 import AddIcon from "material-ui-icons/Add";
@@ -44,9 +47,11 @@ class SaleList extends React.Component {
       <Fragment>
         <EnhancedTable
           id="objects"
-          controls={['favorite']}
+          controls={["favorite"]}
           onChangePage={this.props.onChangePage}
           filterComponent={<Filter id="objects" />}
+          groupActionsComponents={GroupActions}
+          controlComponents={Controls}
         />
         <Button
           variant="fab"

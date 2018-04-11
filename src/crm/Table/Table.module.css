@@ -1,11 +1,21 @@
-.favoriteWrapper {
-    display: inline-block;
+.controlsWrapper {
+  display: flex;
+  flex-wrap: nowrap;
 }
-
-.favoriteIcon {
-    cursor: pointer;
+.controlsWrapper > * {
+  margin-right: 4px;
+  cursor: pointer;
 }
-
-.favoriteIconActive {
-    color: #f9a606;
+.root {
+  width: 100%;
+  margin-top: 24px;
+}
+.table {
+  min-width: 800px;
+}
+.tableWrapper {
+  overflow-x: auto;
+}
+.nowrap {
+  white-space: nowrap;
 }

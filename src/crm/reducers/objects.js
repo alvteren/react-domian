@@ -3,6 +3,7 @@ import { keyBy, get } from "lodash";
 import tableData from "./tableData";
 import filterData from "./filterData";
 import formData from "./formData";
+import wishData from "./wishData";
 
 const chips = {
   chips: {},
@@ -333,7 +334,6 @@ const form = {
     subdistrict: null
   }
 };
-
 const rightTools = {
   search: {
     id: "search",
@@ -352,7 +352,7 @@ export const initialState = {
   fields,
   rightTools,
   filter: {},
-  cacheQuery: [],
+  wish: {},
   loading: {
     card: false,
     form: false,
@@ -374,6 +374,7 @@ export default (state = initialState, { type, payload }) => {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
+    const newWishState = wishData(state, { type, payload });
 
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
@@ -404,6 +405,8 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, ...newFilterState };
     } else if (newFormState) {
       return { ...state, ...newFormState };
+    } else if (newWishState) {
+      return { ...state, wish: newWishState };
     }
   }
   return state;
