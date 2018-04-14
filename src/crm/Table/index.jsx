@@ -152,6 +152,7 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {arData
+                .reverse() // after fetch items adds to top like a stack
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(row => {
                   const isSelected = this.isSelected(row.id);
@@ -173,7 +174,7 @@ class EnhancedTable extends React.Component {
                         <div className={styles.controlsWrapper}>
                           <Tooltip title="Подробнее" enterDelay={300}>
                             <Link
-                              to={row.url}
+                              to={`show/${row.id}`}
                               onClick={e => {
                                 e.stopPropagation();
                               }}
