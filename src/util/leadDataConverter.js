@@ -2,7 +2,6 @@ export default function convertLeadData(data) {
   Object.keys(data.data).forEach(key => {
     let obj = data.data[key];
     obj.wishes = {title: obj.title, wishes: obj.wishes };
-    obj.status = obj.status_id;
     obj.created = formatDate(obj.date_create);
     obj.responsible = `${obj.assigned_by_name} ${obj.assigned_by_last_name}`;
   })

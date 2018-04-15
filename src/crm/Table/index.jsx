@@ -131,7 +131,7 @@ class EnhancedTable extends React.Component {
             </div>
           );
         }
-        if (id === "status") {
+        if (id === "status_id") {
           const val = value.toLowerCase();
           if (fields && fields.status_id && fields.status_id.items) {
             return fields.status_id.items[val].label;

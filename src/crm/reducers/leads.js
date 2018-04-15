@@ -41,7 +41,7 @@ const list = {
       label: "Пожелания",
     },
     status: {
-      id: "status",
+      id: "status_id",
       label: "Статус"
     },
     reminders: {
