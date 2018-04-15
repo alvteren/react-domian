@@ -20,7 +20,7 @@ export const fetchChips = props => async dispatch => {
     });
     dispatch({
       type: "CHIPS_FETCH_SUCCESS",
-      payload: { id: "objects", data: data }
+      payload: { id: id, data: data }
     });
   } catch (err) {
     dispatch({ type: "CHIPS_FETCH_ERROR", payload: err, error: true });

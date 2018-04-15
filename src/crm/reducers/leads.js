@@ -75,6 +75,7 @@ const list = {
 export const initialState = {
   ...chips,
   ...list,
+  filter: {},
   loading: {
     card: false,
     form: false,
@@ -90,6 +91,7 @@ export default function reducer(state = initialState, { type, payload }) {
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
+    console.log("newFilterState", newFilterState);
 
     // if (type === "FORM_SAVE_TO_STORE") {
     //   const { name, value, elementId } = payload;
@@ -117,6 +119,7 @@ export default function reducer(state = initialState, { type, payload }) {
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
+      console.log(newFilterState, "<<<<");
       return { ...state, ...newFilterState };
     } else if (newFormState) {
       return { ...state, ...newFormState };

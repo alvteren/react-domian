@@ -111,7 +111,7 @@ class EnhancedTable extends React.Component {
             maximumFractionDigits: 0
           }).format(value * 1);
         }
-        if (id === "contacts") {
+        if (id === "contacts" || id === "phone") {
           return <span className={styles.nowrap}>{value}</span>;
         }
 
@@ -121,6 +121,20 @@ class EnhancedTable extends React.Component {
         if (fields.hasOwnProperty(id) && fields[id].type === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
+          }
+        }
+        if (id === "wishes") {
+          return (
+            <div>
+              <h4>{value.title}</h4>
+              <p>{value.wishes}</p>
+            </div>
+          );
+        }
+        if (id === "status") {
+          const val = value.toLowerCase();
+          if (fields && fields.status_id && fields.status_id.items) {
+            return fields.status_id.items[val].label;
           }
         }
 

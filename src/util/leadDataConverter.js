@@ -1,15 +1,8 @@
-const dict = {
-  ASSIGNED: "Реальный покупатель",
-  NEW: "Не обработан",
-  DETAILED: "Показы",
-  CONVERTED: "Задаток"
-};
-
 export default function convertLeadData(data) {
   Object.keys(data.data).forEach(key => {
     let obj = data.data[key];
-    obj.wishes = `${obj.title}`;
-    obj.status = dict[obj.status_id];
+    obj.wishes = {title: obj.title, wishes: obj.wishes };
+    obj.status = obj.status_id;
     obj.created = formatDate(obj.date_create);
     obj.responsible = `${obj.assigned_by_name} ${obj.assigned_by_last_name}`;
   })
@@ -27,6 +20,7 @@ function formatDate(dateString) {
     dateArr[0] = dateArr[0].join(".");
     let dateStr = dateArr.join(" ");
     date = new Date(dateStr);
+    // if no success after replace operation return empty String
     if (isNaN(date)) return '';
   }
   let dd = date.getDate();
