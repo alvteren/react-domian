@@ -42,7 +42,9 @@ const list = {
     },
     status: {
       id: "status_id",
-      label: "Статус"
+      label: "Статус",
+      type: "status_id",
+      value: "NEW"
     },
     reminders: {
       id: "reminders",
