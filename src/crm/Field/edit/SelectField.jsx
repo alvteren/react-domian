@@ -17,7 +17,7 @@ const SelectField = props => {
         {field.label}
       </InputLabel>
       <Select
-        value={value}
+        value={value || ""}
         onChange={onChange}
         native={bNativeSelect}
         input={<Input name={id} id={id} />}

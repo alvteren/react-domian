@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { fetchLeads, fetchLeadFields } from "../actions/lead";
 import EnhancedTable from "../Table";
 // import Add from "./Add";
-// import Detail from "./Detail";
+import Detail from "./Detail";
 import Filter from "../Filter";
 // import GroupActions from "./GroupActions";
 // import Controls from "./Controls";
@@ -11,7 +11,7 @@ import Filter from "../Filter";
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
 import AddIcon from "material-ui-icons/Add";
-// import { Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import MenuAdd from "../Menu/Add";
 
 import size from "lodash/size";
@@ -68,7 +68,7 @@ class Lead extends React.Component {
           onClose={this.handleClose}
         />
         {/*<Route path="/crm/sale/add" component={Add} />*/}
-        {/*<Route path="/crm/sale/show/:id" component={Detail} />*/}
+        <Route path="/crm/lead/show/:id" component={Detail} />
       </Fragment>
     );
   }

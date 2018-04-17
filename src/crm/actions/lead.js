@@ -37,9 +37,10 @@ export const fetchLead = id => async dispatch => {
     const data = await fetchLeadApi({ id });
     dispatch({
       type: "DETAIL_FETCH_DATA_SUCCESS",
-      payload: { id: "leads", ...data }
+      payload: { id: "leads", values: {...data} }
     });
   } catch (err) {
+    console.error(err);
     dispatch({ type: "DETAIL_FETCH_DATA_ERROR", payload: err, error: true });
   }
 };

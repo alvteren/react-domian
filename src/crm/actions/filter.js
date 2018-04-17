@@ -31,7 +31,6 @@ export const fetchChips = props => async dispatch => {
 export const selectChip = props => dispatch => {
   const { id, chip } = props;
   dispatch({ type: "CHIPS_ADDED_SUCCESS", payload: { id, chip } });
-  console.log('>>>>>>', id);
   dispatch(applyFilter({ id }));
 };
 

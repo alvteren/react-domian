@@ -297,7 +297,7 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fields, values } = state.crm.objects;
+  const { fields, values } = state.crm.leads;
   const { id, match } = ownProps;
 
   const params = get(match, "params", false);

@@ -100,7 +100,7 @@ class App extends Component {
                       component={TelegramLink}
                     />
                   </main>
-                  <Route exact path="/crm/lead" component={Lead}/>
+                  <Route path="/crm/lead" component={Lead}/>
                 </Fragment>
               </ConnectedRouter>
             </Auth>

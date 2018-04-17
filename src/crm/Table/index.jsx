@@ -118,7 +118,7 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (fields.hasOwnProperty(id) && fields[id].type === "select") {
+        if (fields && fields.hasOwnProperty(id) && fields[id].type === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
@@ -133,7 +133,7 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (fields && fields.status_id && fields.status_id.items) {
+          if (fields && fields.status_id && fields.status_id.items && fields.status_id.items[val] && fields.status_id.items[val].label) {
             return fields.status_id.items[val].label;
           }
         }
@@ -188,7 +188,7 @@ class EnhancedTable extends React.Component {
                         <div className={styles.controlsWrapper}>
                           <Tooltip title="Подробнее" enterDelay={300}>
                             <Link
-                              to={`show/${row.id}`}
+                              to={row.url || `show/${id}/${row.id}`}
                               onClick={e => {
                                 e.stopPropagation();
                               }}
@@ -196,7 +196,6 @@ class EnhancedTable extends React.Component {
                               <PageviewIcon />
                             </Link>
                           </Tooltip>
-                          {console.log("controlComponents", controlComponents)}
                           {controlComponents &&
                             React.createElement(controlComponents, {
                               id: row.id,

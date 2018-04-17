@@ -74,9 +74,54 @@ const list = {
   order: "desc"
 };
 
+const form = {
+  fieldsSections: {
+    main: {
+      name: "Основная информация",
+      fields: {
+        title: true,
+        status_id: true,
+        opportunity: true,
+        email: true
+      }
+    },
+    more: {
+      name: "Подробнее",
+      fields: {
+        type_deal: true,
+        section_id: true,
+      }
+    },
+    contact: {
+      name: "О собственнике",
+      fields: {
+        contact_name: true,
+        contact_phone: true,
+        contact_home_phone: true,
+        contact_email: true
+      }
+    }
+  },
+  // values for form of editing
+  editValues: {},
+  // values for detail card
+  detail: {},
+  filterFields: {
+    type_apartment: null,
+    type_deal: null,
+    section_id: null,
+    district: null,
+    subdistrict: null
+  }
+};
+
+const fields ={}; // will be fetched from API
+
 export const initialState = {
   ...chips,
   ...list,
+  ...form,
+  fields,
   filter: {},
   loading: {
     card: false,
@@ -88,12 +133,12 @@ export const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const id = get(payload, "id", null);
-  if (id === "leads") {
+  const _id = get(payload, "_id", null);
+  if (id === "leads" || _id === "leads") {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
-    console.log("newFilterState", newFilterState);
 
     // if (type === "FORM_SAVE_TO_STORE") {
     //   const { name, value, elementId } = payload;
@@ -111,13 +156,14 @@ export default function reducer(state = initialState, { type, payload }) {
     //     };
     //   }
     // }
-    // if (type === "DETAIL_FETCH_DATA_SUCCESS") {
-    //   const { values } = payload;
-    //   return {
-    //     ...state,
-    //     values: { [values.id]: values }
-    //   };
-    // }
+    if (type === "DETAIL_FETCH_DATA_SUCCESS") {
+      const { values } = payload;
+      console.log(values, '<<<');
+      return {
+        ...state,
+        values: { [values.id]: values }
+      };
+    }
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
