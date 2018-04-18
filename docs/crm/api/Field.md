@@ -34,7 +34,7 @@ Field indication required or not for fill value
 
 For example, few checkboxes
 
-### items
+### items: Object
 
 Contains object with all options
 
@@ -79,19 +79,19 @@ _link_ содержит значения "field" при которых поле 
 }
 ```
 
-More one sample with depended. _exlude_link_ has values of "field" in which that field hidden.
-_exlude_link_ has values of "field" in which that field hidden.
+More one sample with depended. _exсlude_link_ has values of "field" in which that field hidden.
+_exсlude_link_ has values of "field" in which that field hidden.
 
 #### In Russian
 
 Еще один пример объекта поля с зависимостью.
-_exlude_link_ содержит значения "field" при которых поле скрывается
+_exсlude_link_ содержит значения "field" при которых поле скрывается
 
 ```json
 {
   "id": "subfield",
   "depended": "field",
-  "exlude_link": ["field_1", "field_2"],
+  "exсlude_link": ["field_1", "field_2"],
   "items": {
     "123": {
       "label": "Field name for users",
@@ -132,13 +132,13 @@ _link_ содержит значения "field" при которых знач�
 }
 ```
 
-Sample with depended hidden values. _exlude_link_ has values of "field" in which that value hidden.
-_exlude_link_ has values of "field" in which that values hidden. If every values hidden, then field will hide.
+Sample with depended hidden values. _exсlude_link_ has values of "field" in which that value hidden.
+_exсlude_link_ has values of "field" in which that values hidden. If every values hidden, then field will hide.
 
 #### In Russian
 
 Пример объекта поля с зависимостью показа значений поля.
-_exlude_link_ содержит значения "field" при которых значение скрывается. Если все значения поля скрываются, то поле скрывается полностью.
+_exсlude_link_ содержит значения "field" при которых значение скрывается. Если все значения поля скрываются, то поле скрывается полностью.
 
 ```json
 {
@@ -148,12 +148,12 @@ _exlude_link_ содержит значения "field" при которых з
     "123": {
       "label": "Field name for users",
       "value": "123",
-      "exlude_link": ["field_1", "field_2"]
+      "exсlude_link": ["field_1", "field_2"]
     },
     "1234": {
       "label": "Field name for users 2",
       "value": "1234",
-      "exlude_link": ["field_1", "field_3"]
+      "exсlude_link": ["field_1", "field_3"]
     }
   }
 }
@@ -174,4 +174,4 @@ A string field type. Possible variants for edit mode:
 
 ### component: string
 
-Field will render to component from this parametr. On this component will give all props and state from component `<Field />`. And will give functions onStartEdit, onSave, onChange
+A string Component name. Field will render to component from this parametr. On this component will give all props and state from component `<Field />`. And will give functions onStartEdit, onSave, onChange
