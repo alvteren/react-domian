@@ -7,6 +7,8 @@ import Menu, { MenuItem } from "material-ui/Menu";
 import { withStyles } from "material-ui/styles";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 import GroupAddIcon from "material-ui-icons/GroupAdd";
+import AddObjectIcon from "material-ui-icons/LocationCity";
+import CustomersIcon from "material-ui-icons/SupervisorAccount";
 
 const styles = theme => ({
   menuItem: {
@@ -34,6 +36,17 @@ const MenuAdd = props => {
 
   return (
     <Menu {...other}>
+      <MenuItem
+        component={Link}
+        to="/crm/sale/add"
+        className={classes.menuItem}
+        onClick={props.onClose}
+      >
+        <ListItemIcon>
+          <AddObjectIcon />
+        </ListItemIcon>
+        <ListItemText primary="Добавить объект" />
+      </MenuItem>
       {
         !aliance_joined && (
           <MenuItem
@@ -49,6 +62,17 @@ const MenuAdd = props => {
           </MenuItem>
         )
       }
+      <MenuItem
+        component={Link}
+        to="/crm/lead/add"
+        className={classes.menuItem}
+        onClick={props.onClose}
+      >
+        <ListItemIcon>
+          <CustomersIcon />
+        </ListItemIcon>
+        <ListItemText primary="Добавить покупателя" />
+      </MenuItem>
       {/*  <MenuItem
         component={Link}
         to="/alliance/join"

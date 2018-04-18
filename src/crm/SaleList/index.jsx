@@ -12,7 +12,7 @@ import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
 import AddIcon from "material-ui-icons/Add";
 import { Route } from "react-router-dom";
-import MenuAdd from "../Menu/Add";
+import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
 

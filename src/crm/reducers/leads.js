@@ -88,8 +88,13 @@ const form = {
     more: {
       name: "Подробнее",
       fields: {
-        type_deal: true,
-        section_id: true,
+        uf_type_deal: true,
+        uf_crm_type_realty: true,
+        uf_location: true,
+        uf_crm_district: true,
+        uf_crm_s_area: true,
+        uf_type_object_2: true,
+        uf_source: true
       }
     },
     contact: {

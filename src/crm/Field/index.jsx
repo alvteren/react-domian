@@ -252,9 +252,10 @@ class Field extends React.Component {
 
       if (isShowedField) {
         const formatValue = () => {
-          if (field.type === "select") {
+          // debugger;
+          if (field.items) {
             const listValue = field.hasOwnProperty("items")
-              ? get(field.items, value, null)
+              ? get(field.items, value, null) || get(field.items, String(value).toLowerCase(), null)
               : null;
             return listValue ? listValue.label : "";
           }
