@@ -54,12 +54,12 @@ Contains object with all options
 ```
 
 Sample with depended. There is field with id = "subfield" depend on field with id = "field".
-_link_ has values of "field" in which that field vissible.
+**link** has values of "field" in which that field vissible.
 
 #### In Russian
 
 Пример объекта поля с id = "subfield" с зависимостью от значений поля с id = "field".
-_link_ содержит значения "field" при которых поле отображается
+**link** содержит значения "field" при которых поле отображается
 
 ```json
 {
@@ -79,13 +79,13 @@ _link_ содержит значения "field" при которых поле 
 }
 ```
 
-More one sample with depended. _exсlude_link_ has values of "field" in which that field hidden.
-_exсlude_link_ has values of "field" in which that field hidden.
+More one sample with depended. **exсlude_link** has values of "field" in which that field hidden.
+**exсlude_link** has values of "field" in which that field hidden.
 
 #### In Russian
 
 Еще один пример объекта поля с зависимостью.
-_exсlude_link_ содержит значения "field" при которых поле скрывается
+**exсlude_link** содержит значения "field" при которых поле скрывается
 
 ```json
 {
@@ -105,13 +105,13 @@ _exсlude_link_ содержит значения "field" при которых 
 }
 ```
 
-Sample with depended vissible values. _link_ has values of "field" in which that value vissible.
-_link_ has values of "field" in which that values vissible. If every values will not vissible, then field will hide.
+Sample with depended vissible values. **link** has values of "field" in which that value vissible.
+**link** has values of "field" in which that values vissible. If every values will not vissible, then field will hide.
 
 #### In Russian
 
 Пример объекта поля с зависимостью показа значений поля.
-_link_ содержит значения "field" при которых значение показывается. Если ни одно значение не отображается, то поле скрывается полностью.
+**link** содержит значения "field" при которых значение показывается. Если ни одно значение не отображается, то поле скрывается полностью.
 
 ```json
 {
@@ -132,13 +132,13 @@ _link_ содержит значения "field" при которых знач�
 }
 ```
 
-Sample with depended hidden values. _exсlude_link_ has values of "field" in which that value hidden.
-_exсlude_link_ has values of "field" in which that values hidden. If every values hidden, then field will hide.
+Sample with depended hidden values. **exсlude_link** has values of "field" in which that value hidden.
+**exсlude_link** has values of "field" in which that values hidden. If every values hidden, then field will hide.
 
 #### In Russian
 
 Пример объекта поля с зависимостью показа значений поля.
-_exсlude_link_ содержит значения "field" при которых значение скрывается. Если все значения поля скрываются, то поле скрывается полностью.
+**exсlude_link** содержит значения "field" при которых значение скрывается. Если все значения поля скрываются, то поле скрывается полностью.
 
 ```json
 {
@@ -165,8 +165,8 @@ A string field type. Possible variants for edit mode:
 
 * **text, tel, email** - render to material-ui component `<TextField type={type} />`@todo Need make for **tel** variant the mask by Russian phone format +7 (999) 999-99-99
 * **textarea** - will render to material-ui component `<TextField type="text" multiline rowsMax="4" />`
-* **image** - will render to special component [`<FieldEditImage />`](../../src/crm/Field/edit/Image.jsx)
-* **location** - will render to special component [`<FieldEditLocation />`](../../src/crm/Field/edit/Location/index.jsx)
+* **image** - will render to special component [`<FieldEditImage />`](../../../src/crm/Field/edit/Image.jsx)
+* **location** - will render to special component [`<FieldEditLocation />`](../../../src/crm/Field/edit/Location/index.jsx)
 * **select** - will render to material-ui component `<Select />`. If options of value more 4 then `<Select native={true} />` for improvement perfomance
 * **switch** - will render to material-ui component `<Switch />`
 * **checkbox** - will render to material-ui component `<Checkbox />` @todo Need make this variant
