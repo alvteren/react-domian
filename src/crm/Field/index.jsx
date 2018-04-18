@@ -135,7 +135,7 @@ class Field extends React.Component {
                 <div className={classes.valueWrapper}>
                   <FieldEditSelect
                     id={id}
-                    value={value}
+                    value={value || ""}
                     field={field}
                     visibleValues={visibleValues}
                     onChange={this.onChange}
@@ -214,7 +214,7 @@ class Field extends React.Component {
                 name={id}
                 label={field.label}
                 onChange={this.onChange}
-                value={value}
+                value={value || ""}
                 multiline
                 rowsMax="4"
                 helperText={get(field, "hint", "")}
@@ -241,7 +241,7 @@ class Field extends React.Component {
               name={id}
               label={field.label}
               onChange={this.onChange}
-              value={value}
+              value={value || ""}
               helperText={get(field, "hint", "")}
             />
             {needSave && (
@@ -311,8 +311,8 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fields, values } = state.crm.leads;
-  const { id, match } = ownProps;
+  const { id, match, entityId } = ownProps;
+  const { fields, values } = state.crm[entityId];
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
@@ -330,7 +330,8 @@ const mapStateToProps = (state, ownProps) => {
     field,
     values: objectValues,
     value,
-    can
+    can,
+    entityId
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

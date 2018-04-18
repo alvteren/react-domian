@@ -24,8 +24,7 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { linked_telegram, aliance_joined } = props; // from Store
-  const { classes, onShowDialogTelegram, ...other } = props; // from parent
+  const { linked_telegram, aliance_joined, classes, onShowDialogTelegram, open, anchorEl, ...other } = props;
 
   const handleClickAlianceAdd = () => {
     props.onClose();
@@ -35,7 +34,7 @@ const MenuAdd = props => {
   };
 
   return (
-    <Menu {...other}>
+    <Menu {...{ open, anchorEl }}>
       <MenuItem
         component={Link}
         to="/crm/sale/add"

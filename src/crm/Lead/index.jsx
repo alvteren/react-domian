@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { fetchLeads, fetchLeadFields } from "../actions/lead";
 import EnhancedTable from "../Table";
-// import Add from "./Add";
+import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
 // import GroupActions from "./GroupActions";
@@ -67,7 +67,7 @@ class Lead extends React.Component {
           open={open}
           onClose={this.handleClose}
         />
-        {/*<Route path="/crm/sale/add" component={Add} />*/}
+        <Route path="/crm/lead/add" component={Add} />
         <Route path="/crm/lead/show/:id" component={Detail} />
       </Fragment>
     );

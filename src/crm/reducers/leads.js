@@ -96,15 +96,6 @@ const form = {
         uf_type_object_2: true,
         uf_source: true
       }
-    },
-    contact: {
-      name: "О собственнике",
-      fields: {
-        contact_name: true,
-        contact_phone: true,
-        contact_home_phone: true,
-        contact_email: true
-      }
     }
   },
   // values for form of editing
