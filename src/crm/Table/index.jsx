@@ -9,7 +9,11 @@ import Table, {
   TableRow
 } from "material-ui/Table";
 import { Tooltip, Paper, Checkbox } from "material-ui";
-import { Pageview as PageviewIcon, StarBorder as StarBorderIcon, Star as StarIcon } from "material-ui-icons";
+import {
+  Pageview as PageviewIcon,
+  StarBorder as StarBorderIcon,
+  Star as StarIcon
+} from "material-ui-icons";
 import { addToWish, removeFromWish, fetchWish } from "../actions/wish";
 
 import EnhancedToolbar from "./EnhancedToolbar";
@@ -28,7 +32,7 @@ import {
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import tableStyles from './Table.module.css';
+import tableStyles from "./Table.module.css";
 
 const styles = theme => ({
   root: {
@@ -61,7 +65,7 @@ class EnhancedTable extends React.Component {
   }
   componentWillMount() {
     // fetch wishList on demand
-    if (this.props.controls.includes('favorite')) this.props.fetchWish();
+    if (this.props.controls.includes("favorite")) this.props.fetchWish();
   }
 
   handleRequestSort = (event, property) => {
@@ -86,14 +90,14 @@ class EnhancedTable extends React.Component {
     return this.props.selected.indexOf(id) !== -1;
   };
 
-  addToFavorite = (id) => (e) => {
-      e.stopPropagation();
-      this.props.addToWish(id);
+  addToFavorite = id => e => {
+    e.stopPropagation();
+    this.props.addToWish(id);
   };
 
-  removeFromFavorite = (id) => (e) => {
-      e.stopPropagation();
-      this.props.removeFromWish(id);
+  removeFromFavorite = id => e => {
+    e.stopPropagation();
+    this.props.removeFromWish(id);
   };
 
   addSelectedtoFavorite = () => {
@@ -154,7 +158,6 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        console.log(id);
         if (fields.hasOwnProperty(id) && fields[id].type === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
@@ -172,7 +175,7 @@ class EnhancedTable extends React.Component {
         <EnhancedToolbar
           numSelected={selected.length}
           id={id}
-          addSelectedToFavorite = {this.addSelectedtoFavorite}
+          addSelectedToFavorite={this.addSelectedtoFavorite}
           onDeleteSelectedData={onDeleteSelectedData}
           filterComponent={filterComponent}
         />
@@ -211,19 +214,28 @@ class EnhancedTable extends React.Component {
                             <PageviewIcon />
                           </Link>
                         </Tooltip>
-                        {controls.includes('favorite') &&
+                        {controls.includes("favorite") && (
                           <Tooltip title="В избранное" enterDelay={300}>
                             {/*Wrapper needs to anchor Tooltip to current coordinates while Star icons perform changing*/}
                             {/* ATTENTION!: Sometimes fired both titles: native and UI, maybe cause a bug*/}
                             <div className={tableStyles.favoriteWrapper}>
-                            {
-                              this.props.wishData[row.id] ?
-                                <StarIcon onClick={this.removeFromFavorite(row.id)} className={tableStyles.favoriteIcon, tableStyles.favoriteIconActive}/> :
-                                <StarBorderIcon className={tableStyles.favoriteIcon} onClick={this.addToFavorite(row.id)}/>
-                            }
+                              {this.props.wishData[row.id] ? (
+                                <StarIcon
+                                  onClick={this.removeFromFavorite(row.id)}
+                                  className={
+                                    (tableStyles.favoriteIcon,
+                                    tableStyles.favoriteIconActive)
+                                  }
+                                />
+                              ) : (
+                                <StarBorderIcon
+                                  className={tableStyles.favoriteIcon}
+                                  onClick={this.addToFavorite(row.id)}
+                                />
+                              )}
                             </div>
                           </Tooltip>
-                        }
+                        )}
                       </TableCell>
                       {arHeaderData.map(column => {
                         const value = row[column.id];
@@ -322,7 +334,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(removeFromWish({ objectsId: id, wishId: 0 }));
     },
     fetchWish() {
-      dispatch(fetchWish({wishId: 0}));
+      dispatch(fetchWish({ wishId: 0 }));
     }
   };
 };
