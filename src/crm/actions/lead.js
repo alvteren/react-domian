@@ -3,6 +3,8 @@ import { fetchLead as fetchLeadApi } from "../../api/lead";
 import { fetchLeadFields as fetchLeadFieldsApi } from "../../api/lead";
 import { fetchLeadField as fetchLeadFieldApi } from "../../api/lead";
 import convert from '../../util/leadDataConverter';
+import { setTypeByID } from "../../util/districtTreeConverter";
+
 // Action types
 
 export const fetchLeads = props => async dispatch => {
@@ -59,6 +61,7 @@ export const fetchLeadFields = () => async dispatch => {
       payload: { id: "leads" }
     });
     const data = await fetchLeadFieldsApi();
+    setTypeByID(data);
     dispatch({
       type: "FORM_FIELDS_FETCH_SUCCESS",
       payload: { id: "leads", data }

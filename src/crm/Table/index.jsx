@@ -124,10 +124,16 @@ class EnhancedTable extends React.Component {
           }
         }
         if (id === "wishes") {
+          const wishesArr = toArray(value.wishes);
           return (
             <div>
               <h4>{value.title}</h4>
-              <p>{value.wishes}</p>
+              {
+                wishesArr.map((wish, index) => {
+                  if (wish === value.title) return "";
+                  return <p key={index}>{wish}</p>
+                })
+              }
             </div>
           );
         }

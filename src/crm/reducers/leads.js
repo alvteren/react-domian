@@ -82,6 +82,7 @@ const form = {
         title: true,
         status_id: true,
         opportunity: true,
+        opened: true,
         email: true
       }
     },
@@ -91,6 +92,7 @@ const form = {
         uf_type_deal: true,
         uf_crm_type_realty: true,
         uf_location: true,
+        uf_crm_district_all: true,
         uf_crm_district: true,
         uf_crm_s_area: true,
         uf_type_object_2: true,
@@ -154,7 +156,6 @@ export default function reducer(state = initialState, { type, payload }) {
     // }
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
-      console.log(values, '<<<');
       return {
         ...state,
         values: { [values.id]: values }
@@ -163,7 +164,6 @@ export default function reducer(state = initialState, { type, payload }) {
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
-      console.log(newFilterState, "<<<<");
       return { ...state, ...newFilterState };
     } else if (newFormState) {
       return { ...state, ...newFormState };
