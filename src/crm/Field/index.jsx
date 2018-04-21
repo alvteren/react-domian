@@ -12,7 +12,7 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-import DistrictFieldEdit from "./edit/District";
+// import DistrictFieldEdit from "./edit/District";
 
 import styles from "./Field.module.css";
 
@@ -123,30 +123,21 @@ class Field extends React.Component {
 
     const visibleValues = getVisibleValues();
 
+    if (field.type === "custom" && field["component"] && visibleValues) {
+      return React.createElement(field["component"], {
+        ...this.props,
+        state: this.state,
+        onChange: this.onChange,
+        onSave: this.onSave
+      });
+    }
+
     if (edit && canEdit) {
       const formControl = needSave
         ? classes.formControlWithButton
         : classes.formControl;
 
       if (visibleValues) {
-        if (field.type === "district") {
-          return (
-              <Grid item xs={12} sm={6}>
-                <div className={classes.valueWrapper}>
-                  <DistrictFieldEdit/>
-                  {needSave && (
-                    <IconButton
-                      onClick={this.onSave(id)}
-                      className={classes.buttonSave}
-                      color="inherit"
-                    >
-                      <Done />
-                    </IconButton>
-                  )}
-                </div>
-              </Grid>
-          )
-        }
         if (field.type === "select") {
           if (size(visibleValues) > 0) {
             return (
@@ -286,7 +277,8 @@ class Field extends React.Component {
         const formatValue = () => {
           if (field.items) {
             const listValue = field.hasOwnProperty("items")
-              ? get(field.items, value, null) || get(field.items, String(value).toLowerCase(), null)
+              ? get(field.items, value, null) ||
+                get(field.items, String(value).toLowerCase(), null)
               : null;
             return listValue ? listValue.label : "";
           }

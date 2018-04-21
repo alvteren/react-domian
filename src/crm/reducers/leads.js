@@ -1,8 +1,10 @@
-import {get, keyBy} from "lodash";
+import { get, keyBy } from "lodash";
 import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+
+import DistrictInput from "../Field/DistrictTemplate";
 
 const chips = {
   chips: {},
@@ -25,7 +27,7 @@ const chips = {
     },
     deposits: {
       id: "deposits",
-      label: "Мои депозиты",
+      label: "Мои депозиты"
     },
     rejections: {
       id: "rejections",
@@ -38,7 +40,7 @@ const list = {
   headers: {
     wishes: {
       id: "wishes",
-      label: "Пожелания",
+      label: "Пожелания"
     },
     status: {
       id: "status_id",
@@ -93,7 +95,7 @@ const form = {
         uf_crm_type_realty: true,
         uf_location: true,
         uf_crm_district_all: true,
-        uf_crm_district: true,
+        district: true,
         uf_crm_s_area: true,
         uf_type_object_2: true,
         uf_source: true
@@ -113,7 +115,7 @@ const form = {
   }
 };
 
-const fields ={}; // will be fetched from API
+const fields = {}; // will be fetched from API
 
 export const initialState = {
   ...chips,
@@ -138,22 +140,6 @@ export default function reducer(state = initialState, { type, payload }) {
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
 
-    // if (type === "FORM_SAVE_TO_STORE") {
-    //   const { name, value, elementId } = payload;
-    //   if (name === "is_real" && value === false) {
-    //     return {
-    //       ...state,
-    //       values: {
-    //         ...state.values,
-    //         [elementId]: {
-    //           ...state.values[elementId],
-    //           [name]: value,
-    //           is_exclusive: false
-    //         }
-    //       }
-    //     };
-    //   }
-    // }
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
       return {
@@ -166,13 +152,23 @@ export default function reducer(state = initialState, { type, payload }) {
     } else if (newFilterState) {
       return { ...state, ...newFilterState };
     } else if (newFormState) {
-      return { ...state, ...newFormState };
+      if (type === "FORM_FIELDS_FETCH_SUCCESS") {
+        newFormState.fields["district"] = {
+          id: "district",
+          type: "custom",
+          component: DistrictInput,
+          label: "Районы",
+          // depended: "uf_crm_district_all",
+          link: [false]
+        };
+      }
+      return {
+        ...state,
+        ...newFormState
+      };
     } else if (newWishState) {
       return { ...state, wish: newWishState };
     }
   }
   return state;
 }
-
-// const fields: {};
-
