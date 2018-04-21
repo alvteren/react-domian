@@ -2,8 +2,8 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 
 import DropdownTreeSelect from "react-dropdown-tree-select";
-import "react-dropdown-tree-select/dist/styles.css"
-import "./materialTree.css"
+import "react-dropdown-tree-select/dist/styles.css";
+import "./materialTree.css";
 
 import { districtTreeConverter } from "../../../../util/districtTreeConverter";
 
@@ -27,8 +27,15 @@ const District = props => {
 
   if (treeData) assignObjectPaths(treeData);
 
-  return (
-    {treeData} ? <DropdownTreeSelect data={treeData} onChange={onChange} className="mdl-demo" placeholderText="Выбор района" /> : <span />
+  return { treeData } ? (
+    <DropdownTreeSelect
+      data={treeData}
+      onChange={onChange}
+      className="mdl-demo"
+      placeholderText="Выбор района"
+    />
+  ) : (
+    <span />
   );
 };
 const mapStateToProps = (state, ownProps) => {
