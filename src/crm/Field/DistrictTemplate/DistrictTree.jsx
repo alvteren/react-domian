@@ -1,58 +1,103 @@
-import React from "react";
+import React, {Fragment} from "react";
 import { connect } from "react-redux";
 
 import List, { ListItem, ListItemText } from "material-ui/List";
 import { Checkbox, Collapse } from "material-ui";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
+import { districtTreeConverter } from "../../../util/districtTreeConverter";
+import { cloneDeep } from "lodash";
 
 import styles from "./DistrictTree.module.css";
 
 class DistrictTree extends React.PureComponent {
-  state = {};
+  state = {
+    districtTree: districtTreeConverter(this.props.lead, this.props.fields)
+  };
   toggleCollapse = id => () => {
     const isOpened = this.state[id];
     this.setState({ [id]: !isOpened });
   };
-  onChangeValue = value => e => {
+  onChangeValue = (type, districtIndex, subDistrictIndex) => e => {
     e.stopPropagation();
+    const updated = cloneDeep(this.state.districtTree);
+    let target;
+    switch (type) {
+      case "district":
+        target = updated[districtIndex];
+        target.checked ? target.checked = !target.checked : target.checked = true;
+        target.children.forEach((child, index) => {
+          child.checked = target.checked;
+        });
+        if (target.checked) {
+          target.checkedLength = target.children.length;
+        } else {
+          target.checkedLength = 0;
+        }
+        this.setState({districtTree: updated});
+        break;
+      case "subDistrict":
+        target = updated[districtIndex].children[subDistrictIndex];
+        target.checked ?
+          target.checked =!target.checked :
+          target.checked = true;
+        if (target.checked) {
+          ++updated[districtIndex].checkedLength;
+        } else {
+          --updated[districtIndex].checkedLength;
+        }
+        this.setState({districtTree: updated});
+        break;
+    }
   };
 
   render() {
+    console.log(this.state.districtTree, "<<<");
     return (
       <div className={styles.wrapper}>
         <List>
-          <ListItem button onClick={this.onChangeValue("value1")}>
-            <Checkbox checked={false} tabIndex={-1} disableRipple />
-            <ListItemText inset primary="Район 1" />
-          </ListItem>
-
-          <ListItem button onClick={this.toggleCollapse("district123")}>
-            <Checkbox
-              checked={false}
-              indeterminate
-              tabIndex={-1}
-              disableRipple
-              onClick={this.onChangeValue("value1")}
-            />
-            <ListItemText inset primary="Район 2" />
-            {/* this `district${value}` */}
-            <div onClick={this.toggleCollapse("district123")}>
-              {this.state["district123"] ? <ExpandLess /> : <ExpandMore />}
-            </div>
-          </ListItem>
-          <Collapse in={this.state["district123"]} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding className={styles.nested}>
-              <ListItem button onClick={this.onChangeValue("value3")}>
-                <Checkbox checked={true} tabIndex={-1} disableRipple />
-                <ListItemText inset primary="Под район 1" />
-              </ListItem>
-              <ListItem button onClick={this.onChangeValue("value3")}>
-                <Checkbox checked={false} tabIndex={-1} disableRipple />
-                <ListItemText inset primary="Под район 2" />
-              </ListItem>
-            </List>
-          </Collapse>
+          {
+            this.state.districtTree.map((district, index) => {
+              if (!district.children || !district.children.length) {
+                return (
+                  <ListItem key={index} button onClick={this.onChangeValue(district.value)}>
+                    <Checkbox checked={false} tabIndex={-1} disableRipple />
+                    <ListItemText inset primary={district.label} />
+                  </ListItem>
+                )
+              } else {
+                return (
+                  <Fragment key={index}>
+                    <ListItem button onClick={this.toggleCollapse(district.value)}>
+                      <Checkbox
+                        checked={district.checked || false}
+                        indeterminate={Boolean(district.checkedLength) && district.checkedLength < district.children.length}
+                        tabIndex={-1}
+                        disableRipple
+                        onClick={this.onChangeValue("district", index)}
+                      />
+                      <ListItemText inset primary={district.label} />
+                      <div onClick={this.toggleCollapse(district.value)}>
+                        {this.state[district.value] ? <ExpandLess /> : <ExpandMore />}
+                      </div>
+                    </ListItem>
+                    <Collapse in={this.state[district.value]} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding className={styles.nested}>
+                      {district.children.map((subDistrict, subDistrictIndex) => {
+                        return (
+                          <ListItem key={subDistrictIndex} button onClick={this.onChangeValue("subDistrict",  index, subDistrictIndex)}>
+                            <Checkbox checked={subDistrict.checked || false} tabIndex={-1} disableRipple />
+                            <ListItemText inset primary={subDistrict.label} />
+                          </ListItem>
+                        )
+                      })}
+                      </List>
+                    </Collapse>
+                  </Fragment>
+                )
+              }
+            })
+          }
         </List>
       </div>
     );
@@ -61,10 +106,10 @@ class DistrictTree extends React.PureComponent {
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    uf_crm_district: districts,
-    uf_crm_subdistrict: subdistricts
+    uf_crm_district,
+    uf_crm_subdistrict
   } = state.crm.leads.fields;
-  const fields = { districts, subdistricts };
+  const fields = { uf_crm_district, uf_crm_subdistrict };
 
   const { objectId } = ownProps;
 

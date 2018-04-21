@@ -43,11 +43,4 @@ const mapStateToProps = (state, ownProps) => {
   return { fields, customer: values[current] };
 };
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     openSearch: () => {
-//       dispatch(openLocationSearch());
-//     }
-//   };
-// };
 export default connect(mapStateToProps, null)(District);

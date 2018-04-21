@@ -123,15 +123,13 @@ class EnhancedTable extends React.Component {
             return fields[id].items[value].label;
           }
         }
-        if (id === "wishes") {
-          const wishesArr = toArray(value.wishes);
+        if (Array.isArray(value)) {
           return (
             <div>
-              <h4>{value.title}</h4>
               {
-                wishesArr.map((wish, index) => {
-                  if (wish === value.title) return "";
-                  return <p key={index}>{wish}</p>
+                value.map((item, index) => {
+                  if (index === 0) return <h4 key={index}>{item}</h4>;
+                  return <p key={index}>{item}</p>
                 })
               }
             </div>

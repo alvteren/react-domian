@@ -133,8 +133,7 @@ export const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const id = get(payload, "id", null);
-  const _id = get(payload, "_id", null);
-  if (id === "leads" || _id === "leads") {
+  if (id === "leads") {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
@@ -142,6 +141,7 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
+      values.can.edit = true;
       return {
         ...state,
         values: { [values.id]: values }
