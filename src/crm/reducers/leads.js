@@ -147,6 +147,11 @@ export default function reducer(state = initialState, { type, payload }) {
         values: { [values.id]: values }
       };
     }
+
+    if (type === "FORM_SAVE_TO_STORE") {
+      const { name, value, elementId } = payload;
+    }
+
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
@@ -158,7 +163,7 @@ export default function reducer(state = initialState, { type, payload }) {
           type: "custom",
           component: DistrictInput,
           label: "Районы",
-          // depended: "uf_crm_district_all",
+          depended: "uf_crm_district_all",
           link: [false]
         };
       }

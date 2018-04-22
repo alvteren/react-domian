@@ -23,6 +23,7 @@ class District extends React.PureComponent {
 
   onChangeValue = value => {
     const { onChange, id } = this.props;
+    console.log("FFF");
     onChange({ target: { name: id, value: value } });
   };
   handleDelete = fieldValue => () => {
@@ -46,6 +47,14 @@ class District extends React.PureComponent {
       canEdit
     } = this.props;
     const { needSave } = this.props.state;
+    const districts = this.props.uf_crm_district || [];
+    // ATTENTION: not tested! This filter for non-duplicate district and sub district values output
+    let subDistricts;
+    this.props.uf_crm_district ? subDistricts = this.props.uf_crm_subdistrict.filter((item) => {
+      this.props.uf_crm_district.forEach((district) => {
+        return item.link.includes(district.value);
+      })
+    }) : subDistricts = this.props.uf_crm_subdistrict;
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -55,22 +64,36 @@ class District extends React.PureComponent {
                 {field.label}
               </Typography>
               <div className={styles.chips}>
-                <Chip
-                  label="Район 1"
-                  onDelete={this.handleDelete({
-                    field: "uf_crm_distruct или uf_crm_subdistruct",
-                    value: "value1"
-                  })}
-                  className={styles.chip}
-                />
-                <Chip
-                  label="Район 2"
-                  onDelete={this.handleDelete({
-                    field: "uf_crm_distruct или uf_crm_subdistruct",
-                    value: "value2"
-                  })}
-                  className={styles.chip}
-                />
+                {
+                  districts.map((district, districtIndex) => {
+                    return (
+                      <Chip
+                        key={districtIndex}
+                        label={this.props.districtFields.items[district].label}
+                        onDelete={this.handleDelete({
+                          field: "uf_crm_distruct или uf_crm_subdistruct",
+                          value: "value1"
+                        })}
+                        className={styles.chip}
+                      />
+                    )
+                  })
+                }
+                {
+                  subDistricts.map((subDistrict, subDistrictIndex) => {
+                    return (
+                      <Chip
+                        key={subDistrictIndex}
+                        label={this.props.subDistrictFields.items[subDistrict].label}
+                        onDelete={this.handleDelete({
+                          field: "uf_crm_distruct или uf_crm_subdistruct",
+                          value: "value1"
+                        })}
+                        className={styles.chip}
+                      />
+                    )
+                 })
+                }
                 {canEdit && (
                   <IconButton color="primary" onClick={this.onOpenDialog}>
                     <AddIcon />
@@ -88,11 +111,10 @@ class District extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps);
   const { objectId } = ownProps;
-  const { can } = state.crm.leads.values[objectId];
-  console.log(can);
+  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.leads.fields;
+  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.leads.values[objectId];
   const { edit: canEdit = false } = can;
-  return { canEdit };
+  return { canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
 };
 export default connect(mapStateToProps)(District);

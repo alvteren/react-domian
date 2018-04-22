@@ -50,9 +50,11 @@ class DistrictTree extends React.PureComponent {
         break;
     }
   };
+  updateStore = () => {
+
+  };
 
   render() {
-    console.log(this.state.districtTree, "<<<");
     return (
       <div className={styles.wrapper}>
         <List>

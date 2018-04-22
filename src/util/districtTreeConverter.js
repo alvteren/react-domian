@@ -42,7 +42,7 @@ export function districtTreeConverter(lead, fields) {
         if (subDistrictValue.link && Array.isArray(subDistrictValue.link) && subDistrictValue.link.includes(districtKey)) {
           if (prefers.subDistrict && prefers.subDistrict.includes(parseInt(subDistrictKey))) {
             // set length of selected items
-            districtValue.checkedLength ? districtValue.checkedLength++ : districtValue.checkedLength = 1;
+            districtValue.checkedLength++;
             if (districtValue.checkedLength === districtValue.children.length) districtValue.checked = true;
             subDistrictValue.checked = true;
           }

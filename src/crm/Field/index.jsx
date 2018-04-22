@@ -347,6 +347,7 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { objectId: elementId, field } = stateProps;
+  const { entityId } = ownProps;
   const name = field.id;
 
   return {
@@ -354,17 +355,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: e => {
       const { value } = e.target;
-      dispatch(saveToStore({ id: "objects", elementId, name, value }));
+      dispatch(saveToStore({ id: entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      dispatch(saveToStore({ id: "objects", elementId, name, value: checked }));
+      dispatch(saveToStore({ id: entityId, elementId, name, value: checked }));
     },
     saveFile: file => {
-      dispatch(saveFile({ id: "objects", elementId, name: "photo", file }));
+      dispatch(saveFile({ id: entityId, elementId, name: "photo", file }));
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(saveToServer({ id: "objects", elementId, name, value }));
+      dispatch(saveToServer({ id: entityId, elementId, name, value }));
     }
   };
 };

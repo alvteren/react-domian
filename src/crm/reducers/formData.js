@@ -66,6 +66,10 @@ export default (state, { type, payload }) => {
         }
       };
     }
+    if (type === "DISTRICT_CHANGE") {
+      const { districts, subDistricts } = payload;
+      const newstate = { ...state, uf_crm_district: districts, uf_crm_subdistrict: subDistricts }
+    }
   }
   if (newstate) {
     return { ...state, ...newstate };
