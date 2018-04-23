@@ -22,13 +22,15 @@ class District extends React.PureComponent {
   state = {
     open: false,
     isTreeChanged: false,
-    uf_crm_district: [],
-    uf_crm_subdistrict: []
+    [DISTRICTS]: this.props[DISTRICTS] || [],
+    [SUB_DISTRICTS]: this.props[SUB_DISTRICTS] || []
   };
 
   onChangeValue = ({ name, value }) => () => {
-    const updated = this.props[name].filter((item) => item!== parseInt(value));
+    debugger;
+    const updated = this.state[name].filter((item) => item!== parseInt(value));
     const { onChange } = this.props;
+    this.setState({[name]: updated});
     onChange(name, updated);
   };
   handleDelete = fieldValue => () => {
@@ -41,28 +43,23 @@ class District extends React.PureComponent {
     this.setState({ open: false });
   };
   onTreeChange = ({ name, value, add }) => {
+    console.log("state", this.state[name]);
     const updated = add
-      ? this.state[name].splice(0).concat([value])
-      : this.state[name].splice(0).filter((item) => item !== parseInt(value));
-    console.log("UPDATED", updated);
+      ? this.state[name].splice(0).concat([value]) // if item was added
+      : this.state[name].splice(0).filter((item) => item !== parseInt(value)); // for delete item case
+    console.log("updated", updated);
     this.setState({ isTreeChanged: true, [name]: updated })
   };
   onSaveToStore = () => {
     const { onChange } = this.props;
-    let districtArr = false;
-    if (this.props[DISTRICTS] || this.state[DISTRICTS].length) {
-      const storeDistricts = this.props[DISTRICTS] || [];
-      districtArr = storeDistricts.concat(this.state[DISTRICTS]);
-    }
-    console.log("SAVING...");
     const data = [
       {
         name: DISTRICTS,
-        value:  districtArr
+        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS] : false
       },
       {
         name: SUB_DISTRICTS,
-        value: this.props[SUB_DISTRICTS].concat(this.state[SUB_DISTRICTS])
+        value: this.state[SUB_DISTRICTS]
       }
     ];
     onChange(data);
@@ -90,7 +87,6 @@ class District extends React.PureComponent {
         }
       })
       : this.props.uf_crm_subdistrict;
-    console.log("SUB", subDistricts);
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
