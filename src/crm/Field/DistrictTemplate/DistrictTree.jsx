@@ -5,7 +5,7 @@ import List, { ListItem, ListItemText } from "material-ui/List";
 import { Checkbox, Collapse } from "material-ui";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
-import { districtTreeConverter } from "../../../util/districtTreeConverter";
+import { districtTreeConverter } from "./utils/districtTreeConverter";
 import { cloneDeep } from "lodash";
 
 import styles from "./DistrictTree.module.css";
@@ -23,7 +23,7 @@ class DistrictTree extends React.PureComponent {
     const updated = cloneDeep(this.state.districtTree);
     let target;
     switch (type) {
-      case "district":
+      case "uf_crm_district":
         target = updated[districtIndex];
         target.checked ? target.checked = !target.checked : target.checked = true;
         target.children.forEach((child, index) => {
@@ -36,7 +36,7 @@ class DistrictTree extends React.PureComponent {
         }
         this.setState({districtTree: updated});
         break;
-      case "subDistrict":
+      case "uf_crm_subdistrict":
         target = updated[districtIndex].children[subDistrictIndex];
         target.checked ?
           target.checked =!target.checked :
@@ -49,6 +49,12 @@ class DistrictTree extends React.PureComponent {
         this.setState({districtTree: updated});
         break;
     }
+    console.log("TARGET", target);
+    this.props.onTreeChange({
+      name: type,
+      value: target.value,
+      add: target.checked
+    })
   };
   updateStore = () => {
 
@@ -76,7 +82,7 @@ class DistrictTree extends React.PureComponent {
                         indeterminate={Boolean(district.checkedLength) && district.checkedLength < district.children.length}
                         tabIndex={-1}
                         disableRipple
-                        onClick={this.onChangeValue("district", index)}
+                        onClick={this.onChangeValue("uf_crm_district", index)}
                       />
                       <ListItemText inset primary={district.label} />
                       <div onClick={this.toggleCollapse(district.value)}>
@@ -87,7 +93,7 @@ class DistrictTree extends React.PureComponent {
                       <List component="div" disablePadding className={styles.nested}>
                       {district.children.map((subDistrict, subDistrictIndex) => {
                         return (
-                          <ListItem key={subDistrictIndex} button onClick={this.onChangeValue("subDistrict",  index, subDistrictIndex)}>
+                          <ListItem key={subDistrictIndex} button onClick={this.onChangeValue("uf_crm_subdistrict",  index, subDistrictIndex)}>
                             <Checkbox checked={subDistrict.checked || false} tabIndex={-1} disableRipple />
                             <ListItemText inset primary={subDistrict.label} />
                           </ListItem>
@@ -113,7 +119,7 @@ const mapStateToProps = (state, ownProps) => {
   } = state.crm.leads.fields;
   const fields = { uf_crm_district, uf_crm_subdistrict };
 
-  const { objectId } = ownProps;
+  const { objectId, onChange } = ownProps;
 
   const lead = state.crm.leads.values[objectId];
 

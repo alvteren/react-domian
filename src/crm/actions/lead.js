@@ -3,7 +3,7 @@ import { fetchLead as fetchLeadApi } from "../../api/lead";
 import { fetchLeadFields as fetchLeadFieldsApi } from "../../api/lead";
 import { fetchLeadField as fetchLeadFieldApi } from "../../api/lead";
 import convert from '../../util/leadDataConverter';
-import { setTypeByID } from "../../util/districtTreeConverter";
+import { setTypeByID } from "../Field/DistrictTemplate/utils/districtTreeConverter";
 
 // Action types
 

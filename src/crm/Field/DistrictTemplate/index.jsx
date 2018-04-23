@@ -15,16 +15,21 @@ import List, { ListItem, ListItemText, ListSubheader } from "material-ui/List";
 import DistrictSelect from "./DistrictSelect";
 
 import styles from "./index.module.css";
+import {saveToStore} from "../../actions/form";
+import { DISTRICTS, SUB_DISTRICTS } from "./utils/districtTreeConverter";
 
 class District extends React.PureComponent {
   state = {
-    open: false
+    open: false,
+    isTreeChanged: false,
+    uf_crm_district: [],
+    uf_crm_subdistrict: []
   };
 
-  onChangeValue = value => {
-    const { onChange, id } = this.props;
-    console.log("FFF");
-    onChange({ target: { name: id, value: value } });
+  onChangeValue = ({ name, value }) => () => {
+    const updated = this.props[name].filter((item) => item!== parseInt(value));
+    const { onChange } = this.props;
+    onChange(name, updated);
   };
   handleDelete = fieldValue => () => {
     const { field, value } = fieldValue;
@@ -34,6 +39,34 @@ class District extends React.PureComponent {
   };
   onCloseDialog = () => {
     this.setState({ open: false });
+  };
+  onTreeChange = ({ name, value, add }) => {
+    const updated = add
+      ? this.state[name].splice(0).concat([value])
+      : this.state[name].splice(0).filter((item) => item !== parseInt(value));
+    console.log("UPDATED", updated);
+    this.setState({ isTreeChanged: true, [name]: updated })
+  };
+  onSaveToStore = () => {
+    const { onChange } = this.props;
+    let districtArr = false;
+    if (this.props[DISTRICTS] || this.state[DISTRICTS].length) {
+      const storeDistricts = this.props[DISTRICTS] || [];
+      districtArr = storeDistricts.concat(this.state[DISTRICTS]);
+    }
+    console.log("SAVING...");
+    const data = [
+      {
+        name: DISTRICTS,
+        value:  districtArr
+      },
+      {
+        name: SUB_DISTRICTS,
+        value: this.props[SUB_DISTRICTS].concat(this.state[SUB_DISTRICTS])
+      }
+    ];
+    onChange(data);
+    this.setState({ [DISTRICTS]: [], [SUB_DISTRICTS]: [], open: false })
   };
 
   render() {
@@ -48,13 +81,16 @@ class District extends React.PureComponent {
     } = this.props;
     const { needSave } = this.props.state;
     const districts = this.props.uf_crm_district || [];
-    // ATTENTION: not tested! This filter for non-duplicate district and sub district values output
-    let subDistricts;
-    this.props.uf_crm_district ? subDistricts = this.props.uf_crm_subdistrict.filter((item) => {
-      this.props.uf_crm_district.forEach((district) => {
-        return item.link.includes(district.value);
+    // This filter for non-duplicate district and sub district values output
+    const subDistricts = this.props.uf_crm_district
+      ? this.props.uf_crm_subdistrict.filter((item) => {
+        const links = this.props.subDistrictFields.items[item].link;
+        for (let i = 0; i < links.length; i++) {
+          return !this.props.uf_crm_district.includes(links[i]);
+        }
       })
-    }) : subDistricts = this.props.uf_crm_subdistrict;
+      : this.props.uf_crm_subdistrict;
+    console.log("SUB", subDistricts);
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -70,9 +106,9 @@ class District extends React.PureComponent {
                       <Chip
                         key={districtIndex}
                         label={this.props.districtFields.items[district].label}
-                        onDelete={this.handleDelete({
-                          field: "uf_crm_distruct или uf_crm_subdistruct",
-                          value: "value1"
+                        onDelete={this.onChangeValue({
+                          name: "uf_crm_district",
+                          value: this.props.districtFields.items[district].value
                         })}
                         className={styles.chip}
                       />
@@ -85,9 +121,9 @@ class District extends React.PureComponent {
                       <Chip
                         key={subDistrictIndex}
                         label={this.props.subDistrictFields.items[subDistrict].label}
-                        onDelete={this.handleDelete({
-                          field: "uf_crm_distruct или uf_crm_subdistruct",
-                          value: "value1"
+                        onDelete={this.onChangeValue({
+                          name: "uf_crm_subdistrict",
+                          value: this.props.subDistrictFields.items[subDistrict].value
                         })}
                         className={styles.chip}
                       />
@@ -104,7 +140,13 @@ class District extends React.PureComponent {
           </div>
         </Grid>
         {this.state.open && (
-          <DistrictSelect {...this.props} onCloseDialog={this.onCloseDialog} />
+          <DistrictSelect
+            {...this.props}
+            onCloseDialog={this.onCloseDialog}
+            onSaveToStore={this.onSaveToStore}
+            onTreeChange={this.onTreeChange}
+            isTreeChanged={this.state.isTreeChanged}
+          />
         )}
       </Fragment>
     );
@@ -115,6 +157,20 @@ const mapStateToProps = (state, ownProps) => {
   const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.leads.fields;
   const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.leads.values[objectId];
   const { edit: canEdit = false } = can;
-  return { canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
+  return { objectId, canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
 };
-export default connect(mapStateToProps)(District);
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { dispatch } = dispatchProps;
+  const { objectId: elementId } = stateProps;
+  const entityId = "leads";
+  return {
+    ...stateProps,
+    ...ownProps,
+    onChange(name, value) {
+      dispatch(saveToStore({ id: entityId, elementId, name, value }))
+    }
+  }
+};
+
+export default connect(mapStateToProps, null, mergeProps)(District);

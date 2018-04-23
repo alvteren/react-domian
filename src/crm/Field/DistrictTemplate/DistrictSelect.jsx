@@ -9,8 +9,12 @@ import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
 import AppBar from "material-ui/AppBar";
 import Toolbar from "material-ui/Toolbar";
 import IconButton from "material-ui/IconButton";
-import CloseIcon from "material-ui-icons/Close";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
+import {
+  Close as CloseIcon,
+  ArrowBack as ArrowBackIcon,
+  Save as SaveIcon
+} from "material-ui-icons"
 import { Hidden } from "material-ui";
 
 import styles from "./DistrictSelect.module.css";
@@ -22,9 +26,8 @@ const Transition = props => {
 };
 
 const DistrictSelect = props => {
-  const onChangeValue = values => {};
 
-  const { fullScreen, values, onCloseDialog, onChange } = props;
+  const { fullScreen, values, onCloseDialog, isTreeChanged, onSaveToStore } = props;
   return (
     <Dialog
       fullScreen={fullScreen}
@@ -47,6 +50,17 @@ const DistrictSelect = props => {
             </Hidden>
           </IconButton>
           <div>Выберите районы</div>
+          {isTreeChanged &&
+            <Button
+              className={styles.saveBtn}
+              onClick={onSaveToStore}
+              color="primary"
+              variant="raised"
+              size="small">
+              Сохранить
+              <SaveIcon />
+            </Button>
+          }
         </Toolbar>
       </AppBar>
       <DialogContent className={styles.dialogContent}>

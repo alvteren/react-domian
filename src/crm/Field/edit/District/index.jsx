@@ -5,7 +5,7 @@ import DropdownTreeSelect from "react-dropdown-tree-select";
 import "react-dropdown-tree-select/dist/styles.css";
 import "./materialTree.css";
 
-import { districtTreeConverter } from "../../../../util/districtTreeConverter";
+import { districtTreeConverter } from "../../DistrictTemplate/utils/districtTreeConverter";
 
 const District = props => {
   const { fields, customer } = props;
