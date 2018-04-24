@@ -1,4 +1,4 @@
-import { map, forOwn } from "lodash";
+import { map, forOwn, reduce } from "lodash";
 import getVisibleValues from "../../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
@@ -38,13 +38,27 @@ export function districtTreeConverter(lead, fields) {
   } = fields;
 
   const visibleDistricts = getVisibleValues(districtField, lead);
-  const visibleSubDistricts = getVisibleValues(subDistrictField, {
-    ...lead,
-    [DISTRICTS]: { ...districtField, items: visibleDistricts }
+  return map(visibleDistricts, district => {
+    const checked = prefers.district.indexOf(parseInt(district.value)) !== -1;
+    const children = reduce(
+      subDistrictField.items,
+      (result, subDistrict) => {
+        if (subDistrict.link.indexOf(district.value) === -1) {
+          return result;
+        }
+        const checked =
+          prefers.subDistrict.indexOf(parseInt(subDistrict.value)) !== -1;
+        return [...result, { ...subDistrict, checked }];
+      },
+      []
+    );
+    const checkedChildren = children.filter(subDistrict => subDistrict.checked);
+
+    return {
+      ...district,
+      checked,
+      children,
+      checkedLength: checkedChildren.length
+    };
   });
-
-  console.log("visibleDistricts", visibleDistricts);
-  console.log("visibleSubDistricts", visibleSubDistricts);
-
-  return [];
 }
