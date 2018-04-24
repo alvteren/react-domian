@@ -1,4 +1,5 @@
-import _ from "lodash";
+import { map, forOwn } from "lodash";
+import getVisibleValues from "../../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
 export const SUB_DISTRICTS = "uf_crm_subdistrict";
@@ -11,9 +12,9 @@ const keysToMatch = [DISTRICTS, SUB_DISTRICTS];
  * @return undefined
  */
 export function setTypeByID(values) {
-  _.forOwn(values, (item, key) => {
+  forOwn(values, (item, key) => {
     if (keysToMatch.includes(key)) item.type = TYPE;
-  })
+  });
 }
 
 /**
@@ -27,30 +28,23 @@ export function districtTreeConverter(lead, fields) {
 
   const location = lead.uf_location.value;
   const prefers = {
-    district: lead.uf_crm_district,
-    subDistrict: lead.uf_crm_subdistrict
+    district: lead[DISTRICTS],
+    subDistrict: lead[SUB_DISTRICTS]
   };
 
-  let resultTree = [];
-  // Add districts to tree
-  _.forOwn(fields[DISTRICTS].items, (districtValue, districtKey) => {
-    if (districtValue.link && Array.isArray(districtValue.link) && districtValue.link.includes(String(location))) {
-      districtValue.checkedLength = 0;
-      if (prefers.district && prefers.district.includes(parseInt(districtKey))) districtValue.checked = true;
-      // Add sub districts to current district as children
-      _.forOwn(fields[SUB_DISTRICTS].items, (subDistrictValue, subDistrictKey) => {
-        if (subDistrictValue.link && Array.isArray(subDistrictValue.link) && subDistrictValue.link.includes(districtKey)) {
-          if (prefers.subDistrict && prefers.subDistrict.includes(parseInt(subDistrictKey))) {
-            // set length of selected items
-            districtValue.checkedLength++;
-            if (districtValue.checkedLength === districtValue.children.length) districtValue.checked = true;
-            subDistrictValue.checked = true;
-          }
-          districtValue.children ? districtValue.children.push(subDistrictValue) : districtValue.children = [subDistrictValue];
-        }
-      });
-      resultTree.push(districtValue);
-    }
+  const {
+    [DISTRICTS]: districtField,
+    [SUB_DISTRICTS]: subDistrictField
+  } = fields;
+
+  const visibleDistricts = getVisibleValues(districtField, lead);
+  const visibleSubDistricts = getVisibleValues(subDistrictField, {
+    ...lead,
+    [DISTRICTS]: { ...districtField, items: visibleDistricts }
   });
-  return resultTree
+
+  console.log("visibleDistricts", visibleDistricts);
+  console.log("visibleSubDistricts", visibleSubDistricts);
+
+  return [];
 }
