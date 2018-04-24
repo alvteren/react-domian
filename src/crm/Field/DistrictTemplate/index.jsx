@@ -63,7 +63,7 @@ class District extends React.PureComponent {
       }
     ];
     onChange(data);
-    this.setState({ [DISTRICTS]: [], [SUB_DISTRICTS]: [], open: false })
+    this.setState({ open: false })
   };
 
   render() {
@@ -78,6 +78,7 @@ class District extends React.PureComponent {
     } = this.props;
     const { needSave } = this.props.state;
     const districts = this.props.uf_crm_district || [];
+    // debugger;
     // This filter for non-duplicate district and sub district values output
     const subDistricts = this.props.uf_crm_district
       ? this.props.uf_crm_subdistrict.filter((item) => {
@@ -86,7 +87,7 @@ class District extends React.PureComponent {
           return !this.props.uf_crm_district.includes(links[i]);
         }
       })
-      : this.props.uf_crm_subdistrict;
+      : this.props.uf_crm_subdistrict || [];
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
