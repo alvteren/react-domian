@@ -126,7 +126,6 @@ class Card extends React.Component {
                 key={id}
                 edit={currentEdit === id}
                 match={this.props.match}
-                entityId="objects"
               />
             ))}
           </Grid>

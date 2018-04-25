@@ -3,7 +3,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
-import { AppBar, Toolbar, IconButton, Typography, Grid, Avatar, Paper,  Badge, Tooltip, LinearProgress } from 'material-ui';
+import AppBar from "material-ui/AppBar";
+import Toolbar from "material-ui/Toolbar";
+import IconButton from "material-ui/IconButton";
+import Typography from "material-ui/Typography";
+import Grid from "material-ui/Grid";
+import Paper from "material-ui/Paper";
+import Avatar from "material-ui/Avatar";
+import { LinearProgress } from "material-ui";
 
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
@@ -70,15 +77,8 @@ class Detail extends React.Component {
                       ) : (
                         <Avatar>{user.initial}</Avatar>
                       )}
+
                       <div className={styles.username}>{user.name}</div>
-                      <Tooltip title="Задатки">
-                        <div className={styles.depositBadgeWrapper}>
-                          <Badge color="primary" badgeContent={user.deposit || 0}>
-                            {/*Badge component required a child element*/}
-                            <div></div>
-                          </Badge>
-                        </div>
-                      </Tooltip>
                     </Paper>
                   </Grid>
                 );

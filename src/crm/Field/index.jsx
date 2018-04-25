@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { get, filter, size, isObject, forEach } from "lodash";
-import getVisibleValues from "./getVisibleValues";
+import { noStrictIncludes } from "../../util/collection";
 
 import { saveToStore, saveFile, saveToServer } from "../actions/form";
 
@@ -12,7 +12,6 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-// import DistrictFieldEdit from "./edit/District";
 
 import styles from "./Field.module.css";
 
@@ -63,6 +62,29 @@ class Field extends React.Component {
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
 
+    const getVisibleValues = () => {
+      if (isDepended) {
+        if (values == null) return null;
+        let linkedValue = get(values, field.depended, null);
+        if (isObject(linkedValue) && linkedValue.hasOwnProperty("value")) {
+          linkedValue = linkedValue.value;
+        } else if (isObject(linkedValue) && linkedValue.hasOwnProperty("id")) {
+          linkedValue = linkedValue.id;
+        }
+
+        if (get(field, "items", false)) {
+          const items = filter(field.items, item => {
+            return noStrictIncludes(item.link, linkedValue);
+          });
+          return size(items) > 0 ? items : null;
+        } else {
+          return noStrictIncludes(field.link, linkedValue) ? true : null;
+        }
+      }
+
+      return get(field, "items", true);
+    };
+
     if (field === false) {
       return <span />;
     }
@@ -85,16 +107,7 @@ class Field extends React.Component {
       );
     }
 
-    const visibleValues = getVisibleValues(field, values);
-
-    if (field.type === "custom" && field["component"] && visibleValues) {
-      return React.createElement(field["component"], {
-        ...this.props,
-        state: this.state,
-        onChange: this.onChange,
-        onSave: this.onSave
-      });
-    }
+    const visibleValues = getVisibleValues();
 
     if (edit && canEdit) {
       const formControl = needSave
@@ -109,7 +122,7 @@ class Field extends React.Component {
                 <div className={classes.valueWrapper}>
                   <FieldEditSelect
                     id={id}
-                    value={value || ""}
+                    value={value}
                     field={field}
                     visibleValues={visibleValues}
                     onChange={this.onChange}
@@ -188,7 +201,7 @@ class Field extends React.Component {
                 name={id}
                 label={field.label}
                 onChange={this.onChange}
-                value={value || ""}
+                value={value}
                 multiline
                 rowsMax="4"
                 helperText={get(field, "hint", "")}
@@ -215,7 +228,7 @@ class Field extends React.Component {
               name={id}
               label={field.label}
               onChange={this.onChange}
-              value={value || ""}
+              value={value}
               helperText={get(field, "hint", "")}
             />
             {needSave && (
@@ -239,10 +252,9 @@ class Field extends React.Component {
 
       if (isShowedField) {
         const formatValue = () => {
-          if (field.items) {
+          if (field.type === "select") {
             const listValue = field.hasOwnProperty("items")
-              ? get(field.items, value, null) ||
-                get(field.items, String(value).toLowerCase(), null)
+              ? get(field.items, value, null)
               : null;
             return listValue ? listValue.label : "";
           }
@@ -285,8 +297,8 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, match, entityId } = ownProps;
-  const { fields, values } = state.crm[entityId];
+  const { fields, values } = state.crm.objects;
+  const { id, match } = ownProps;
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
@@ -304,14 +316,12 @@ const mapStateToProps = (state, ownProps) => {
     field,
     values: objectValues,
     value,
-    can,
-    entityId
+    can
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { objectId: elementId, field } = stateProps;
-  const { entityId } = ownProps;
   const name = field.id;
 
   return {
@@ -319,17 +329,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: e => {
       const { value } = e.target;
-      dispatch(saveToStore({ id: entityId, elementId, name, value }));
+      dispatch(saveToStore({ id: "objects", elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      dispatch(saveToStore({ id: entityId, elementId, name, value: checked }));
+      dispatch(saveToStore({ id: "objects", elementId, name, value: checked }));
     },
     saveFile: file => {
-      dispatch(saveFile({ id: entityId, elementId, name: "photo", file }));
+      dispatch(saveFile({ id: "objects", elementId, name: "photo", file }));
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(saveToServer({ id: entityId, elementId, name, value }));
+      dispatch(saveToServer({ id: "objects", elementId, name, value }));
     }
   };
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withStyles } from "material-ui/styles";
 import keycode from "keycode";
 import Table, {
   TableBody,
@@ -7,8 +8,10 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import { Tooltip, Paper, Checkbox } from "material-ui";
-import { Pageview as PageviewIcon } from "material-ui-icons";
+import Tooltip from "material-ui/Tooltip";
+import Paper from "material-ui/Paper";
+import Checkbox from "material-ui/Checkbox";
+import PageviewIcon from "material-ui-icons/Pageview";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -26,24 +29,27 @@ import {
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import styles from "./Table.module.css";
-
-/**
- * EnhancedTable API:
- * available props:
- *   selected [Object] - array of selected objects
- *   controlComponents React.Component - enable components for additional control buttons
- *   filterComponent React.Component - enable filter component
- *   groupActionsComponents React.Component - enable component for buttons of group actions
- */
-
+const styles = theme => ({
+  root: {
+    width: "100%",
+    marginTop: theme.spacing.unit * 3
+  },
+  table: {
+    minWidth: 800
+  },
+  tableWrapper: {
+    overflowX: "auto"
+  },
+  nowrap: {
+    whiteSpace: "nowrap"
+  }
+});
 class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
 
     props.init();
   }
-
   handleRequestSort = (event, property) => {
     this.props.onRequestSort(property);
   };
@@ -69,6 +75,7 @@ class EnhancedTable extends React.Component {
   render() {
     const {
       id,
+      classes,
       data,
       selected,
       rowsPerPage,
@@ -77,8 +84,6 @@ class EnhancedTable extends React.Component {
       headerData,
       fields,
       filterComponent,
-      groupActionsComponents,
-      controlComponents,
       onChangePage,
       onDeleteSelectedData
     } = this.props;
@@ -101,44 +106,27 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
+      const currency = row.currency || "RUB";
       if (value != null) {
         if (id === "price") {
-          const currency = row.currency || "RUB";
           return new Intl.NumberFormat("ru-Ru", {
             style: "currency",
-            currency,
+            currency: currency,
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
           }).format(value * 1);
         }
-        if (id === "contacts" || id === "phone") {
-          return <span className={styles.nowrap}>{value}</span>;
+        if (id === "contacts") {
+          return <span className={classes.nowrap}>{value}</span>;
         }
 
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (fields && fields.hasOwnProperty(id) && fields[id].type === "select") {
+        console.log(id);
+        if (fields.hasOwnProperty(id) && fields[id].type === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
-          }
-        }
-        if (Array.isArray(value)) {
-          return (
-            <div>
-              {
-                value.map((item, index) => {
-                  if (index === 0) return <h4 key={index}>{item}</h4>;
-                  return <p key={index}>{item}</p>
-                })
-              }
-            </div>
-          );
-        }
-        if (id === "status_id") {
-          const val = value.toLowerCase();
-          if (fields && fields.status_id && fields.status_id.items && fields.status_id.items[val] && fields.status_id.items[val].label) {
-            return fields.status_id.items[val].label;
           }
         }
 
@@ -149,17 +137,15 @@ class EnhancedTable extends React.Component {
     };
 
     return (
-      <Paper className={styles.root}>
+      <Paper className={classes.root}>
         <EnhancedToolbar
           numSelected={selected.length}
           id={id}
-          addSelectedToFavorite={this.addSelectedtoFavorite}
           onDeleteSelectedData={onDeleteSelectedData}
           filterComponent={filterComponent}
-          groupActionsComponents={groupActionsComponents}
         />
-        <div className={styles.tableWrapper}>
-          <Table className={styles.table}>
+        <div className={classes.tableWrapper}>
+          <Table className={classes.table}>
             <Head
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
@@ -170,7 +156,6 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {arData
-                .reverse() // after fetch items adds to top like a stack
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(row => {
                   const isSelected = this.isSelected(row.id);
@@ -188,24 +173,12 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      <TableCell padding="none">
-                        <div className={styles.controlsWrapper}>
-                          <Tooltip title="Подробнее" enterDelay={300}>
-                            <Link
-                              to={row.url || `show/${id}/${row.id}`}
-                              onClick={e => {
-                                e.stopPropagation();
-                              }}
-                            >
-                              <PageviewIcon />
-                            </Link>
-                          </Tooltip>
-                          {controlComponents &&
-                            React.createElement(controlComponents, {
-                              id: row.id,
-                              entityId: id
-                            })}
-                        </div>
+                      <TableCell>
+                        <Tooltip title="Подробнее" enterDelay={300}>
+                          <Link to={row.url}>
+                            <PageviewIcon />
+                          </Link>
+                        </Tooltip>
                       </TableCell>
                       {arHeaderData.map(column => {
                         const value = row[column.id];
@@ -251,7 +224,8 @@ class EnhancedTable extends React.Component {
 }
 
 EnhancedTable.propTypes = {
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  classes: PropTypes.object.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
   const table = state.crm[ownProps.id];
@@ -296,4 +270,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(EnhancedTable)
+);

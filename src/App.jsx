@@ -8,7 +8,6 @@ import Desktop from "./desktop/Desktop";
 import AlianceList from "./aliance/List";
 import TelegramLink from "./aliance/TelegramLink";
 import Auth from "./user/Auth";
-import Lead from "./crm/Lead";
 
 import { JssProvider } from "react-jss";
 import { create } from "jss";
@@ -100,7 +99,6 @@ class App extends Component {
                       component={TelegramLink}
                     />
                   </main>
-                  <Route path="/crm/lead" component={Lead}/>
                 </Fragment>
               </ConnectedRouter>
             </Auth>

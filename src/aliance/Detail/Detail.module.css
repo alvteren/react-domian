@@ -15,7 +15,6 @@
 }
 .userCard {
   display: flex;
-  position: relative;
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
@@ -24,9 +23,4 @@
 }
 .username {
   padding-left: 8px;
-}
-
-.depositBadgeWrapper {
-  position: absolute;
-  right: 30px;
 }

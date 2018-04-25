@@ -1,6 +1,5 @@
 import { clearData } from "./table";
 import { fetchObjects } from "./objects";
-import { fetchLeads } from "./lead";
 import { fetchChips as fetchChipsApi } from "../../api/chips";
 
 export const deleteChip = props => dispatch => {
@@ -21,7 +20,7 @@ export const fetchChips = props => async dispatch => {
     });
     dispatch({
       type: "CHIPS_FETCH_SUCCESS",
-      payload: { id: id, data: data }
+      payload: { id: "objects", data: data }
     });
   } catch (err) {
     dispatch({ type: "CHIPS_FETCH_ERROR", payload: err, error: true });
@@ -41,11 +40,6 @@ export const applyFilter = props => async (dispatch, getState) => {
 
   dispatch(clearData({ id }));
   if (page === 0) {
-    switch (id) {
-      case "objects": dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
-      break;
-      case "leads": dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
-      break;
-    }
+    dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
   }
 };

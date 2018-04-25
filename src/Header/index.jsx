@@ -17,7 +17,6 @@ import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import StarBorderIcon from "material-ui-icons/StarBorder";
 import ObjectIcon from "material-ui-icons/LocationCity";
-import Customers from "material-ui-icons/SupervisorAccount";
 
 import styles from "./Header.module.css";
 import UserCard from "../user/UserCard";
@@ -134,17 +133,6 @@ class Header extends React.Component {
                     <ObjectIcon />
                   </ListItemIcon>
                   <ListItemText inset primary="Объекты" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/crm/lead"
-                  onClick={this.handleItemLinkClick}
-                >
-                  <ListItemIcon>
-                    <Customers />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Покупатели" />
                 </ListItem>
               </List>
             </Collapse>
