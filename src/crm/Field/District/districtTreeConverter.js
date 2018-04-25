@@ -1,5 +1,5 @@
 import { map, forOwn, reduce } from "lodash";
-import getVisibleValues from "../../getVisibleValues";
+import getVisibleValues from "../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
 export const SUB_DISTRICTS = "uf_crm_subdistrict";
