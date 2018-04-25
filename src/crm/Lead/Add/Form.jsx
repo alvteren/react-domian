@@ -2,16 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { withStyles } from "material-ui/styles";
-import { Grid } from "material-ui";
-
-import AppBar from "material-ui/AppBar";
-import Tabs, { Tab } from "material-ui/Tabs";
+import { map } from "lodash";
 
 import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
 
-import { map, get, reduce, findIndex } from "lodash";
+import { withStyles } from "material-ui/styles";
+import { Grid } from "material-ui";
+import AppBar from "material-ui/AppBar";
+import Tabs, { Tab } from "material-ui/Tabs";
+
 const styles = theme => ({
   root: {},
   container: {
@@ -20,13 +20,17 @@ const styles = theme => ({
   tabs: {
     width: `calc(100% + ${theme.spacing.unit * 6}px)`,
     margin: `0 -${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+  },
+  formControl: {
+    minWidth: 200,
+    width: "100%",
+    whiteSpace: "nowrap"
   }
 });
 
-class Card extends React.Component {
+class Form extends React.Component {
   state = {
-    openedSection: "main",
-    currentEdit: ""
+    openedSection: "main"
   };
 
   handleChangeTab = (event, value) => {
@@ -52,7 +56,6 @@ class Card extends React.Component {
 
     return false;
   };
-
   prevTab = event => {
     if (!this.checkExcludeNodes(event.target)) {
       const key = this.getKeyCurrentTab();
@@ -75,30 +78,9 @@ class Card extends React.Component {
     }
   };
 
-  getKeyCurrentTab = () => {
-    const viewingTabs = this.getViewingTabs();
-    const { openedSection } = this.state;
-    return findIndex(viewingTabs, { value: openedSection });
-  };
-
-  getViewingTabs = () => {
-    const { fieldsSections, canViewContacts } = this.props;
-    return reduce(
-      fieldsSections,
-      (result, value, key) => {
-        if (canViewContacts || key !== "contact") {
-          return [...result, { label: value.name, value: key }];
-        }
-        return result;
-      },
-      []
-    );
-  };
-
   render() {
     const { fieldsSections, classes } = this.props;
-    const { openedSection, currentEdit } = this.state;
-    const viewingTabs = this.getViewingTabs();
+    const { openedSection } = this.state;
 
     return (
       <div className={classes.root}>
@@ -111,23 +93,15 @@ class Card extends React.Component {
             scrollable
             scrollButtons="auto"
           >
-            {map(viewingTabs, tab => {
-              return (
-                <Tab label={tab.label} value={tab.value} key={tab.value} />
-              );
-            })}
+            {map(fieldsSections, (section, code) => (
+              <Tab label={section.name} value={code} key={code} />
+            ))}
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field
-                id={id}
-                key={id}
-                edit={currentEdit === id}
-                match={this.props.match}
-                entityId="objects"
-              />
+              <Field id={id} key={id} edit={true} match={this.props.match} entityId="leads"/>
             ))}
           </Grid>
         </TabContainer>
@@ -136,15 +110,11 @@ class Card extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.objects;
-  const { id } = ownProps.match.params;
-  const values = get(state.crm.objects.values, id, null);
-  const can = get(values, "can", null);
-  const canViewContacts = get(can, "view_contacts", false);
-  return { fieldsSections, canViewContacts, values };
+  const { fieldsSections } = state.crm.leads;
+  return { fieldsSections };
 };
 
-Card.propTypes = {
+Form.propTypes = {
   classes: PropTypes.object.isRequired
 };
-export default withStyles(styles)(connect(mapStateToProps)(Card));
+export default withStyles(styles)(connect(mapStateToProps)(Form));

@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { fetchObjects, fetchObjectFields } from "../actions/objects";
+import { fetchLeads, fetchLeadFields } from "../actions/lead";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
-import GroupActions from "./GroupActions";
-import Controls from "./Controls";
+// import GroupActions from "./GroupActions";
+// import Controls from "./Controls";
 
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
@@ -23,7 +23,7 @@ const styles = theme => ({
     right: theme.spacing.unit * 2
   }
 });
-class SaleList extends React.Component {
+class Lead extends React.Component {
   constructor(props) {
     super(props);
     props.onInit();
@@ -46,12 +46,12 @@ class SaleList extends React.Component {
     return (
       <Fragment>
         <EnhancedTable
-          id="objects"
+          id="leads"
           controls={["favorite"]}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="objects" />}
-          groupActionsComponents={GroupActions}
-          controlComponents={Controls}
+          filterComponent={<Filter id="leads" />}
+          // groupActionsComponents={GroupActions}
+          // controlComponents={Controls}
         />
         <Button
           variant="fab"
@@ -67,8 +67,8 @@ class SaleList extends React.Component {
           open={open}
           onClose={this.handleClose}
         />
-        <Route path="/crm/sale/add" component={Add} />
-        <Route path="/crm/sale/show/:id" component={Detail} />
+        <Route path="/crm/lead/add" component={Add} />
+        <Route path="/crm/lead/show/:id" component={Detail} />
       </Fragment>
     );
   }
@@ -93,17 +93,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     onInit: () => {
-      dispatch(fetchObjectFields());
-      dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
+      dispatch(fetchLeadFields());
+      dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))
         dispatch(
-          fetchObjects({ filter, page: newPage, rowsPerPage, orderBy, order })
+          fetchLeads({ filter, page: newPage, rowsPerPage, orderBy, order })
         );
     }
   };
 };
 export default connect(mapStateToProps, null, mergeProps)(
-  withStyles(styles)(SaleList)
+  withStyles(styles)(Lead)
 );

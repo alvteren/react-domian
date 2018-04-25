@@ -111,16 +111,34 @@ class EnhancedTable extends React.Component {
             maximumFractionDigits: 0
           }).format(value * 1);
         }
-        if (id === "contacts") {
+        if (id === "contacts" || id === "phone") {
           return <span className={styles.nowrap}>{value}</span>;
         }
 
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (fields.hasOwnProperty(id) && fields[id].type === "select") {
+        if (fields && fields.hasOwnProperty(id) && fields[id].type === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
+          }
+        }
+        if (Array.isArray(value)) {
+          return (
+            <div>
+              {
+                value.map((item, index) => {
+                  if (index === 0) return <h4 key={index}>{item}</h4>;
+                  return <p key={index}>{item}</p>
+                })
+              }
+            </div>
+          );
+        }
+        if (id === "status_id") {
+          const val = value.toLowerCase();
+          if (fields && fields.status_id && fields.status_id.items && fields.status_id.items[val] && fields.status_id.items[val].label) {
+            return fields.status_id.items[val].label;
           }
         }
 
@@ -152,6 +170,7 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {arData
+                .reverse() // after fetch items adds to top like a stack
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(row => {
                   const isSelected = this.isSelected(row.id);
@@ -173,7 +192,7 @@ class EnhancedTable extends React.Component {
                         <div className={styles.controlsWrapper}>
                           <Tooltip title="Подробнее" enterDelay={300}>
                             <Link
-                              to={row.url}
+                              to={row.url || `show/${id}/${row.id}`}
                               onClick={e => {
                                 e.stopPropagation();
                               }}
@@ -181,7 +200,6 @@ class EnhancedTable extends React.Component {
                               <PageviewIcon />
                             </Link>
                           </Tooltip>
-                          {console.log("controlComponents", controlComponents)}
                           {controlComponents &&
                             React.createElement(controlComponents, {
                               id: row.id,

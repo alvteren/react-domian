@@ -7,6 +7,8 @@ import Menu, { MenuItem } from "material-ui/Menu";
 import { withStyles } from "material-ui/styles";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 import GroupAddIcon from "material-ui-icons/GroupAdd";
+import AddObjectIcon from "material-ui-icons/LocationCity";
+import CustomersIcon from "material-ui-icons/SupervisorAccount";
 
 const styles = theme => ({
   menuItem: {
@@ -22,8 +24,7 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { linked_telegram, aliance_joined } = props; // from Store
-  const { classes, onShowDialogTelegram, ...other } = props; // from parent
+  const { linked_telegram, aliance_joined, classes, onShowDialogTelegram, open, anchorEl, ...other } = props;
 
   const handleClickAlianceAdd = () => {
     props.onClose();
@@ -33,7 +34,18 @@ const MenuAdd = props => {
   };
 
   return (
-    <Menu {...other}>
+    <Menu {...{ open, anchorEl }}>
+      <MenuItem
+        component={Link}
+        to="/crm/sale/add"
+        className={classes.menuItem}
+        onClick={props.onClose}
+      >
+        <ListItemIcon>
+          <AddObjectIcon />
+        </ListItemIcon>
+        <ListItemText primary="Добавить объект" />
+      </MenuItem>
       {
         !aliance_joined && (
           <MenuItem
@@ -49,6 +61,17 @@ const MenuAdd = props => {
           </MenuItem>
         )
       }
+      <MenuItem
+        component={Link}
+        to="/crm/lead/add"
+        className={classes.menuItem}
+        onClick={props.onClose}
+      >
+        <ListItemIcon>
+          <CustomersIcon />
+        </ListItemIcon>
+        <ListItemText primary="Добавить покупателя" />
+      </MenuItem>
       {/*  <MenuItem
         component={Link}
         to="/alliance/join"
