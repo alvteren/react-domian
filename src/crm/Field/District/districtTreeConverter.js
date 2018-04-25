@@ -28,8 +28,8 @@ export function districtTreeConverter(lead, fields) {
 
   const location = lead.uf_location.value;
   const prefers = {
-    district: lead[DISTRICTS],
-    subDistrict: lead[SUB_DISTRICTS]
+    district: lead[DISTRICTS] || [],
+    subDistrict: lead[SUB_DISTRICTS] || []
   };
 
   const {

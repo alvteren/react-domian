@@ -118,7 +118,11 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (fields && fields.hasOwnProperty(id) && fields[id].type === "select") {
+        if (
+          fields &&
+          fields.hasOwnProperty(id) &&
+          fields[id].type === "select"
+        ) {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
@@ -126,18 +130,21 @@ class EnhancedTable extends React.Component {
         if (Array.isArray(value)) {
           return (
             <div>
-              {
-                value.map((item, index) => {
-                  if (index === 0) return <h4 key={index}>{item}</h4>;
-                  return <p key={index}>{item}</p>
-                })
-              }
+              {value.map((item, index) => {
+                return <p key={index}>{item}</p>;
+              })}
             </div>
           );
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (fields && fields.status_id && fields.status_id.items && fields.status_id.items[val] && fields.status_id.items[val].label) {
+          if (
+            fields &&
+            fields.status_id &&
+            fields.status_id.items &&
+            fields.status_id.items[val] &&
+            fields.status_id.items[val].label
+          ) {
             return fields.status_id.items[val].label;
           }
         }
