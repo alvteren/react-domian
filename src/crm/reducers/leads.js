@@ -4,7 +4,7 @@ import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
 
-import DistrictInput from "../Field/DistrictTemplate";
+import DistrictInput from "../Field/District";
 
 const chips = {
   chips: {},
