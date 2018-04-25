@@ -132,7 +132,7 @@ class AlianceList extends React.Component {
                       </Hidden>
                     </div>
                   </Grid>
-                  <Hidden only={["xs", "sm"]}>
+                  <Hidden smDown>
                     <Grid item md={8}>
                       <Balance id={id} />
                     </Grid>
@@ -162,7 +162,7 @@ class AlianceList extends React.Component {
                         </Button>
                       )}
                   </Grid>
-                  <Hidden only={["md", "lg"]}>
+                  <Hidden mdUp>
                     <Grid item xs={12}>
                       <Balance id={id} />
                     </Grid>

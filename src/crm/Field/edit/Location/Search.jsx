@@ -76,10 +76,10 @@ class LocationSearch extends React.Component {
                 onClick={closeSearch}
                 aria-label="Close"
               >
-                <Hidden only={["md", "lg"]}>
+                <Hidden mdUp>
                   <ArrowBackIcon />
                 </Hidden>
-                <Hidden only={["xs", "sm"]}>
+                <Hidden smDown>
                   <CloseIcon />
                 </Hidden>
               </IconButton>
