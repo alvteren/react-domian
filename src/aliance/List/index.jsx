@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import MenuAdd from "../../Menu/Add";
+import MenuAdd from "../Menu/Add";
 import Balance from "../Balance";
 
 import { Button } from "material-ui";
@@ -185,6 +185,7 @@ class AlianceList extends React.Component {
           anchorEl={this.state.anchorEl}
           open={open}
           onClose={this.handleClose}
+          linkedTelegram={linked_telegram}
           onShowDialogTelegram={() => {
             this.handleOpenDialog("linkingTelegram");
           }}

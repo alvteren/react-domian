@@ -101,7 +101,7 @@ class Form extends React.Component {
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="objects"/>
+              <Field id={id} key={id} edit={true} match={this.props.match} />
             ))}
           </Grid>
         </TabContainer>
