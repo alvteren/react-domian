@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, filter, size, isObject, forEach } from "lodash";
+import { get, size, forEach } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 
 import { saveToStore, saveFile, saveToServer } from "../actions/form";

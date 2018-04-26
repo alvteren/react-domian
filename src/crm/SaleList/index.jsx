@@ -47,7 +47,6 @@ class SaleList extends React.Component {
       <Fragment>
         <EnhancedTable
           id="objects"
-          controls={["favorite"]}
           onChangePage={this.props.onChangePage}
           filterComponent={<Filter id="objects" />}
           groupActionsComponents={GroupActions}

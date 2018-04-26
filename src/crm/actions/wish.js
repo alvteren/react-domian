@@ -32,7 +32,6 @@ export const fetchWish = props => async dispatch => {
 export const addToWish = props => async dispatch => {
   const { elementsId, entityId } = props;
   const wishId = get(props, "wishId", 0);
-  console.log("addToWish", props);
 
   try {
     dispatch({ type: ADD_TO_WISH_START, payload: { entityId } });

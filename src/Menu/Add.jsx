@@ -24,7 +24,7 @@ const styles = theme => ({
 });
 
 const MenuAdd = props => {
-  const { linked_telegram, aliance_joined, classes, onShowDialogTelegram, open, anchorEl, ...other } = props;
+  const { linked_telegram, aliance_joined, classes, onShowDialogTelegram, open, anchorEl } = props;
 
   const handleClickAlianceAdd = () => {
     props.onClose();
