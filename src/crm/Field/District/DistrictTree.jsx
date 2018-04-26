@@ -5,7 +5,7 @@ import List, { ListItem, ListItemText } from "material-ui/List";
 import { Checkbox, Collapse } from "material-ui";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
-import { districtTreeConverter } from "./utils/districtTreeConverter";
+import { districtTreeConverter } from "./districtTreeConverter";
 import { cloneDeep } from "lodash";
 
 import styles from "./DistrictTree.module.css";

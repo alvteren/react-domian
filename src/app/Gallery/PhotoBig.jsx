@@ -59,7 +59,7 @@ const PhotoBig = props => {
                 >
                   <DeleteIcon />
                 </IconButton>
-                <Hidden only={["xs", "sm"]}>
+                <Hidden smDown>
                   <ImageGallery
                     items={items}
                     lazyLoad={true}
@@ -70,7 +70,7 @@ const PhotoBig = props => {
                     ref={i => (_imageGallery = i)}
                   />
                 </Hidden>
-                <Hidden only={["md", "lg"]}>
+                <Hidden mdUp>
                   <ImageGallery
                     items={items}
                     lazyLoad={true}

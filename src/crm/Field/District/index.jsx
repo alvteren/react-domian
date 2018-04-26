@@ -16,7 +16,7 @@ import DistrictSelect from "./DistrictSelect";
 
 import styles from "./index.module.css";
 import {saveToStore} from "../../actions/form";
-import { DISTRICTS, SUB_DISTRICTS } from "./utils/districtTreeConverter";
+import { DISTRICTS, SUB_DISTRICTS } from "./districtTreeConverter";
 
 class District extends React.PureComponent {
   state = {

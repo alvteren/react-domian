@@ -1,5 +1,5 @@
 import { map, forOwn, reduce } from "lodash";
-import getVisibleValues from "../../getVisibleValues";
+import getVisibleValues from "../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
 export const SUB_DISTRICTS = "uf_crm_subdistrict";
@@ -28,8 +28,8 @@ export function districtTreeConverter(lead, fields) {
 
   const location = lead.uf_location.value;
   const prefers = {
-    district: lead[DISTRICTS],
-    subDistrict: lead[SUB_DISTRICTS]
+    district: lead[DISTRICTS] || [],
+    subDistrict: lead[SUB_DISTRICTS] || []
   };
 
   const {

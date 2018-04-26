@@ -63,10 +63,10 @@ class Add extends React.Component {
               onClick={this.handleClose}
               aria-label="Close"
             >
-              <Hidden only={["md", "lg"]}>
+              <Hidden mdUp>
                 <ArrowBackIcon />
               </Hidden>
-              <Hidden only={["xs", "sm"]}>
+              <Hidden smDown>
                 <CloseIcon />
               </Hidden>
             </IconButton>
