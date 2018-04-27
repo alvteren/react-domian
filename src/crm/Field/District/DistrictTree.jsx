@@ -2,7 +2,8 @@ import React, {Fragment} from "react";
 import { connect } from "react-redux";
 
 import List, { ListItem, ListItemText } from "material-ui/List";
-import { Checkbox, Collapse } from "material-ui";
+import { Checkbox } from "material-ui";
+import Collapse from "material-ui/transitions/Collapse";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import { districtTreeConverter } from "./districtTreeConverter";
@@ -48,8 +49,8 @@ class DistrictTree extends React.PureComponent {
         }
         this.setState({districtTree: updated});
         break;
+      default: break;
     }
-    console.log("TARGET", target);
     this.props.onTreeChange({
       name: type,
       value: target.value,
@@ -119,7 +120,7 @@ const mapStateToProps = (state, ownProps) => {
   } = state.crm.leads.fields;
   const fields = { uf_crm_district, uf_crm_subdistrict };
 
-  const { objectId, onChange } = ownProps;
+  const { objectId } = ownProps;
 
   const lead = state.crm.leads.values[objectId];
 

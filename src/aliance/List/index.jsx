@@ -80,7 +80,7 @@ class AlianceList extends React.Component {
   render() {
     const { data } = this.props;
     const open = Boolean(this.state.anchorEl);
-    const { linked_telegram, aliance_id, aliance_joined } = this.props;
+    const { aliance_id, aliance_joined } = this.props;
     const { tabActived } = this.state;
 
     return (

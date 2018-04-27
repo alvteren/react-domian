@@ -1,4 +1,4 @@
-import { get, reduce, size, isObject, forEach } from "lodash";
+import { get, reduce, size, isObject } from "lodash";
 import { noStrictIncludes, noStrictExcludes } from "../../util/collection";
 
 const getVisibleValues = (field, values) => {
