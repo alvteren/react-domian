@@ -1,4 +1,4 @@
-import { size, omit, keyBy, orderBy, toArray, without } from "lodash";
+import { size, omit, orderBy, toArray, without } from "lodash";
 
 export default (state, { type, payload }) => {
   let newstate = null;
@@ -43,10 +43,9 @@ export default (state, { type, payload }) => {
       };
     } else if (type === "TABLE_FETCH_DATA_SUCCESS") {
       const { data, count } = payload;
-      const newData = keyBy(data, "id");
       newstate = {
         ...state,
-        data: { ...state.data, ...newData },
+        data: { ...state.data, ...data },
         count,
         loading: { ...state.loading, data: false }
       };

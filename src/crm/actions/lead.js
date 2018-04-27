@@ -42,7 +42,6 @@ export const fetchLead = id => async dispatch => {
       payload: { id: "leads", ...data }
     });
   } catch (err) {
-    console.error(err);
     dispatch({ type: "DETAIL_FETCH_DATA_ERROR", payload: err, error: true });
   }
 };

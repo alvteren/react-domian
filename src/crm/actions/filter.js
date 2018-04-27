@@ -46,6 +46,7 @@ export const applyFilter = props => async (dispatch, getState) => {
       break;
       case "leads": dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
       break;
+      default: break;
     }
   }
 };

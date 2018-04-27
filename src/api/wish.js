@@ -15,23 +15,23 @@ export const fetchWish = async params => {
 };
 
 export const addToWish = async params => {
-  const { wishId, entityId, objectsId } = params;
+  const { wishId, entityId, elementsId } = params;
   const response = await fetch(baseURL + "/v1/wish/", {
     method: "POST",
     credentials: "include",
     mode: "cors",
-    body: JSON.stringify({ wishId, entityId, objectsId })
+    body: JSON.stringify({ wishId, entityId, elementsId })
   });
   return response.json();
 };
 
 export const removeFromWish = async params => {
-  const { wishId, entityId, objectsId } = params;
+  const { wishId, entityId, elementsId } = params;
   const response = await fetch(baseURL + "/v1/wish/", {
     method: "DELETE",
     credentials: "include",
     mode: "cors",
-    body: JSON.stringify({ wishId, entityId, objectsId })
+    body: JSON.stringify({ wishId, entityId, elementsId })
   });
   return response.json();
 };

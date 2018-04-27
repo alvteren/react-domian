@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { fetchObjects, fetchObjectFields } from "../actions/objects";
+import { fetchWish } from "../actions/wish";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
@@ -95,6 +96,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onInit: () => {
       dispatch(fetchObjectFields());
       dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
+      dispatch(fetchWish({ entityId: "sale" }));
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))

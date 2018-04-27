@@ -25,7 +25,6 @@ export default (state, { type, payload }) => {
           const key = item.name;
           update[key] = item.value;
         });
-        console.log("ARR");
         newstate = {
           ...state,
           values: {
@@ -36,7 +35,6 @@ export default (state, { type, payload }) => {
             }
           }
         };
-        console.log(update, newstate, "<<<<<");
       } else {
         newstate = {
           ...state,
@@ -88,7 +86,7 @@ export default (state, { type, payload }) => {
     }
     if (type === "DISTRICT_CHANGE") {
       const { districts, subDistricts } = payload;
-      const newstate = { ...state, uf_crm_district: districts, uf_crm_subdistrict: subDistricts }
+      newstate = { ...state, uf_crm_district: districts, uf_crm_subdistrict: subDistricts }
     }
   }
   if (newstate) {

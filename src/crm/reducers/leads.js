@@ -1,4 +1,4 @@
-import { get, keyBy } from "lodash";
+import { get } from "lodash";
 import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
@@ -141,7 +141,7 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
-      values.can.edit = true;
+      // values.can.edit = true; // for testing
       return {
         ...state,
         values: { [values.id]: values }
@@ -149,7 +149,7 @@ export default function reducer(state = initialState, { type, payload }) {
     }
 
     if (type === "FORM_SAVE_TO_STORE") {
-      const { name, value, elementId } = payload;
+      // const { name, value, elementId } = payload;
     }
 
     if (newTableState) {

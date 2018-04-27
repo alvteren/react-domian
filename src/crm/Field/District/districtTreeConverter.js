@@ -26,7 +26,6 @@ export function setTypeByID(values) {
 export function districtTreeConverter(lead, fields) {
   if (!lead || !fields) return [];
 
-  const location = lead.uf_location.value;
   const prefers = {
     district: lead[DISTRICTS] || [],
     subDistrict: lead[SUB_DISTRICTS] || []
@@ -39,7 +38,7 @@ export function districtTreeConverter(lead, fields) {
 
   const visibleDistricts = getVisibleValues(districtField, lead);
   return map(visibleDistricts, district => {
-    const checked = prefers.district.indexOf(parseInt(district.value)) !== -1;
+    const checked = prefers.district.indexOf(parseInt(district.value, 10)) !== -1;
     const children = reduce(
       subDistrictField.items,
       (result, subDistrict) => {
@@ -47,7 +46,7 @@ export function districtTreeConverter(lead, fields) {
           return result;
         }
         const checked =
-          prefers.subDistrict.indexOf(parseInt(subDistrict.value)) !== -1;
+          prefers.subDistrict.indexOf(parseInt(subDistrict.value, 10)) !== -1;
         return [...result, { ...subDistrict, checked }];
       },
       []

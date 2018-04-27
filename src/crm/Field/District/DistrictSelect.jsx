@@ -1,8 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
-import { size } from "lodash";
 
 import Slide from "material-ui/transitions/Slide";
 import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
@@ -27,7 +24,7 @@ const Transition = props => {
 
 const DistrictSelect = props => {
 
-  const { fullScreen, values, onCloseDialog, isTreeChanged, onSaveToStore } = props;
+  const { fullScreen, onCloseDialog, isTreeChanged, onSaveToStore } = props;
   return (
     <Dialog
       fullScreen={fullScreen}

@@ -64,6 +64,20 @@ const chips = {
       searchable: "участки",
       type: "section_id",
       value: "141"
+    },
+    is_real: {
+      id: "is_real",
+      label: "Реальные",
+      searchable: "Реальные",
+      type: "is_real",
+      value: true
+    },
+    is_exclusive: {
+      id: "is_exclusive",
+      label: "Эксклюзивы",
+      searchable: "Эксклюзивы эксклюзивные",
+      type: "is_exclusive",
+      value: true
     }
   }
 };
@@ -364,13 +378,12 @@ export const initialState = {
 export default (state = initialState, { type, payload }) => {
   if (type === "FETCH_OBJECTS_SUCCESS") {
     const { data, count } = payload;
-    const newData = keyBy(data, "id");
 
-    return { ...state, data: { ...state.data, ...newData }, count };
+    return { ...state, data: { ...state.data, ...data }, count };
   }
-
+  const entityId = get(payload, "entityId", null);
   const id = get(payload, "id", null);
-  if (id === "objects") {
+  if (id === "objects" || id === "sale" || entityId === "sale") {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

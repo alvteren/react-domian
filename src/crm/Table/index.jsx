@@ -79,8 +79,7 @@ class EnhancedTable extends React.Component {
       filterComponent,
       groupActionsComponents,
       controlComponents,
-      onChangePage,
-      onDeleteSelectedData
+      onChangePage
     } = this.props;
 
     const arData = toArray(data);
@@ -160,8 +159,6 @@ class EnhancedTable extends React.Component {
         <EnhancedToolbar
           numSelected={selected.length}
           id={id}
-          addSelectedToFavorite={this.addSelectedtoFavorite}
-          onDeleteSelectedData={onDeleteSelectedData}
           filterComponent={filterComponent}
           groupActionsComponents={groupActionsComponents}
         />
@@ -177,7 +174,6 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {arData
-                .reverse() // after fetch items adds to top like a stack
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(row => {
                   const isSelected = this.isSelected(row.id);
