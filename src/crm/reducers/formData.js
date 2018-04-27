@@ -19,16 +19,34 @@ export default (state, { type, payload }) => {
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});
-      newstate = {
-        ...state,
-        values: {
-          ...state.values,
-          [elementId]: {
-            ...oldValues,
-            [name]: value
+      if (Array.isArray(name)) {
+        let update = {};
+        name.forEach(item => {
+          const key = item.name;
+          update[key] = item.value;
+        });
+        newstate = {
+          ...state,
+          values: {
+            ...state.values,
+            [elementId]: {
+              ...oldValues,
+              ...update
+            }
           }
-        }
-      };
+        };
+      } else {
+        newstate = {
+          ...state,
+          values: {
+            ...state.values,
+            [elementId]: {
+              ...oldValues,
+              [name]: value
+            }
+          }
+        };
+      }
     }
     if (type === "FORM_SAVE_FILE") {
       const { name, value, elementId } = payload;
@@ -65,6 +83,10 @@ export default (state, { type, payload }) => {
           }
         }
       };
+    }
+    if (type === "DISTRICT_CHANGE") {
+      const { districts, subDistricts } = payload;
+      newstate = { ...state, uf_crm_district: districts, uf_crm_subdistrict: subDistricts }
     }
   }
   if (newstate) {

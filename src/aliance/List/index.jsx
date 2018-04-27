@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import MenuAdd from "../Menu/Add";
+import MenuAdd from "../../Menu/Add";
 import Balance from "../Balance";
 
 import { Button } from "material-ui";
@@ -80,7 +80,7 @@ class AlianceList extends React.Component {
   render() {
     const { data } = this.props;
     const open = Boolean(this.state.anchorEl);
-    const { linked_telegram, aliance_id, aliance_joined } = this.props;
+    const { aliance_id, aliance_joined } = this.props;
     const { tabActived } = this.state;
 
     return (
@@ -132,7 +132,7 @@ class AlianceList extends React.Component {
                       </Hidden>
                     </div>
                   </Grid>
-                  <Hidden only={["xs", "sm"]}>
+                  <Hidden smDown>
                     <Grid item md={8}>
                       <Balance id={id} />
                     </Grid>
@@ -162,7 +162,7 @@ class AlianceList extends React.Component {
                         </Button>
                       )}
                   </Grid>
-                  <Hidden only={["md", "lg"]}>
+                  <Hidden mdUp>
                     <Grid item xs={12}>
                       <Balance id={id} />
                     </Grid>
@@ -185,7 +185,6 @@ class AlianceList extends React.Component {
           anchorEl={this.state.anchorEl}
           open={open}
           onClose={this.handleClose}
-          linkedTelegram={linked_telegram}
           onShowDialogTelegram={() => {
             this.handleOpenDialog("linkingTelegram");
           }}

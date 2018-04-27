@@ -9,7 +9,7 @@ const Image = props => {
   const { id, onChangeFile, onImageDrop } = props;
   return (
     <Fragment>
-      <Hidden only={["xs", "sm"]}>
+      <Hidden smDown>
         <Dropzone
           className={styles.dropZone}
           activeClassName={styles.dropZoneActive}
@@ -23,7 +23,7 @@ const Image = props => {
           <span className={styles.link}>или выберите файл на компьютере</span>
         </Dropzone>
       </Hidden>
-      <Hidden only={["md", "lg"]}>
+      <Hidden mdUp>
         <label className={styles.labelFile}>
           <input
             className={styles.inputFile}

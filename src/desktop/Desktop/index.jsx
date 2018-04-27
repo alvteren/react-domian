@@ -6,8 +6,6 @@ import { authorizeBy } from "../../user/actions/auth";
 import { withStyles } from "material-ui/styles";
 import Grid from "material-ui/Grid";
 import BookmarkBorderIcon from "material-ui-icons/BookmarkBorder";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
 
 import { Link } from "react-router-dom";
 
@@ -35,7 +33,7 @@ const mapDispatchToProps = dispatch => {
 };
 export default connect(null, mapDispatchToProps)(
   withStyles(styles)(props => {
-    const { classes, authorizeBy } = props;
+    const { classes } = props;
     return (
       <Grid container spacing={24}>
         <Grid item xs={6} sm={3} lg={2} className={classes.bookMark}>

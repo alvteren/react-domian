@@ -1,15 +1,19 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { fetchObjects, fetchObjectFields } from "../actions/objects";
+import { fetchWish } from "../actions/wish";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
+import GroupActions from "./GroupActions";
+import Controls from "./Controls";
+
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
 import AddIcon from "material-ui-icons/Add";
 import { Route } from "react-router-dom";
-import MenuAdd from "../Menu/Add";
+import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
 
@@ -46,6 +50,8 @@ class SaleList extends React.Component {
           id="objects"
           onChangePage={this.props.onChangePage}
           filterComponent={<Filter id="objects" />}
+          groupActionsComponents={GroupActions}
+          controlComponents={Controls}
         />
         <Button
           variant="fab"
@@ -89,6 +95,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onInit: () => {
       dispatch(fetchObjectFields());
       dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
+      dispatch(fetchWish({ entityId: "sale" }));
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))
