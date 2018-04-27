@@ -17,13 +17,12 @@ export const REMOVE_FROM_WISH_SUCCESS = "REMOVE_FROM_WISH_SUCCESS";
 export const REMOVE_FROM_WISH_ERROR = "REMOVE_FROM_WISH_ERROR";
 
 export const fetchWish = props => async dispatch => {
-  const { entityId } = props;
-  const wishId = get(props, "wishId", 0);
+  const { entityId, wishId = 0 } = props;
 
   try {
     dispatch({ type: FETCH_WISH_START, payload: { entityId } });
     const data = await fetchWishApi({ wishId, entityId });
-    dispatch({ type: FETCH_WISH_SUCCESS, payload: { data, id: entityId } }); // @todo remade "id" to "entityId"
+    dispatch({ type: FETCH_WISH_SUCCESS, payload: { ...data, id: entityId } }); // @todo remade "id" to "entityId"
   } catch (err) {
     dispatch({ type: FETCH_WISH_ERROR, payload: err, error: true });
   }
