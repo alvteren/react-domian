@@ -1,4 +1,5 @@
 import React from "react";
+import { Fragment } from "react"
 
 import { size, map } from "lodash";
 
@@ -22,17 +23,26 @@ const SelectField = props => {
         native={bNativeSelect}
         input={<Input name={id} id={id} />}
       >
-        {map(visibleValues, item => {
-          return bNativeSelect ? (
-            <option value={item.value} key={item.value}>
-              {item.label}
-            </option>
-          ) : (
-            <MenuItem value={item.value} key={item.value}>
-              {item.label}
-            </MenuItem>
-          );
-        })}
+        { bNativeSelect ?
+          <Fragment>
+            <option value=""> </option>
+            { map(visibleValues, item => {
+              return (
+                <option value={item.value} key={item.value}>
+                  {item.label}
+                 </option>
+              )})
+            }
+          </Fragment> :
+          <Fragment>
+            { map(visibleValues, item => {
+              return <MenuItem value={item.value} key={item.value}>
+                {item.label}
+              </MenuItem>
+            })
+          }
+          </Fragment>
+        }
       </Select>
       {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
     </FormControl>
