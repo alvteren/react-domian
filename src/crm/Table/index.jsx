@@ -31,10 +31,10 @@ import styles from "./Table.module.css";
 /**
  * EnhancedTable API:
  * available props:
- *   selected [Object] - array of selected objects
- *   controlComponents React.Component - enable components for additional control buttons
- *   filterComponent React.Component - enable filter component
- *   groupActionsComponents React.Component - enable component for buttons of group actions
+ *   @selected [Object] - array of selected objects
+ *   @controlComponents React.Component - enable components for additional control buttons
+ *   @filterComponent React.Component - enable filter component
+ *   @groupActionsComponents React.Component - enable component for buttons of group actions
  */
 
 class EnhancedTable extends React.Component {
@@ -77,7 +77,7 @@ class EnhancedTable extends React.Component {
       headerData,
       fields,
       filterComponent,
-      groupActionsComponents,
+      groupActionsComponent,
       controlComponents,
       onChangePage
     } = this.props;
@@ -160,7 +160,7 @@ class EnhancedTable extends React.Component {
           numSelected={selected.length}
           id={id}
           filterComponent={filterComponent}
-          groupActionsComponents={groupActionsComponents}
+          groupActionsComponent={groupActionsComponent} 
         />
         <div className={styles.tableWrapper}>
           <Table className={styles.table}>
