@@ -94,7 +94,7 @@ class Form extends React.Component {
             scrollButtons="auto"
           >
             {map(fieldsSections, (section, code) => (
-              <Tab label={section.name} value={code} key={code} />
+              <Tab disabled={this.props.loadFields} label={section.name} value={code} key={code} />
             ))}
           </Tabs>
         </AppBar>
@@ -111,7 +111,8 @@ class Form extends React.Component {
 }
 const mapStateToProps = (state, ownProps) => {
   const { fieldsSections } = state.crm.leads;
-  return { fieldsSections };
+  const { loadFields } = ownProps;
+  return { fieldsSections, loadFields };
 };
 
 Form.propTypes = {

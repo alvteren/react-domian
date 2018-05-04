@@ -290,7 +290,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const objectId = get(params, "id", 0);
+  const objectId = get(params, "id", 0); // 0 by default values[id] for new item form
   const objectValues = get(values, objectId, null);
   const value = objectValues != null ? get(objectValues, id, null) : null;
   const can = objectValues != null ? get(objectValues, "can", {}) : {};

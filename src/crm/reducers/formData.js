@@ -16,6 +16,19 @@ export default (state, { type, payload }) => {
         loading: { ...state.loading, form: false }
       };
     }
+    if (type === "SET_INIT_FORM_STATE") {
+      const { initState } = payload;
+      console.log("SET_INIT", initState);
+      newstate = {
+        ...state,
+        values: {
+          ...state.values,
+          "0": {
+            ...initState
+          }
+        }
+      }
+    }
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});

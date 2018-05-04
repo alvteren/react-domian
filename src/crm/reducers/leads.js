@@ -5,6 +5,7 @@ import formData from "./formData";
 import filterData from "./filterData";
 
 import DistrictInput from "../Field/District";
+import TypeRealtyInput from "../Field/District";
 
 const chips = {
   chips: {},
@@ -151,7 +152,6 @@ export default function reducer(state = initialState, { type, payload }) {
     if (type === "FORM_SAVE_TO_STORE") {
       // const { name, value, elementId } = payload;
     }
-
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
@@ -164,6 +164,13 @@ export default function reducer(state = initialState, { type, payload }) {
           component: DistrictInput,
           label: "Районы",
           depended: "uf_crm_district_all",
+          link: [false]
+        };
+        newFormState.fields["uf_crm_type_realty"] = {
+          id: "uf_crm_type_realty",
+          type: "custom",
+          component: TypeRealtyInput,
+          label: "Тип недвижимости",
           link: [false]
         };
       }

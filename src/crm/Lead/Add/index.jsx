@@ -14,6 +14,8 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
+import {saveToStore, setInitFormState} from "../../actions/form";
+import { fetchLeadFields } from "../../actions/lead";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -34,7 +36,8 @@ const styles = theme => ({
 
 class Add extends React.Component {
   state = {
-    open: true
+    open: true,
+    loading: true
   };
 
   handleClose = () => {
@@ -46,6 +49,18 @@ class Add extends React.Component {
     this.props.onSave();
     this.handleClose();
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { fields } = nextProps;
+    if (!fields || !Object.keys(fields).length) return;
+    this.setState({ loading: false });
+    const initState = {};
+    Object.keys(fields).forEach(key => {
+      initState[key] = fields[key].default || "";
+    });
+    initState.can = { edit: true };
+    this.props.setInitFormState(initState);
+  }
 
   render() {
     const { fullScreen, classes } = this.props;
@@ -88,7 +103,7 @@ class Add extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Form />
+          <Form loadFields={this.state.loading} />
         </DialogContent>
       </Dialog>
     );
@@ -96,14 +111,33 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+  const entityId = "leads";
+  const { fields } = state.crm[entityId];
+  return { fields, entityId };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
+    dispatch,
     onSave: () => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
     }
   };
+};
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  console.log(stateProps);
+  const { fields, entityId } = stateProps;
+  const { dispatch } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...ownProps,
+    getLeadFields() {
+      dispatch(fetchLeadFields());
+    },
+    setInitFormState(initState) {
+      dispatch(setInitFormState({ initState, id: entityId }))
+    },
+  }
 };
 
 Add.propTypes = {
@@ -112,5 +146,5 @@ Add.propTypes = {
 };
 
 export default withMobileDialog()(
-  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Add))
+  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(Add))
 );

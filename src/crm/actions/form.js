@@ -3,6 +3,13 @@ import {
   fetchSearchResult as fetchSearchResultApi,
   saveToServer as saveToServerApi
 } from "../../api/form";
+export const setInitFormState = props => dispatch => {
+  const { initState, id } = props;
+  dispatch({
+    type: "SET_INIT_FORM_STATE",
+    payload: { initState, id }
+  });
+};
 export const saveToStore = props => async dispatch => {
   const { id, elementId, name, value } = props;
   dispatch({
