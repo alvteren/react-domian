@@ -18,7 +18,6 @@ export default (state, { type, payload }) => {
     }
     if (type === "SET_INIT_FORM_STATE") {
       const { initState } = payload;
-      console.log("SET_INIT", initState);
       newstate = {
         ...state,
         values: {

@@ -173,7 +173,7 @@ export default function reducer(state = initialState, { type, payload }) {
             type: "custom",
             component: TypeRealtyInput,
             label: "Тип недвижимости",
-            link: [false]
+            depended: null
           }
         };
       }

@@ -73,7 +73,6 @@ class District extends React.PureComponent {
     const subDistricts = this.props.uf_crm_district
       ? this.props.uf_crm_subdistrict.filter(item => {
         const links = this.props.subDistrictFields.items[item].link;
-        // debugger;
         for (let i = 0; i < links.length; i++) {
           if (!this.props.uf_crm_district.some(item => item === links[i])) continue;
           return false;

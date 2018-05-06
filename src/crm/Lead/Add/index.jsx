@@ -124,7 +124,6 @@ const mapDispatchToProps = (dispatch, props) => {
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  console.log(stateProps);
   const { fields, entityId } = stateProps;
   const { dispatch } = dispatchProps;
 

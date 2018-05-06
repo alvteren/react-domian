@@ -20,7 +20,7 @@ class TypeRealty extends React.PureComponent {
     isTreeChanged: false,
     [SECTION]: this.props[SECTION] || [],
     [TYPE_REALTY]: this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
-      ? this.props[TYPE_REALTY].map(item => String(item))
+      ? this.props[TYPE_REALTY]
       : []
   };
 
@@ -38,7 +38,7 @@ class TypeRealty extends React.PureComponent {
   };
   onTreeChange = ({ name, value, add }) => {
     const updated = add
-      ? this.state[name].splice(0).concat([value]) // if item was added
+      ? this.state[name].splice(0).concat([parseInt(value)]) // if item was added
       : this.state[name].splice(0).filter((item) => String(item) !== value); // for delete item case
     this.setState({ isTreeChanged: true, [name]: updated })
   };

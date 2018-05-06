@@ -24,12 +24,11 @@ export function setTypeByID(values) {
  * @return resultTree - [Object]
  */
 export function typeRealtyConverter(lead, fields) {
-  console.log("CONVERT", arguments);
-  if (!lead || !fields) { console.log("RETURN");  return []; }
+  if (!lead || !fields) return [];
 
   const prefers = {
     section: lead[SECTION] || [],
-    typeObject: lead[TYPE_REALTY] || []
+    typeRealty: lead[TYPE_REALTY] || []
   };
 
   const {
@@ -47,19 +46,12 @@ export function typeRealtyConverter(lead, fields) {
           return result;
         }
         const checked =
-          prefers.typeObject.indexOf(parseInt(sectionItem.value, 10)) !== -1;
+          prefers.typeRealty.indexOf(parseInt(realtyItem.value, 10)) !== -1;
         return [...result, { ...realtyItem, checked }];
       },
       []
     );
     const checkedChildren = children.filter(reatyItem => reatyItem.checked);
-
-    console.log({
-      ...sectionItem,
-      checked,
-      children,
-      checkedLength: checkedChildren.length
-    });
 
     return {
       ...sectionItem,
