@@ -5,14 +5,13 @@ import PropTypes from "prop-types";
 import { get, size, forEach } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 
-import { saveToStore, saveFile, saveToServer } from "../actions/form";
+import { saveToStore, saveFile, savePropToServer } from "../actions/form";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-// import DistrictFieldEdit from "./edit/District";
 
 import styles from "./Field.module.css";
 
@@ -329,7 +328,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(saveToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ id: entityId, elementId, name, value }));
     }
   };
 };

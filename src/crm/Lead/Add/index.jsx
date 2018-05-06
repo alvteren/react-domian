@@ -14,7 +14,7 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import {saveToStore, setInitFormState} from "../../actions/form";
+import {saveFormToServer, saveToStore, setInitFormState} from "../../actions/form";
 import { fetchLeadFields } from "../../actions/lead";
 
 const Transition = props => {
@@ -46,20 +46,32 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    this.props.onSave();
+    this.props.saveFormToServer(this.props.values["0"]);
     this.handleClose();
   };
 
+  componentDidMount() {
+    if (!this.state.loading) {
+      this.setInitFormData(this.props.fields);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const { fields } = nextProps;
-    if (!fields || !Object.keys(fields).length) return;
+    if (JSON.stringify(this.props.fields) === JSON.stringify(fields)) return;
+    this.setInitFormData(fields);
     this.setState({ loading: false });
+  }
+
+  setInitFormData(fields) {
+    if (!fields || !Object.keys(fields).length) return;
     const initState = {};
     Object.keys(fields).forEach(key => {
       initState[key] = fields[key].default || "";
     });
     initState.can = { edit: true };
     this.props.setInitFormState(initState);
+    return true;
   }
 
   render() {
@@ -112,14 +124,14 @@ class Add extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const entityId = "leads";
-  const { fields } = state.crm[entityId];
-  return { fields, entityId };
+  const { fields, values } = state.crm[entityId];
+  return { fields, entityId, values };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
     dispatch,
-    onSave: () => {
-      // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
+    getLeadFields() {
+      dispatch(fetchLeadFields());
     }
   };
 };
@@ -130,12 +142,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    getLeadFields() {
-      dispatch(fetchLeadFields());
-    },
     setInitFormState(initState) {
       dispatch(setInitFormState({ initState, id: entityId }))
     },
+    saveFormToServer(formData) {
+      dispatch(saveFormToServer({ id: entityId, elementId: "0", formData }));
+    }
   }
 };
 
