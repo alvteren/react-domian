@@ -44,13 +44,13 @@ export const savePropToServer = async props => {
 };
 
 export const saveFormToServer = async props => {
-  const { entityId, formData } = props;
+  const { id, formData } = props;
   const params = {
     method: "POST",
     credentials: "include",
     mode: "cors",
     body: JSON.stringify(formData)
   };
-  const response = await fetch(baseURL + `/v1/${entityId}/`, params);
+  const response = await fetch(baseURL + `/v1/${id}/`, params);
   return response.json();
 };
