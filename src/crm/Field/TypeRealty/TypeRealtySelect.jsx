@@ -14,15 +14,15 @@ import {
 } from "material-ui-icons"
 import { Hidden } from "material-ui";
 
-import styles from "./DistrictSelect.module.css";
+import styles from "./TypeRealtySelect.module.css";
 
-import DistrictTree from "./DistrictTree";
+import TypeRealty from "./TypeRealty";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const DistrictSelect = props => {
+const TypeRealtySelect = props => {
 
   const { fullScreen, onCloseDialog, isTreeChanged, onSaveToStore } = props;
   return (
@@ -46,7 +46,7 @@ const DistrictSelect = props => {
               <CloseIcon />
             </Hidden>
           </IconButton>
-          <div>Выберите районы</div>
+          <div>Выберите тип недвижимости</div>
           {isTreeChanged &&
             <Button
               className={styles.saveBtn}
@@ -61,13 +61,13 @@ const DistrictSelect = props => {
         </Toolbar>
       </AppBar>
       <DialogContent className={styles.dialogContent}>
-        <DistrictTree {...props} />
+        <TypeRealty {...props} />
       </DialogContent>
     </Dialog>
   );
 };
 
-DistrictSelect.propTypes = {
+TypeRealtySelect.propTypes = {
   fullScreen: PropTypes.bool.isRequired
 };
-export default withMobileDialog()(DistrictSelect);
+export default withMobileDialog()(TypeRealtySelect);

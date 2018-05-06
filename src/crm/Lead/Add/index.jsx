@@ -37,7 +37,7 @@ const styles = theme => ({
 class Add extends React.Component {
   state = {
     open: true,
-    loading: true
+    loading: !Object.keys(this.props.fields).length // UI blocked while fields is loading
   };
 
   handleClose = () => {

@@ -6,26 +6,27 @@ import { Checkbox } from "material-ui";
 import Collapse from "material-ui/transitions/Collapse";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
-import { districtTreeConverter } from "./districtTreeConverter";
+import { typeRealtyConverter } from "./TypeRealtyConverter";
 import { cloneDeep } from "lodash";
+import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
-import styles from "./DistrictTree.module.css";
+import styles from "./TypeRealty.module.css";
 
-class DistrictTree extends React.PureComponent {
+class typeRealty extends React.PureComponent {
   state = {
-    districtTree: districtTreeConverter(this.props.lead, this.props.fields)
+    typeRealty: typeRealtyConverter(this.props.lead, this.props.fields)
   };
   toggleCollapse = id => () => {
     const isOpened = this.state[id];
     this.setState({ [id]: !isOpened });
   };
-  onChangeValue = (type, districtIndex, subDistrictIndex) => e => {
+  onChangeValue = (type, sectionIndex, typeRealtyIndex) => e => {
     e.stopPropagation();
-    const updated = cloneDeep(this.state.districtTree);
+    const updated = cloneDeep(this.state.typeRealty);
     let target;
     switch (type) {
-      case "uf_crm_district":
-        target = updated[districtIndex];
+      case SECTION:
+        target = updated[sectionIndex];
         target.checked ? target.checked = !target.checked : target.checked = true;
         target.children.forEach((child, index) => {
           child.checked = target.checked;
@@ -35,19 +36,19 @@ class DistrictTree extends React.PureComponent {
         } else {
           target.checkedLength = 0;
         }
-        this.setState({districtTree: updated});
+        this.setState({typeRealty: updated});
         break;
-      case "uf_crm_subdistrict":
-        target = updated[districtIndex].children[subDistrictIndex];
+      case TYPE_REALTY:
+        target = updated[sectionIndex].children[typeRealtyIndex];
         target.checked ?
           target.checked =!target.checked :
           target.checked = true;
         if (target.checked) {
-          ++updated[districtIndex].checkedLength;
+          ++updated[sectionIndex].checkedLength;
         } else {
-          --updated[districtIndex].checkedLength;
+          --updated[sectionIndex].checkedLength;
         }
-        this.setState({districtTree: updated});
+        this.setState({typeRealty: updated});
         break;
       default: break;
     }
@@ -57,46 +58,41 @@ class DistrictTree extends React.PureComponent {
       add: target.checked
     })
   };
-  updateStore = () => {
-
-  };
 
   render() {
     return (
       <div className={styles.wrapper}>
         <List>
           {
-            this.state.districtTree.map((district, index) => {
-              if (!district.children || !district.children.length) {
+            this.state.typeRealty.map((typeItem, index) => {
+              if (!typeItem.children || !typeItem.children.length) {
                 return (
-                  <ListItem key={index} button onClick={this.onChangeValue(district.value)}>
-                    <Checkbox checked={false} tabIndex={-1} disableRipple />
-                    <ListItemText inset primary={district.label} />
+                  <ListItem key={index} button onClick={this.onChangeValue(typeItem.value)}>
+                    {/*<Checkbox checked={false} tabIndex={-1} disableRipple />*/}
+                    <ListItemText inset primary={typeItem.label} />
                   </ListItem>
                 )
               } else {
                 return (
                   <Fragment key={index}>
-                    <ListItem button onClick={this.toggleCollapse(district.value)}>
-                      <Checkbox
-                        checked={district.checked || false}
-                        indeterminate={Boolean(district.checkedLength) && district.checkedLength < district.children.length}
-                        tabIndex={-1}
-                        disableRipple
-                        onClick={this.onChangeValue("uf_crm_district", index)}
-                      />
-                      <ListItemText inset primary={district.label} />
-                      <div onClick={this.toggleCollapse(district.value)}>
-                        {this.state[district.value] ? <ExpandLess /> : <ExpandMore />}
+                    <ListItem button onClick={this.toggleCollapse(typeItem.value)}>
+                      {/*<Checkbox*/}
+                        {/*indeterminate={typeItem.checked || typeItem.checkedLength || false}*/}
+                        {/*tabIndex={-1}*/}
+                        {/*disableRipple*/}
+                      {/*/>*/}
+                      <ListItemText inset primary={typeItem.label} />
+                      <div onClick={this.toggleCollapse(typeItem.value)}>
+                        {this.state[typeItem.value] ? <ExpandLess /> : <ExpandMore />}
                       </div>
                     </ListItem>
-                    <Collapse in={this.state[district.value]} timeout="auto" unmountOnExit>
+                    <Collapse in={this.state[typeItem.value]} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding className={styles.nested}>
-                      {district.children.map((subDistrict, subDistrictIndex) => {
+                      {typeItem.children.map((realtyType, realtyTypeIndex) => {
                         return (
-                          <ListItem key={subDistrictIndex} button onClick={this.onChangeValue("uf_crm_subdistrict",  index, subDistrictIndex)}>
-                            <Checkbox checked={subDistrict.checked || false} tabIndex={-1} disableRipple />
-                            <ListItemText inset primary={subDistrict.label} />
+                          <ListItem key={realtyTypeIndex} button onClick={this.onChangeValue(TYPE_REALTY,  index, realtyTypeIndex)}>
+                            <Checkbox checked={realtyType.checked || false} tabIndex={-1} disableRipple />
+                            <ListItemText inset primary={realtyType.label} />
                           </ListItem>
                         )
                       })}
@@ -115,10 +111,10 @@ class DistrictTree extends React.PureComponent {
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    uf_crm_district,
-    uf_crm_subdistrict
+    section,
+    uf_crm_type_realty
   } = state.crm.leads.fields;
-  const fields = { uf_crm_district, uf_crm_subdistrict };
+  const fields = { section, uf_crm_type_realty };
 
   const { objectId } = ownProps;
 
@@ -130,4 +126,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DistrictTree);
+export default connect(mapStateToProps, mapDispatchToProps)(typeRealty);

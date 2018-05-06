@@ -5,7 +5,7 @@ import formData from "./formData";
 import filterData from "./filterData";
 
 import DistrictInput from "../Field/District";
-import TypeRealtyInput from "../Field/District";
+import TypeRealtyInput from "../Field/TypeRealty";
 
 const chips = {
   chips: {},
@@ -167,11 +167,14 @@ export default function reducer(state = initialState, { type, payload }) {
           link: [false]
         };
         newFormState.fields["uf_crm_type_realty"] = {
-          id: "uf_crm_type_realty",
-          type: "custom",
-          component: TypeRealtyInput,
-          label: "Тип недвижимости",
-          link: [false]
+          ...newFormState.fields["uf_crm_type_realty"],
+          ...{
+            id: "uf_crm_type_realty",
+            type: "custom",
+            component: TypeRealtyInput,
+            label: "Тип недвижимости",
+            link: [false]
+          }
         };
       }
       return {

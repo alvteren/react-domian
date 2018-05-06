@@ -8,19 +8,19 @@ import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/Add";
 
-import DistrictSelect from "./TypeRealtySelect";
+import TypeRealtySelect from "./TypeRealtySelect";
 
 import styles from "./index.module.css";
 import {saveToStore} from "../../actions/form";
-import { SECTION, TYPE_OBJECT } from "./TypeRealtyConverter";
+import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
 class TypeRealty extends React.PureComponent {
   state = {
     open: false,
     isTreeChanged: false,
     [SECTION]: this.props[SECTION] || [],
-    [TYPE_OBJECT]: this.props[TYPE_OBJECT] && Array.isArray(this.props[TYPE_OBJECT])
-      ? this.props[TYPE_OBJECT].map(item => String(item))
+    [TYPE_REALTY]: this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
+      ? this.props[TYPE_REALTY].map(item => String(item))
       : []
   };
 
@@ -50,8 +50,8 @@ class TypeRealty extends React.PureComponent {
         value:  this.state[SECTION].length ? this.state[SECTION] : false
       },
       {
-        name: TYPE_OBJECT,
-        value: this.state[TYPE_OBJECT]
+        name: TYPE_REALTY,
+        value: this.state[TYPE_REALTY]
       }
     ];
     onChange(data);
@@ -68,19 +68,18 @@ class TypeRealty extends React.PureComponent {
       // formControl,
       canEdit
     } = this.props;
-    const districts = this.props.uf_crm_district || [];
+    const section = this.props.section || [];
     // This filter for non-duplicate district and sub district values output
-    const subDistricts = this.props.uf_crm_district
-      ? this.props.uf_crm_subdistrict.filter(item => {
-        const links = this.props.subDistrictFields.items[item].link;
-        // debugger;
+    const typeRealty = this.props.section
+      ? this.props.uf_crm_type_realty.filter(item => {
+        const links = this.props.typeRealtyFields.items[item].link;
         for (let i = 0; i < links.length; i++) {
-          if (!this.props.uf_crm_district.some(item => item === links[i])) continue;
+          if (!this.props.section.some(item => item === links[i])) continue;
           return false;
         }
         return true
       })
-      : this.props.uf_crm_subdistrict || [];
+      : this.props.uf_crm_type_realty || [];
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -91,14 +90,14 @@ class TypeRealty extends React.PureComponent {
               </Typography>
               <div className={styles.chips}>
                 {
-                  districts.map((district, districtIndex) => {
+                  section.map((district, districtIndex) => {
                     return (
                       <Chip
                         key={districtIndex}
-                        label={this.props.districtFields.items[district].label}
+                        label={this.props.sectionFields.items[district].label}
                         onDelete={this.onChangeValue({
-                          name: "uf_crm_district",
-                          value: this.props.districtFields.items[district].value
+                          name: "section",
+                          value: this.props.sectionFields.items[district].value
                         })}
                         className={styles.chip}
                       />
@@ -106,14 +105,14 @@ class TypeRealty extends React.PureComponent {
                   })
                 }
                 {
-                  subDistricts.map((subDistrict, subDistrictIndex) => {
+                  typeRealty.map((subDistrict, subDistrictIndex) => {
                     return (
                       <Chip
                         key={subDistrictIndex}
-                        label={this.props.subDistrictFields.items[subDistrict].label}
+                        label={this.props.typeRealtyFields.items[subDistrict].label}
                         onDelete={this.onChangeValue({
-                          name: "uf_crm_subdistrict",
-                          value: this.props.subDistrictFields.items[subDistrict].value
+                          name: "uf_crm_type_realty",
+                          value: this.props.typeRealtyFields.items[subDistrict].value
                         })}
                         className={styles.chip}
                       />
@@ -130,7 +129,7 @@ class TypeRealty extends React.PureComponent {
           </div>
         </Grid>
         {this.state.open && (
-          <DistrictSelect
+          <TypeRealtySelect
             {...this.props}
             onCloseDialog={this.onCloseDialog}
             onSaveToStore={this.onSaveToStore}
@@ -144,11 +143,10 @@ class TypeRealty extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { objectId } = ownProps;
-  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.leads.fields;
-  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.leads.values[objectId];
-  debugger;
+  const { section: sectionFields, uf_crm_type_realty: typeRealtyFields } = state.crm.leads.fields;
+  const { can, section, uf_crm_type_realty } = state.crm.leads.values[objectId];
   const { edit: canEdit = false } = can;
-  return { objectId, canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
+  return { objectId, canEdit, section, uf_crm_type_realty, sectionFields, typeRealtyFields };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

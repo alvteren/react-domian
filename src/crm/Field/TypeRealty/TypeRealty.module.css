@@ -1,7 +1,8 @@
-.appBar {
-  position: relative;
+.nested {
+  margin-left: 32px;
 }
-.saveBtn {
-  cursor: pointer;
-  margin-left: auto;
+@media all and (min-width: 480px) {
+  .wrapper {
+    min-width: 480px;
+  }
 }
