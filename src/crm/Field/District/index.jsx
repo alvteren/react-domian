@@ -104,16 +104,18 @@ class District extends React.PureComponent {
                     )
                   })
                 }
-                {
-                  subDistricts.map((subDistrict, subDistrictIndex) => {
+                {!districts.length && !subDistricts.length ?
+                    canEdit ? <span>Добавьте районы, кликнув </span> : <span>Не указано </span>
+                  : subDistricts.map((subDistrict, subDistrictIndex) => {
                     return (
                       <Chip
                         key={subDistrictIndex}
                         label={this.props.subDistrictFields.items[subDistrict].label}
-                        onDelete={this.onChangeValue({
+                        onDelete={canEdit ? this.onChangeValue({
                           name: "uf_crm_subdistrict",
                           value: this.props.subDistrictFields.items[subDistrict].value
-                        })}
+                        }) :
+                        false}
                         className={styles.chip}
                       />
                     )

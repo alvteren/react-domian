@@ -68,18 +68,7 @@ class TypeRealty extends React.PureComponent {
       // formControl,
       canEdit
     } = this.props;
-    const section = this.props.section || [];
-    // This filter for non-duplicate district and sub district values output
-    const typeRealty = this.props.section
-      ? this.props.uf_crm_type_realty.filter(item => {
-        const links = this.props.typeRealtyFields.items[item].link;
-        for (let i = 0; i < links.length; i++) {
-          if (!this.props.section.some(item => item === links[i])) continue;
-          return false;
-        }
-        return true
-      })
-      : this.props.uf_crm_type_realty || [];
+    const typeRealty = this.props.uf_crm_type_realty || [];
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -89,31 +78,18 @@ class TypeRealty extends React.PureComponent {
                 {field.label}
               </Typography>
               <div className={styles.chips}>
-                {
-                  section.map((district, districtIndex) => {
+                {!typeRealty.length ?
+                    canEdit ? <span>Добавьте тип недвижимости, кликнув </span> : <span>Не указано </span>
+                  : typeRealty.map((typeRealtyItem, typeRealtyItemIndex) => {
                     return (
                       <Chip
-                        key={districtIndex}
-                        label={this.props.sectionFields.items[district].label}
-                        onDelete={this.onChangeValue({
-                          name: "section",
-                          value: this.props.sectionFields.items[district].value
-                        })}
-                        className={styles.chip}
-                      />
-                    )
-                  })
-                }
-                {
-                  typeRealty.map((subDistrict, subDistrictIndex) => {
-                    return (
-                      <Chip
-                        key={subDistrictIndex}
-                        label={this.props.typeRealtyFields.items[subDistrict].label}
-                        onDelete={this.onChangeValue({
+                        key={typeRealtyItemIndex}
+                        label={this.props.typeRealtyFields.items[typeRealtyItem].label}
+                        onDelete={canEdit ? this.onChangeValue({
                           name: "uf_crm_type_realty",
-                          value: this.props.typeRealtyFields.items[subDistrict].value
-                        })}
+                          value: this.props.typeRealtyFields.items[typeRealtyItem].value
+                        }):
+                        false}
                         className={styles.chip}
                       />
                     )
