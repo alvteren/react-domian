@@ -47,15 +47,15 @@ class District extends React.PureComponent {
     const data = [
       {
         name: DISTRICTS,
-        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS] : false
+        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS].map(item => Number(item)) : false
       },
       {
         name: SUB_DISTRICTS,
-        value: this.state[SUB_DISTRICTS]
+        value: this.state[SUB_DISTRICTS].map(item => Number(item))
       }
     ];
     onChange(data);
-    this.setState({ open: false })
+    this.setState({ isTreeChanged: false, open: false })
   };
 
   render() {
@@ -73,7 +73,6 @@ class District extends React.PureComponent {
     const subDistricts = this.props.uf_crm_district
       ? this.props.uf_crm_subdistrict.filter(item => {
         const links = this.props.subDistrictFields.items[item].link;
-        // debugger;
         for (let i = 0; i < links.length; i++) {
           if (!this.props.uf_crm_district.some(item => item === links[i])) continue;
           return false;
