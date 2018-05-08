@@ -13,6 +13,8 @@ import { Pageview as PageviewIcon } from "material-ui-icons";
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
 import Pagination from "./Pagination";
+import MobileStepper from 'material-ui/MobileStepper';
+import { withStyles } from "material-ui/styles";
 
 import { toArray, isObject } from "lodash";
 
@@ -27,6 +29,11 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import styles from "./Table.module.css";
+const style = {
+  progress: {
+    width: `100%`,
+  }
+};
 
 /**
  * EnhancedTable API:
@@ -79,7 +86,8 @@ class EnhancedTable extends React.Component {
       filterComponent,
       groupActionsComponents,
       controlComponents,
-      onChangePage
+      onChangePage,
+      classes
     } = this.props;
 
     const arData = toArray(data);
@@ -144,7 +152,26 @@ class EnhancedTable extends React.Component {
             fields.status_id.items[val] &&
             fields.status_id.items[val].label
           ) {
-            return fields.status_id.items[val].label;
+            const statusToStep = {
+              NEW: 1,
+              ASSIGNED: 2,
+              DETAILS: 3,
+              CONVERTED: 4,
+              JUNK: 0
+            };
+            const step = statusToStep[fields.status_id.items[val].value];
+            return (
+              <div>
+                <MobileStepper
+                  variant="progress"
+                  steps={5}
+                  position="static"
+                  activeStep={step}
+                  classes={{progress: classes.progress}}
+                />
+                <span>{fields.status_id.items[val].label}</span>
+              </div>
+            )
           }
         }
 
@@ -299,4 +326,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(style)(EnhancedTable));
