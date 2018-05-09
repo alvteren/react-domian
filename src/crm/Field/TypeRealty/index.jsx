@@ -46,10 +46,6 @@ class TypeRealty extends React.PureComponent {
     const { onChange } = this.props;
     const data = [
       {
-        name: SECTION,
-        value:  this.state[SECTION].length ? this.state[SECTION] : false
-      },
-      {
         name: TYPE_REALTY,
         value: this.state[TYPE_REALTY]
       }
