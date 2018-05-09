@@ -47,15 +47,15 @@ class District extends React.PureComponent {
     const data = [
       {
         name: DISTRICTS,
-        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS] : false
+        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS].map(item => Number(item)) : false
       },
       {
         name: SUB_DISTRICTS,
-        value: this.state[SUB_DISTRICTS]
+        value: this.state[SUB_DISTRICTS].map(item => Number(item))
       }
     ];
     onChange(data);
-    this.setState({ open: false })
+    this.setState({ isTreeChanged: false, open: false })
   };
 
   render() {

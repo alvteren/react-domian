@@ -33,10 +33,12 @@ class Lead extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
+    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    document.removeEventListener("click", this.handleClose, false);
   };
 
   render() {
