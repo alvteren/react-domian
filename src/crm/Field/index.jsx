@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, size, forEach } from "lodash";
+import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 
 import { saveToStore, saveFile, savePropToServer } from "../actions/form";
@@ -102,7 +102,7 @@ class Field extends React.Component {
 
       if (visibleValues) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0) {
+          if (size(visibleValues) > 0 || field.id === "uf_type_object_2") {
             return (
               <Grid item xs={12} sm={6}>
                 <div className={classes.valueWrapper}>
@@ -110,7 +110,7 @@ class Field extends React.Component {
                     id={id}
                     value={value || ""}
                     field={field}
-                    visibleValues={visibleValues}
+                    visibleValues={size(visibleValues) ? visibleValues : field.items}
                     onChange={this.onChange}
                     formControl={formControl}
                   />

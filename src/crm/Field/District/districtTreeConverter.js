@@ -8,17 +8,6 @@ const keysToMatch = [DISTRICTS, SUB_DISTRICTS];
 
 /**
  *
- * @param values - {Object}
- * @return undefined
- */
-export function setTypeByID(values) {
-  forOwn(values, (item, key) => {
-    if (keysToMatch.includes(key)) item.type = TYPE;
-  });
-}
-
-/**
- *
  * @param lead - {Object}
  * @param fields - {Object}
  * @return resultTree - [Object]
@@ -45,9 +34,9 @@ export function districtTreeConverter(lead, fields) {
         if (subDistrict.link.indexOf(district.value) === -1) {
           return result;
         }
-        const checked =
-          prefers.subDistrict.indexOf(parseInt(subDistrict.value, 10)) !== -1;
-        return [...result, { ...subDistrict, checked }];
+        const subDistrictChecked =
+          prefers.subDistrict.indexOf(parseInt(subDistrict.value, 10)) !== -1 || checked;
+        return [...result, { ...subDistrict, checked: subDistrictChecked }];
       },
       []
     );

@@ -11,14 +11,14 @@ import { FormControl, FormHelperText } from "material-ui/Form";
 const SelectField = props => {
   const { id, value, field, visibleValues, onChange, formControl } = props;
   const bNativeSelect = size(visibleValues) > 4;
-
+  console.log(field, visibleValues);
   return (
     <FormControl fullWidth className={formControl} key={id}>
       <InputLabel htmlFor={id} required={field.required}>
         {field.label}
       </InputLabel>
       <Select
-        value={value || ""}
+        value={String(value) || ""}
         onChange={onChange}
         native={bNativeSelect}
         input={<Input name={id} id={id} />}
@@ -34,14 +34,11 @@ const SelectField = props => {
               )})
             }
           </Fragment> :
-          <Fragment>
-            { map(visibleValues, item => {
-              return <MenuItem value={item.value} key={item.value}>
-                {item.label}
-              </MenuItem>
-            })
-          }
-          </Fragment>
+           map(visibleValues, item => {
+            return <MenuItem value={item.value} key={item.value}>
+              {item.label}
+            </MenuItem>
+          })
         }
       </Select>
       {field.hint && <FormHelperText>{field.hint}</FormHelperText>}

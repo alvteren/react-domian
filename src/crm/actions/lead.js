@@ -60,7 +60,7 @@ export const fetchLeadFields = () => async dispatch => {
       payload: { id: "leads" }
     });
     const data = await fetchLeadFieldsApi();
-    setTypeByID(data);
+    data["uf_type_object_2"].type = "select";
     dispatch({
       type: "FORM_FIELDS_FETCH_SUCCESS",
       payload: { id: "leads", data }

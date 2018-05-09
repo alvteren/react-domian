@@ -16,6 +16,7 @@ import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
 import {saveFormToServer, saveToStore, setInitFormState} from "../../actions/form";
 import { fetchLeadFields } from "../../actions/lead";
+import {find} from "lodash";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -68,6 +69,7 @@ class Add extends React.Component {
     const initState = {};
     Object.keys(fields).forEach(key => {
       initState[key] = fields[key].default || "";
+      if (key === "uf_crm_type_realty") initState[key] = [];
     });
     initState.can = { edit: true };
     this.props.setInitFormState(initState);
