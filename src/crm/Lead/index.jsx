@@ -5,8 +5,8 @@ import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
-import GroupActions from "./GroupActions";
-import Controls from "./Controls";
+import GroupActions from "../SaleList/GroupActions";
+import Controls from "../SaleList/Controls";
 
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
