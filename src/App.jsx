@@ -77,7 +77,7 @@ const theme = createMuiTheme({
 // Configure JSS
 const jss = create(preset());
 jss.options.createGenerateClassName = createGenerateClassName;
-jss.options.insertionPoint = "insertion-point-jss";
+jss.options.insertionPoint = document.getElementById("insertion-point-jss");
 
 class App extends Component {
   render() {
@@ -100,7 +100,7 @@ class App extends Component {
                       component={TelegramLink}
                     />
                   </main>
-                  <Route path="/crm/lead" component={Lead}/>
+                  <Route path="/crm/lead" component={Lead} />
                 </Fragment>
               </ConnectedRouter>
             </Auth>

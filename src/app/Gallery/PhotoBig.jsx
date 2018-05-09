@@ -105,7 +105,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...ownProps,
     deletePhoto: index => {
-      dispatch(deletePhoto({ id: "objects", index, elementId: current }));
+      dispatch(deletePhoto({  id: "objects", index, elementId: current }));
     }
   };
 };
