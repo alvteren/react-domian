@@ -48,10 +48,10 @@ class Lead extends React.Component {
     return (
       <Fragment>
         <EnhancedTable
-          id="leads"
+          id="lead"
           controls={["favorite"]}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="leads" />}
+          filterComponent={<Filter id="lead" />}
           // groupActionsComponents={GroupActions}
           // controlComponents={Controls}
         />

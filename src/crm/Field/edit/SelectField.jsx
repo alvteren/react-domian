@@ -11,7 +11,6 @@ import { FormControl, FormHelperText } from "material-ui/Form";
 const SelectField = props => {
   const { id, value, field, visibleValues, onChange, formControl } = props;
   const bNativeSelect = size(visibleValues) > 4;
-  console.log(field, visibleValues);
   return (
     <FormControl fullWidth className={formControl} key={id}>
       <InputLabel htmlFor={id} required={field.required}>

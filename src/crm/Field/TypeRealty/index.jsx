@@ -115,8 +115,8 @@ class TypeRealty extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { objectId } = ownProps;
-  const { section: sectionFields, uf_crm_type_realty: typeRealtyFields } = state.crm.leads.fields;
-  const { can, section, uf_crm_type_realty } = state.crm.leads.values[objectId];
+  const { section: sectionFields, uf_crm_type_realty: typeRealtyFields } = state.crm.lead.fields;
+  const { can, section, uf_crm_type_realty } = state.crm.lead.values[objectId];
   const { edit: canEdit = false } = can;
   return { objectId, canEdit, section, uf_crm_type_realty, sectionFields, typeRealtyFields };
 };
@@ -124,7 +124,7 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { objectId: elementId } = stateProps;
-  const entityId = "leads";
+  const entityId = "lead";
   return {
     ...stateProps,
     ...ownProps,

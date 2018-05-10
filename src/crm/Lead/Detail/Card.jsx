@@ -126,7 +126,7 @@ class Card extends React.Component {
                 key={id}
                 edit={currentEdit === id}
                 match={this.props.match}
-                entityId="leads"
+                entityId="lead"
               />
             ))}
           </Grid>
@@ -136,9 +136,9 @@ class Card extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.leads;
+  const { fieldsSections } = state.crm.lead;
   const { id } = ownProps.match.params;
-  const values = get(state.crm.leads.values, id, null);
+  const values = get(state.crm.lead.values, id, null);
   const can = get(values, "can", null);
   const canViewContacts = get(can, "view_contacts", false);
   return { fieldsSections, canViewContacts, values };

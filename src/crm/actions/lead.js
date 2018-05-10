@@ -23,7 +23,7 @@ export const fetchLeads = props => async dispatch => {
     convert(data);
     dispatch({
       type: "TABLE_FETCH_DATA_SUCCESS",
-      payload: { id: "leads", ...data }
+      payload: { id: "lead", ...data }
     });
   } catch (err) {
     dispatch({ type: "TABLE_FETCH_DATA_ERROR", payload: err, error: true });
@@ -34,12 +34,12 @@ export const fetchLead = id => async dispatch => {
   try {
     dispatch({
       type: "DETAIL_FETCH_DATA_START",
-      payload: { id: "leads" }
+      payload: { id: "lead" }
     });
     const data = await fetchLeadApi({ id });
     dispatch({
       type: "DETAIL_FETCH_DATA_SUCCESS",
-      payload: { id: "leads", ...data }
+      payload: { id: "lead", ...data }
     });
   } catch (err) {
     dispatch({ type: "DETAIL_FETCH_DATA_ERROR", payload: err, error: true });
@@ -49,7 +49,7 @@ export const onInitLead = props => async dispatch => {
   const { id } = props;
   dispatch({
     type: "DETAIL_INIT",
-    payload: { id: "leads", current: id }
+    payload: { id: "lead", current: id }
   });
 };
 
@@ -57,13 +57,12 @@ export const fetchLeadFields = () => async dispatch => {
   try {
     dispatch({
       type: "FORM_FIELDS_FETCH_START",
-      payload: { id: "leads" }
+      payload: { id: "lead" }
     });
     const data = await fetchLeadFieldsApi();
-    data["uf_type_object_2"].type = "select";
     dispatch({
       type: "FORM_FIELDS_FETCH_SUCCESS",
-      payload: { id: "leads", data }
+      payload: { id: "lead", data }
     });
   } catch (err) {
     dispatch({ type: "FORM_FIELDS_FETCH_ERROR", payload: err, error: true });

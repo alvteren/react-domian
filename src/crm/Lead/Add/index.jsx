@@ -125,7 +125,7 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const entityId = "leads";
+  const entityId = "lead";
   const { fields, values } = state.crm[entityId];
   return { fields, entityId, values };
 };

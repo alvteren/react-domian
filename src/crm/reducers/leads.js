@@ -99,7 +99,8 @@ const form = {
         district: true,
         uf_crm_s_area: true,
         uf_type_object_2: true,
-        uf_source: true
+        uf_source: true,
+        uf_currency: true
       }
     }
   },
@@ -134,7 +135,7 @@ export const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const id = get(payload, "id", null);
-  if (id === "leads") {
+  if (id === "lead") {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

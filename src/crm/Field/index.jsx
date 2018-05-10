@@ -102,7 +102,7 @@ class Field extends React.Component {
 
       if (visibleValues) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0 || field.id === "uf_type_object_2") {
+          if (size(visibleValues) > 0) {
             return (
               <Grid item xs={12} sm={6}>
                 <div className={classes.valueWrapper}>
@@ -110,7 +110,7 @@ class Field extends React.Component {
                     id={id}
                     value={value || ""}
                     field={field}
-                    visibleValues={size(visibleValues) ? visibleValues : field.items}
+                    visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
                   />
@@ -328,7 +328,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(savePropToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ entityId, elementId, name, value }));
     }
   };
 };

@@ -145,8 +145,8 @@ class District extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { objectId } = ownProps;
-  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.leads.fields;
-  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.leads.values[objectId];
+  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.lead.fields;
+  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.lead.values[objectId];
   const { edit: canEdit = false } = can;
   return { objectId, canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
 };
@@ -154,7 +154,7 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { objectId: elementId } = stateProps;
-  const entityId = "leads";
+  const entityId = "lead";
   return {
     ...stateProps,
     ...ownProps,

@@ -16,7 +16,7 @@ const getVisibleValues = (field, values) => {
       return noStrictIncludes(field.link, linkedValue) ? true : null;
     }
     if (field["exclude_link"]) {
-      return noStrictExcludes(field.exclude_link, linkedValue) ? true : null;
+      return noStrictExcludes(field.exclude_link, linkedValue) ? field.items : null;
     }
     if (get(field, "items", false)) {
       const items = reduce(
