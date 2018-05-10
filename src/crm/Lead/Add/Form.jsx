@@ -101,7 +101,7 @@ class Form extends React.Component {
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="leads"/>
+              <Field id={id} key={id} edit={true} match={this.props.match} entityId="lead"/>
             ))}
           </Grid>
         </TabContainer>
@@ -110,7 +110,7 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.leads;
+  const { fieldsSections } = state.crm.lead;
   const { loadFields } = ownProps;
   return { fieldsSections, loadFields };
 };
