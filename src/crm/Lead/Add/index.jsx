@@ -17,6 +17,7 @@ import { Hidden } from "material-ui";
 import {saveFormToServer, saveToStore, setInitFormState} from "../../actions/form";
 import { fetchLeadFields } from "../../actions/lead";
 import {find} from "lodash";
+import formValidate from "../../../util/formValidate";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -38,7 +39,8 @@ const styles = theme => ({
 class Add extends React.Component {
   state = {
     open: true,
-    loading: !Object.keys(this.props.fields).length // UI blocked while fields is loading
+    loading: !Object.keys(this.props.fields).length // UI blocked while fields is loading,
+    errorArr: []
   };
 
   handleClose = () => {
@@ -47,8 +49,14 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    this.props.saveFormToServer(this.props.values["0"]);
-    this.handleClose();
+    const errorArr = formValidate(this.props.values["0"], this.props.fields);
+    console.log(errorArr);
+    if (!Boolean(errorArr)) {
+      this.setState(errorArr);
+    } else {
+      this.props.saveFormToServer(this.props.values["0"]);
+      this.handleClose();
+    }
   };
 
   componentDidMount() {
@@ -68,6 +76,7 @@ class Add extends React.Component {
     if (!fields || !Object.keys(fields).length) return;
     const initState = {};
     Object.keys(fields).forEach(key => {
+      if (String(key) === "undefined") return;
       initState[key] = fields[key].default || "";
       if (key === "uf_crm_type_realty") initState[key] = [];
     });
