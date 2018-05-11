@@ -100,3 +100,10 @@ export const fetchSearchResult = query => async dispatch => {
     });
   }
 };
+export const validateFormError = props => dispatch => {
+  const { entityId, elementId, errorArr } = props;
+  dispatch({
+    type: "FORM_VALIDATION_ERROR",
+    payload: { id: entityId, elementId, errorArr }
+  });
+};

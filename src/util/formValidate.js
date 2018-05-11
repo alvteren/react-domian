@@ -1,4 +1,4 @@
-const serviceProps = ["can"];
+const serviceProps = ["can", "validateErrorArr"];
 
 /**
  *

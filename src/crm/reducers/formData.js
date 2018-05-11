@@ -60,6 +60,20 @@ export default (state, { type, payload }) => {
         };
       }
     }
+    if (type === "FORM_VALIDATION_ERROR") {
+      const { elementId, errorArr } = payload;
+      console.log(state);
+      newstate = {
+        ...state,
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            "validateErrorArr": errorArr
+          }
+        }
+      };
+    }
     if (type === "FORM_SAVE_FILE") {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});

@@ -9,7 +9,7 @@ import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 
 const SelectField = props => {
-  const { id, value, field, visibleValues, onChange, formControl } = props;
+  const { id, value, field, visibleValues, onChange, formControl, error } = props;
   const bNativeSelect = size(visibleValues) > 4;
   return (
     <FormControl fullWidth className={formControl} key={id}>
@@ -20,7 +20,9 @@ const SelectField = props => {
         value={String(value) || ""}
         onChange={onChange}
         native={bNativeSelect}
-        input={<Input name={id} id={id} />}
+        input={<Input name={id} id={id}
+        error={error}
+        />}
       >
         { bNativeSelect ?
           <Fragment>

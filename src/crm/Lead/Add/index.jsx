@@ -14,7 +14,7 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import {saveFormToServer, saveToStore, setInitFormState} from "../../actions/form";
+import {saveFormToServer, saveToStore, validateFormError, setInitFormState} from "../../actions/form";
 import { fetchLeadFields } from "../../actions/lead";
 import {find} from "lodash";
 import formValidate from "../../../util/formValidate";
@@ -39,8 +39,7 @@ const styles = theme => ({
 class Add extends React.Component {
   state = {
     open: true,
-    loading: !Object.keys(this.props.fields).length, // UI blocked while fields is loading,
-    errorArr: []
+    loading: !Object.keys(this.props.fields).length // UI blocked while fields is loading
   };
 
   handleClose = () => {
@@ -51,8 +50,8 @@ class Add extends React.Component {
   handleClickSave = () => {
     const errorArr = formValidate(this.props.values["0"], this.props.fields);
     console.log(errorArr);
-    if (!Boolean(errorArr)) {
-      this.setState(errorArr);
+    if (Boolean(errorArr.length)) {
+      this.props.formValidateError(errorArr);
     } else {
       this.props.saveFormToServer(this.props.values["0"]);
       this.handleClose();
@@ -157,7 +156,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       dispatch(setInitFormState({ initState, id: entityId }))
     },
     saveFormToServer(formData) {
-      dispatch(saveFormToServer({ id: entityId, elementId: "0", formData }));
+      dispatch(saveFormToServer({ id: entityId, elementId: 0, formData }));
+    },
+    formValidateError(errorArr) {
+      dispatch(validateFormError({ entityId, elementId: 0, errorArr }));
     }
   }
 };

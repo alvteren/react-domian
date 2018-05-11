@@ -56,8 +56,7 @@ class Field extends React.Component {
   };
 
   render() {
-    const { id, field, values, value, classes, can } = this.props;
-
+    const { id, field, values, value, classes, can, objectId } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -113,6 +112,7 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
+                    error={values && values.validateErrorArr && values.validateErrorArr.includes(field.id)}
                   />
                   {needSave && (
                     <IconButton
@@ -215,6 +215,7 @@ class Field extends React.Component {
               label={field.label}
               onChange={this.onChange}
               value={value || ""}
+              error={values && values.validateErrorArr && values.validateErrorArr.includes(field.id)}
               helperText={get(field, "hint", "")}
             />
             {needSave && (
