@@ -165,7 +165,8 @@ export default function reducer(state = initialState, { type, payload }) {
           type: "custom",
           component: DistrictInput,
           label: "Районы",
-          depended: "uf_crm_district_all"
+          depended: "uf_crm_district_all",
+          link: [false]
         };
         newFormState.fields["uf_crm_type_realty"] = {
           ...newFormState.fields["uf_crm_type_realty"],

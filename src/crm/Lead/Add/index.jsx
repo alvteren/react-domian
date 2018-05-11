@@ -49,7 +49,6 @@ class Add extends React.Component {
   };
   handleClickSave = () => {
     const errorArr = formValidate(this.props.values["0"], this.props.fields);
-    console.log(errorArr);
     if (Boolean(errorArr.length)) {
       this.props.formValidateError(errorArr);
     } else {
@@ -76,7 +75,7 @@ class Add extends React.Component {
     const initState = {};
     Object.keys(fields).forEach(key => {
       if (String(key) === "undefined") return;
-      initState[key] = fields[key].default || "";
+      initState[key] = fields[key].hasOwnProperty("default") ? fields[key].default : "";
       if (key === "uf_crm_type_realty") initState[key] = [];
     });
     initState.can = { edit: true };

@@ -62,7 +62,6 @@ export default (state, { type, payload }) => {
     }
     if (type === "FORM_VALIDATION_ERROR") {
       const { elementId, errorArr } = payload;
-      console.log(state);
       newstate = {
         ...state,
         values: {
