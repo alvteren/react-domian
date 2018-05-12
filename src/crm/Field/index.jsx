@@ -112,7 +112,12 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
-                    error={values && values.validateErrorArr && values.validateErrorArr.includes(field.id)}
+                    error={values &&
+                    values.validateErrorArr &&
+                    values.validateErrorArr.hasOwnProperty(field.id) ?
+                      values.validateErrorArr[field.id] :
+                      false
+                    }
                   />
                   {needSave && (
                     <IconButton
@@ -215,8 +220,14 @@ class Field extends React.Component {
               label={field.label}
               onChange={this.onChange}
               value={value || ""}
-              error={values && values.validateErrorArr && values.validateErrorArr.includes(field.id)}
-              helperText={get(field, "hint", "")}
+              error={values && values.validateErrorArr && values.validateErrorArr.hasOwnProperty(field.id)}
+              helperText={
+                (values &&
+                  values.validateErrorArr &&
+                  values.validateErrorArr.hasOwnProperty(field.id)) ?
+                  values.validateErrorArr[field.id].message :
+                  get(field, "hint", "")
+              }
             />
             {needSave && (
               <IconButton

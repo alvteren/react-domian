@@ -11,8 +11,12 @@ import { FormControl, FormHelperText } from "material-ui/Form";
 const SelectField = props => {
   const { id, value, field, visibleValues, onChange, formControl, error } = props;
   const bNativeSelect = size(visibleValues) > 4;
+  const helperText = () => {
+    if (error) return <FormHelperText>{error.message}</FormHelperText>;
+    if (field.hint) return <FormHelperText>{field.hint}</FormHelperText>;
+  };
   return (
-    <FormControl fullWidth className={formControl} key={id}>
+    <FormControl fullWidth className={formControl} key={id} error={error instanceof Object}>
       <InputLabel htmlFor={id} required={field.required}>
         {field.label}
       </InputLabel>
@@ -21,7 +25,6 @@ const SelectField = props => {
         onChange={onChange}
         native={bNativeSelect}
         input={<Input name={id} id={id}
-        error={error}
         />}
       >
         { bNativeSelect ?
@@ -42,7 +45,7 @@ const SelectField = props => {
           })
         }
       </Select>
-      {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
+      {helperText()}
     </FormControl>
   );
 };

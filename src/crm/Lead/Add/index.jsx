@@ -48,9 +48,9 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    const errorArr = formValidate(this.props.values["0"], this.props.fields);
-    if (Boolean(errorArr.length)) {
-      this.props.formValidateError(errorArr);
+    const validateErrors = formValidate({ form: this.props.values["0"], fields: this.props.fields, entityId: "lead" });
+    if (Boolean(Object.keys(validateErrors).length)) {
+      this.props.formValidateError(validateErrors);
     } else {
       this.props.saveFormToServer(this.props.values["0"]);
       this.handleClose();
