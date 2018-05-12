@@ -86,7 +86,8 @@ const form = {
         status_id: true,
         opportunity: true,
         opened: true,
-        email: true
+        email: true,
+        phone: true
       }
     },
     more: {

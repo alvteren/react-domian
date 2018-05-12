@@ -12,6 +12,7 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
+import MaskedInput from 'react-text-mask';
 
 import styles from "./Field.module.css";
 
@@ -22,10 +23,31 @@ import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={inputRef}
+      mask={['+', '7', '(', /[1-9]/, /\d/, /\d/, ')', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
+      //showMask
+    />
+  );
+}
+
 class Field extends React.Component {
   state = {
     edit: get(this.props, "edit", false),
-    needSave: false
+    needSave: false,
+    phone: ""
+  };
+
+  handlePhoneChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+    this.props.handleChange(event);
   };
 
   onStartEdit = () => {
@@ -218,8 +240,8 @@ class Field extends React.Component {
               required={field.required}
               name={id}
               label={field.label}
-              onChange={this.onChange}
-              value={value || ""}
+              // onChange={this.onChange}
+              value={value || this.state.phone}
               error={values && values.validateErrorArr && values.validateErrorArr.hasOwnProperty(field.id)}
               helperText={
                 (values &&
@@ -228,6 +250,11 @@ class Field extends React.Component {
                   values.validateErrorArr[field.id].message :
                   get(field, "hint", "")
               }
+              onChange={field.id === "phone" ? this.handlePhoneChange('phone') : this.onChange}
+              InputProps={field.id === "phone" ?
+                {
+                inputComponent: TextMaskCustom,
+                } : {}}
             />
             {needSave && (
               <IconButton
