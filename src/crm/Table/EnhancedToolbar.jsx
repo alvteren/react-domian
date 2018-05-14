@@ -36,7 +36,8 @@ const EnhancedToolbar = props => {
     numSelected,
     classes,
     filterComponent,
-    groupActionsComponent
+    groupActionsComponent,
+    id: entityId
   } = props;
 
   return (
@@ -50,7 +51,9 @@ const EnhancedToolbar = props => {
           <Typography style={{ marginRight: "auto" }} type="subheading">
             {numSelected} выбрано
           </Typography>
-          {groupActionsComponent}
+          {React.createElement(groupActionsComponent, {
+            entityId: entityId
+          })}
         </div>
       ) : (
         <div>{filterComponent}</div>

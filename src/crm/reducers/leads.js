@@ -33,6 +33,10 @@ const chips = {
     rejections: {
       id: "rejections",
       label: "Мои отказы"
+    },
+    favorites: {
+      id: "wishes",
+      label: "Избранное"
     }
   }
 };
