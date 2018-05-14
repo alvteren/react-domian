@@ -8,19 +8,19 @@ import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/Add";
 
-import DistrictSelect from "./DistrictSelect";
+import EditDialog from "./EditDialog";
 
 import styles from "./index.module.css";
 import {saveToStore} from "../../actions/form";
-import { DISTRICTS, SUB_DISTRICTS } from "./districtTreeConverter";
+import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
-class District extends React.PureComponent {
+class TypeRealty extends React.PureComponent {
   state = {
     open: false,
     isTreeChanged: false,
-    [DISTRICTS]: this.props[DISTRICTS] || [],
-    [SUB_DISTRICTS]: this.props[SUB_DISTRICTS] && Array.isArray(this.props[SUB_DISTRICTS])
-      ? this.props[SUB_DISTRICTS].map(item => String(item))
+    [SECTION]: this.props[SECTION] || [],
+    [TYPE_REALTY]: this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
+      ? this.props[TYPE_REALTY]
       : []
   };
 
@@ -38,7 +38,7 @@ class District extends React.PureComponent {
   };
   onTreeChange = ({ name, value, add }) => {
     const updated = add
-      ? this.state[name].splice(0).concat([value]) // if item was added
+      ? this.state[name].splice(0).concat([parseInt(value)]) // if item was added
       : this.state[name].splice(0).filter((item) => String(item) !== value); // for delete item case
     this.setState({ isTreeChanged: true, [name]: updated })
   };
@@ -46,16 +46,12 @@ class District extends React.PureComponent {
     const { onChange } = this.props;
     const data = [
       {
-        name: DISTRICTS,
-        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS].map(item => Number(item)) : false
-      },
-      {
-        name: SUB_DISTRICTS,
-        value: this.state[SUB_DISTRICTS].map(item => Number(item))
+        name: TYPE_REALTY,
+        value: this.state[TYPE_REALTY]
       }
     ];
     onChange(data);
-    this.setState({ isTreeChanged: false, open: false })
+    this.setState({ open: false })
   };
 
   render() {
@@ -68,18 +64,7 @@ class District extends React.PureComponent {
       // formControl,
       canEdit
     } = this.props;
-    const districts = this.props.uf_crm_district || [];
-    // This filter for non-duplicate district and sub district values output
-    const subDistricts = this.props.uf_crm_district
-      ? this.props.uf_crm_subdistrict.filter(item => {
-        const links = this.props.subDistrictFields.items[item].link;
-        for (let i = 0; i < links.length; i++) {
-          if (!this.props.uf_crm_district.some(item => item === links[i])) continue;
-          return false;
-        }
-        return true
-      })
-      : this.props.uf_crm_subdistrict || [];
+    const typeRealty = this.props.uf_crm_type_realty || [];
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -89,37 +74,22 @@ class District extends React.PureComponent {
                 {field.label}
               </Typography>
               <div className={styles.chips}>
-                {
-                  districts.map((district, districtIndex) => {
+                {!typeRealty.length ?
+                    canEdit ? <span>Добавьте тип недвижимости, кликнув </span> : <span>Не указано </span>
+                  : typeRealty.map((typeRealtyItem, typeRealtyItemIndex) => {
                     return (
                       <Chip
-                        key={districtIndex}
-                        label={this.props.districtFields.items[district].label}
-                        onDelete={this.onChangeValue({
-                          name: "uf_crm_district",
-                          value: this.props.districtFields.items[district].value
-                        })}
-                        className={styles.chip}
-                      />
-                    )
-                  })
-                }
-                {!districts.length && !subDistricts.length ?
-                    canEdit ? <span>Добавьте районы, кликнув </span> : <span>Не указано </span>
-                  : subDistricts.map((subDistrict, subDistrictIndex) => {
-                    return (
-                      <Chip
-                        key={subDistrictIndex}
-                        label={this.props.subDistrictFields.items[subDistrict].label}
+                        key={typeRealtyItemIndex}
+                        label={this.props.typeRealtyFields.items[typeRealtyItem].label}
                         onDelete={canEdit ? this.onChangeValue({
-                          name: "uf_crm_subdistrict",
-                          value: this.props.subDistrictFields.items[subDistrict].value
-                        }) :
+                          name: "uf_crm_type_realty",
+                          value: this.props.typeRealtyFields.items[typeRealtyItem].value
+                        }):
                         false}
                         className={styles.chip}
                       />
                     )
-                 })
+                  })
                 }
                 {canEdit && (
                   <IconButton color="primary" onClick={this.onOpenDialog}>
@@ -131,7 +101,7 @@ class District extends React.PureComponent {
           </div>
         </Grid>
         {this.state.open && (
-          <DistrictSelect
+          <EditDialog
             {...this.props}
             onCloseDialog={this.onCloseDialog}
             onSaveToStore={this.onSaveToStore}
@@ -145,10 +115,10 @@ class District extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { objectId } = ownProps;
-  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.lead.fields;
-  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.lead.values[objectId];
+  const { section: sectionFields, uf_crm_type_realty: typeRealtyFields } = state.crm.lead.fields;
+  const { can, section, uf_crm_type_realty } = state.crm.lead.values[objectId];
   const { edit: canEdit = false } = can;
-  return { objectId, canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
+  return { objectId, canEdit, section, uf_crm_type_realty, sectionFields, typeRealtyFields };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -164,4 +134,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 };
 
-export default connect(mapStateToProps, null, mergeProps)(District);
+export default connect(mapStateToProps, null, mergeProps)(TypeRealty);
