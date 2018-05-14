@@ -53,7 +53,7 @@ class SaleList extends React.Component {
           controls={["favorite"]}
           onChangePage={this.props.onChangePage}
           filterComponent={<Filter id="objects" />}
-          groupActionsComponents={GroupActions}
+          groupActionsComponent={GroupActions}
           controlComponents={Controls}
         />
         <Button
