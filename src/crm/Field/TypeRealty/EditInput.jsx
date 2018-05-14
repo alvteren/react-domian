@@ -10,9 +10,9 @@ import { typeRealtyConverter } from "./TypeRealtyConverter";
 import { cloneDeep } from "lodash";
 import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
-import styles from "./TypeRealty.module.css";
+import styles from "./EditInput.module.css";
 
-class typeRealty extends React.PureComponent {
+class TypeRealty extends React.PureComponent {
   state = {
     typeRealty: typeRealtyConverter(this.props.lead, this.props.fields)
   };
@@ -126,4 +126,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(typeRealty);
+export default connect(mapStateToProps, mapDispatchToProps)(TypeRealty);

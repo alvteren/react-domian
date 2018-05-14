@@ -8,7 +8,7 @@ import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/Add";
 
-import TypeRealtySelect from "./TypeRealtySelect";
+import EditDialog from "./EditDialog";
 
 import styles from "./index.module.css";
 import {saveToStore} from "../../actions/form";
@@ -101,7 +101,7 @@ class TypeRealty extends React.PureComponent {
           </div>
         </Grid>
         {this.state.open && (
-          <TypeRealtySelect
+          <EditDialog
             {...this.props}
             onCloseDialog={this.onCloseDialog}
             onSaveToStore={this.onSaveToStore}

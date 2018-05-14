@@ -14,9 +14,9 @@ import {
 } from "material-ui-icons"
 import { Hidden } from "material-ui";
 
-import styles from "./TypeRealtySelect.module.css";
+import styles from "./EditDialog.module.css";
 
-import TypeRealty from "./TypeRealty";
+import EditInput from "./EditInput";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -61,7 +61,7 @@ const TypeRealtySelect = props => {
         </Toolbar>
       </AppBar>
       <DialogContent className={styles.dialogContent}>
-        <TypeRealty {...props} />
+        <EditInput {...props} />
       </DialogContent>
     </Dialog>
   );
