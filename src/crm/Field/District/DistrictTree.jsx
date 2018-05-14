@@ -118,12 +118,12 @@ const mapStateToProps = (state, ownProps) => {
   const {
     uf_crm_district,
     uf_crm_subdistrict
-  } = state.crm.leads.fields;
+  } = state.crm.lead.fields;
   const fields = { uf_crm_district, uf_crm_subdistrict };
 
   const { objectId } = ownProps;
 
-  const lead = state.crm.leads.values[objectId];
+  const lead = state.crm.lead.values[objectId];
 
   return { fields, lead };
 };

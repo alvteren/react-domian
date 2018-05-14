@@ -1,8 +1,16 @@
 import {
   uploadFile,
   fetchSearchResult as fetchSearchResultApi,
-  saveToServer as saveToServerApi
+  savePropToServer as savePropToServerApi,
+  saveFormToServer as saveFormToServerApi
 } from "../../api/form";
+export const setInitFormState = props => dispatch => {
+  const { initState, id } = props;
+  dispatch({
+    type: "SET_INIT_FORM_STATE",
+    payload: { initState, id }
+  });
+};
 export const saveToStore = props => async dispatch => {
   const { id, elementId, name, value } = props;
   dispatch({
@@ -10,13 +18,32 @@ export const saveToStore = props => async dispatch => {
     payload: { id, elementId, name, value }
   });
 };
-export const saveToServer = props => async dispatch => {
+export const savePropToServer = props => async dispatch => {
+  try {
+    dispatch({
+      type: "PROP_SAVE_TO_SERVER_START",
+      payload: {}
+    });
+    const data = await savePropToServerApi(props);
+    dispatch({
+      type: "PROP_SAVE_TO_SERVER_SUCCESS",
+      payload: { ...data }
+    });
+  } catch (err) {
+    dispatch({
+      type: "PROP_SAVE_TO_SERVER_ERROR",
+      payload: err,
+      error: true
+    });
+  }
+};
+export const saveFormToServer = props => async dispatch => {
   try {
     dispatch({
       type: "FORM_SAVE_TO_SERVER_START",
       payload: {}
     });
-    const data = await saveToServerApi(props);
+    const data = await saveFormToServerApi(props);
     dispatch({
       type: "FORM_SAVE_TO_SERVER_SUCCESS",
       payload: { ...data }
@@ -38,7 +65,7 @@ export const saveFile = props => async dispatch => {
     type: "FORM_SAVE_FILE",
     payload: { id, elementId, name, value }
   });
-  dispatch(saveToServer({ id, elementId, name, value }));
+  dispatch(savePropToServer({ id, elementId, name, value }));
 };
 
 export const openLocationSearch = props => async dispatch => {
@@ -72,4 +99,11 @@ export const fetchSearchResult = query => async dispatch => {
       error: true
     });
   }
+};
+export const validateFormError = props => dispatch => {
+  const { entityId, elementId, errorArr } = props;
+  dispatch({
+    type: "FORM_VALIDATION_ERROR",
+    payload: { id: entityId, elementId, errorArr }
+  });
 };

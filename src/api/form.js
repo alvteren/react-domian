@@ -26,18 +26,31 @@ export const fetchSearchResult = async props => {
   return response.json();
 };
 
-export const saveToServer = async props => {
+export const savePropToServer = async props => {
+  const { entityId, elementId } = props;
   const formData = {
-    id: props.elementId,
-    fields: { [props.name]: props.value }
+    id: elementId,
+    [props.name]: props.value
   };
+  const params = {
+    method: "PUT",
+    credentials: "include",
+    mode: "cors",
+    body: JSON.stringify(formData)
+  };
+
+  const response = await fetch(baseURL + `/v1/${entityId}/`, params);
+  return response.json();
+};
+
+export const saveFormToServer = async props => {
+  const { id: entityId, formData } = props;
   const params = {
     method: "POST",
     credentials: "include",
     mode: "cors",
     body: JSON.stringify(formData)
   };
-
-  const response = await fetch(baseURL + "/v1/object/", params);
+  const response = await fetch(baseURL + `/v1/${entityId}/`, params);
   return response.json();
 };

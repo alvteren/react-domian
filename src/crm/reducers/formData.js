@@ -16,6 +16,18 @@ export default (state, { type, payload }) => {
         loading: { ...state.loading, form: false }
       };
     }
+    if (type === "SET_INIT_FORM_STATE") {
+      const { initState } = payload;
+      newstate = {
+        ...state,
+        values: {
+          ...state.values,
+          "0": {
+            ...initState
+          }
+        }
+      }
+    }
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});
@@ -47,6 +59,19 @@ export default (state, { type, payload }) => {
           }
         };
       }
+    }
+    if (type === "FORM_VALIDATION_ERROR") {
+      const { elementId, errorArr } = payload;
+      newstate = {
+        ...state,
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            "validateErrorArr": errorArr
+          }
+        }
+      };
     }
     if (type === "FORM_SAVE_FILE") {
       const { name, value, elementId } = payload;
