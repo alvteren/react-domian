@@ -12,7 +12,7 @@ import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
 import styles from "./EditInput.module.css";
 
-class TypeRealty extends React.PureComponent {
+class EditInput extends React.PureComponent {
   state = {
     typeRealty: typeRealtyConverter(this.props.lead, this.props.fields)
   };
@@ -126,4 +126,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TypeRealty);
+export default connect(mapStateToProps, mapDispatchToProps)(EditInput);
