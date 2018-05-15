@@ -1,4 +1,7 @@
+import { entities } from "../constants";
+
 import { rules as leadRules } from "../crm/Lead/validate";
+import { formFields as leadFormFields } from "../crm/reducers/leads";
 
 export const typeRules = {
   email(val) {
@@ -23,6 +26,10 @@ export const typeRules = {
   }
 };
 
+const forms = {
+  [entities.lead]: leadFormFields
+};
+
 const idRules = {
   lead: leadRules,
   // object: objectIdRules
@@ -33,49 +40,90 @@ const idRules = {
  * @param form {Object}
  * @param fields {Object}
  * @param entityId "String"
+ * @param propId "String"
  * @return {Object} with error fields keys
  */
 
-export default function formValidate({ form, fields, entityId }) {
+export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
   const serviceProps = idRules[entityId].serviceProps;
 
-  Object.keys(form).forEach( prop => {
+  if (propId) {
+    const prop = propId;
+    const isFilled = isEmpty(form[prop]);
     /*
-      Service props exclude
+      Branch for check only one prop (on edit)
      */
-    if (serviceProps && serviceProps.includes(prop)) return true;
 
-    /*
-      Check for required props
-     */
+    /* Check for required props */
     if (fields[prop].required) {
       const isPropValid = Boolean(form[prop] || form[prop].length);
-      if (!isPropValid) {
-        validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
-        return false;
-      }
+      if (isPropValid) return true;
+      console.log("req");
+      validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
+      return validateErrors;
     }
 
-    /*
-      Check for rules follow by type
-     */
-    if (form[prop].length && typeRules.hasOwnProperty(fields[prop].type)) {
+    /* Check for rules follow by type */
+    if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
       const isValid = typeRules[fields[prop].type](form[prop]);
       if ( isValid === true) return true;
+      console.log("type");
       validateErrors[prop] = isValid;
+      return validateErrors;
     }
 
-    /*
-      Check for rules follow by id
-     */
-    if (form[prop].length && typeRules[prop]) {
+    /* Check for rules follow by id */
+    if (isFilled && typeRules[prop]) {
       const isValid = typeRules[prop](form[prop]);
       if ( isValid === true) return true;
       validateErrors[prop] = isValid;
+      return validateErrors;
     }
-    return true;
-  });
+  } else {
+    /*
+      Branch for iterate over whole form (on new instance create)
+     */
+    Object.keys(forms[entityId]).forEach( prop => {
+      const isFilled = isEmpty(form[prop]);
+      /* Service props exclude */
+      if (serviceProps && serviceProps.includes(prop)) return;
 
-  return  validateErrors;
+      /* Check for required props */
+      if (fields[prop].required) {
+        const isPropValid = Boolean(form[prop] || form[prop].length);
+        if (!isPropValid) {
+          validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
+          return;
+        }
+      }
+
+      /* Check for rules follow by type */
+      if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
+        const isValid = typeRules[fields[prop].type](form[prop]);
+        if ( isValid === true) return;
+        validateErrors[prop] = isValid;
+      }
+
+      /* Check for rules follow by id */
+      if (isFilled && typeRules[prop]) {
+        const isValid = typeRules[prop](form[prop]);
+        if ( isValid === true) return;
+        validateErrors[prop] = isValid;
+      }
+    });
+    return  validateErrors;
+  }
+  // if tested prop neither filled or required
+  return true;
+}
+
+function isEmpty(prop) {
+  switch (typeof prop) {
+    case "boolean": return true;
+    case "string": return Boolean(prop.length);
+    case "object": if (Array.isArray(prop)) return Boolean(prop.length);
+      return true;
+    default: return false;
+  }
 }

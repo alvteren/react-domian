@@ -157,8 +157,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     saveFormToServer(formData) {
       dispatch(saveFormToServer({ id: entityId, elementId: 0, formData }));
     },
-    formValidateError(errorArr) {
-      dispatch(validateFormError({ entityId, elementId: 0, errorArr }));
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
     }
   }
 };

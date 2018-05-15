@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 
 import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
+import fieldValidate from "../../util/formValidate";
 
-import { saveToStore, saveFile, savePropToServer } from "../actions/form";
+import {saveToStore, saveFile, savePropToServer, validateFormError} from "../actions/form";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
@@ -30,7 +31,7 @@ function TextMaskCustom(props) {
     <MaskedInput
       {...other}
       ref={inputRef}
-      mask={['+', '7', '(', /[1-9]/, /\d/, /\d/, ')', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
+      mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
       //showMask
     />
   );
@@ -40,21 +41,44 @@ class Field extends React.Component {
   state = {
     edit: get(this.props, "edit", false),
     needSave: false,
-    phone: ""
+    tel: ""
   };
 
-  handlePhoneChange = name => event => {
+  handleTelInputChange = name => event => {
     this.setState({
       [name]: event.target.value,
     });
     this.props.handleChange(event);
   };
 
+  onTelInputFocus = event => {
+    if (!this.state.tel) {
+      this.setState({tel: "9"});
+      event.target.selectionStart = 2; // not working
+    }
+  };
+
+  onTelInputBlur = event => {
+    if (this.state.tel === "9") {
+      this.setState({tel: ""});
+    }
+  };
+
   onStartEdit = () => {
     this.setState({ edit: true, needSave: true });
   };
-  onSave = id => e => {
-    this.props.saveToServer(id);
+  onSave = propId => e => {
+    console.log("FIRE");
+    const { fields, values, entityId } = this.props;
+    const error = fieldValidate({form: values, fields, entityId, propId});
+    if (error instanceof Object) {
+      console.log("ERROR", error);
+      this.props.formValidateError(error);
+      return;
+    }
+    console.log("FIRE2");
+    this.props.saveToServer(propId);
+    console.log("FIRE3");
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
@@ -135,9 +159,9 @@ class Field extends React.Component {
                     onChange={this.onChange}
                     formControl={formControl}
                     error={values &&
-                    values.validateErrorArr &&
-                    values.validateErrorArr.hasOwnProperty(field.id) ?
-                      values.validateErrorArr[field.id] :
+                    values.validateErrors &&
+                    values.validateErrors.hasOwnProperty(field.id) ?
+                      values.validateErrors[field.id] :
                       false
                     }
                   />
@@ -240,18 +264,19 @@ class Field extends React.Component {
               required={field.required}
               name={id}
               label={field.label}
-              // onChange={this.onChange}
-              value={value || this.state.phone}
-              error={values && values.validateErrorArr && values.validateErrorArr.hasOwnProperty(field.id)}
+              value={value || this.state.tel}
+              error={values && values.validateErrors && values.validateErrors.hasOwnProperty(field.id)}
               helperText={
                 (values &&
-                  values.validateErrorArr &&
-                  values.validateErrorArr.hasOwnProperty(field.id)) ?
-                  values.validateErrorArr[field.id].message :
+                  values.validateErrors &&
+                  values.validateErrors.hasOwnProperty(field.id)) ?
+                  values.validateErrors[field.id].message :
                   get(field, "hint", "")
               }
-              onChange={field.id === "phone" ? this.handlePhoneChange('phone') : this.onChange}
-              InputProps={field.id === "phone" ?
+              onFocus={field.type === "tel" ? this.onTelInputFocus : null}
+              onBlur={field.type === "tel" ? this.onTelInputBlur : null}
+              onChange={field.type === "tel" ? this.handleTelInputChange('tel') : this.onChange}
+              InputProps={field.type === "tel" ?
                 {
                 inputComponent: TextMaskCustom,
                 } : {}}
@@ -339,6 +364,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     objectId,
+    fields,
     field,
     values: objectValues,
     value,
@@ -368,6 +394,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     saveToServer: () => {
       const { value } = stateProps;
       dispatch(savePropToServer({ id: entityId, elementId, name, value }));
+    },
+    formValidateError(errorObj) {
+      dispatch(validateFormError({ entityId, elementId, errorObj }));
     }
   };
 };
