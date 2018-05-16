@@ -101,9 +101,9 @@ export const fetchSearchResult = query => async dispatch => {
   }
 };
 export const validateFormError = props => dispatch => {
-  const { entityId, elementId, errorArr } = props;
+  const { entityId, elementId, errorObj } = props;
   dispatch({
     type: "FORM_VALIDATION_ERROR",
-    payload: { id: entityId, elementId, errorArr }
+    payload: { id: entityId, elementId, errorObj }
   });
 };
