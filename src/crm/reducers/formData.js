@@ -61,14 +61,14 @@ export default (state, { type, payload }) => {
       }
     }
     if (type === "FORM_VALIDATION_ERROR") {
-      const { elementId, errorArr } = payload;
+      const { elementId, errorObj } = payload;
       newstate = {
         ...state,
         values: {
           ...state.values,
           [elementId]: {
             ...state.values[elementId],
-            "validateErrorArr": errorArr
+            "validateErrors": errorObj
           }
         }
       };
