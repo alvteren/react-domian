@@ -44,7 +44,7 @@ export const applyFilter = props => async (dispatch, getState) => {
     switch (id) {
       case "objects": dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
       break;
-      case "leads": dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
+      case "lead": dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
       break;
       default: break;
     }

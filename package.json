@@ -20,6 +20,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts-cssmodules": "^1.0.171",
     "react-swipeable": "^4.2.0",
+    "react-text-mask": "^5.4.1",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-form": "^7.2.0",

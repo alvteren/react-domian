@@ -2,17 +2,18 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, size, forEach } from "lodash";
+import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
+import fieldValidate from "../../util/formValidate";
 
-import { saveToStore, saveFile, saveToServer } from "../actions/form";
+import {saveToStore, saveFile, savePropToServer, validateFormError} from "../actions/form";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-// import DistrictFieldEdit from "./edit/District";
+import MaskedInput from 'react-text-mask';
 
 import styles from "./Field.module.css";
 
@@ -23,17 +24,61 @@ import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={inputRef}
+      mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
+      //showMask
+    />
+  );
+}
+
 class Field extends React.Component {
   state = {
     edit: get(this.props, "edit", false),
-    needSave: false
+    needSave: false,
+    tel: ""
+  };
+
+  handleTelInputChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+    this.props.handleChange(event);
+  };
+
+  onTelInputFocus = event => {
+    if (!this.state.tel) {
+      this.setState({tel: "9"});
+      event.target.selectionStart = 2; // not working
+    }
+  };
+
+  onTelInputBlur = event => {
+    if (this.state.tel === "9") {
+      this.setState({tel: ""});
+    }
   };
 
   onStartEdit = () => {
     this.setState({ edit: true, needSave: true });
   };
-  onSave = id => e => {
-    this.props.saveToServer(id);
+  onSave = propId => e => {
+    console.log("FIRE");
+    const { fields, values, entityId } = this.props;
+    const error = fieldValidate({form: values, fields, entityId, propId});
+    if (error instanceof Object) {
+      console.log("ERROR", error);
+      this.props.formValidateError(error);
+      return;
+    }
+    console.log("FIRE2");
+    this.props.saveToServer(propId);
+    console.log("FIRE3");
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
@@ -57,8 +102,7 @@ class Field extends React.Component {
   };
 
   render() {
-    const { id, field, values, value, classes, can } = this.props;
-
+    const { id, field, values, value, classes, can, objectId } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -103,7 +147,7 @@ class Field extends React.Component {
 
       if (visibleValues) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0) {
+          if (size(visibleValues) > 0){
             return (
               <Grid item xs={12} sm={6}>
                 <div className={classes.valueWrapper}>
@@ -114,6 +158,12 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
+                    error={values &&
+                    values.validateErrors &&
+                    values.validateErrors.hasOwnProperty(field.id) ?
+                      values.validateErrors[field.id] :
+                      false
+                    }
                   />
                   {needSave && (
                     <IconButton
@@ -214,9 +264,22 @@ class Field extends React.Component {
               required={field.required}
               name={id}
               label={field.label}
-              onChange={this.onChange}
-              value={value || ""}
-              helperText={get(field, "hint", "")}
+              value={value || this.state.tel}
+              error={values && values.validateErrors && values.validateErrors.hasOwnProperty(field.id)}
+              helperText={
+                (values &&
+                  values.validateErrors &&
+                  values.validateErrors.hasOwnProperty(field.id)) ?
+                  values.validateErrors[field.id].message :
+                  get(field, "hint", "")
+              }
+              onFocus={field.type === "tel" ? this.onTelInputFocus : null}
+              onBlur={field.type === "tel" ? this.onTelInputBlur : null}
+              onChange={field.type === "tel" ? this.handleTelInputChange('tel') : this.onChange}
+              InputProps={field.type === "tel" ?
+                {
+                inputComponent: TextMaskCustom,
+                } : {}}
             />
             {needSave && (
               <IconButton
@@ -290,7 +353,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const objectId = get(params, "id", 0);
+  const objectId = get(params, "id", 0); // 0 by default values[id] for new item form
   const objectValues = get(values, objectId, null);
   const value = objectValues != null ? get(objectValues, id, null) : null;
   const can = objectValues != null ? get(objectValues, "can", {}) : {};
@@ -301,6 +364,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     objectId,
+    fields,
     field,
     values: objectValues,
     value,
@@ -329,7 +393,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(saveToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ id: entityId, elementId, name, value }));
+    },
+    formValidateError(errorObj) {
+      dispatch(validateFormError({ entityId, elementId, errorObj }));
     }
   };
 };

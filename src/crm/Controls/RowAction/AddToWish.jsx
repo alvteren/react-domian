@@ -41,7 +41,7 @@ const AddToWish = props => {
 
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId } = ownProps;
-  const { wish } = state.crm[entityId];
+  const wish = state.crm[entityId].wish || {};
   return {
     isAdded: wish[id]
   };
