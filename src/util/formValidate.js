@@ -68,7 +68,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
     if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
       const isValid = typeRules[fields[prop].type](form[prop]);
       if ( isValid === true) return true;
-      console.log("type");
       validateErrors[prop] = isValid;
       return validateErrors;
     }

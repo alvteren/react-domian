@@ -68,17 +68,13 @@ class Field extends React.Component {
     this.setState({ edit: true, needSave: true });
   };
   onSave = propId => e => {
-    console.log("FIRE");
     const { fields, values, entityId } = this.props;
     const error = fieldValidate({form: values, fields, entityId, propId});
     if (error instanceof Object) {
-      console.log("ERROR", error);
       this.props.formValidateError(error);
       return;
     }
-    console.log("FIRE2");
     this.props.saveToServer(propId);
-    console.log("FIRE3");
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
@@ -158,12 +154,7 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
-                    error={values &&
-                    values.validateErrors &&
-                    values.validateErrors.hasOwnProperty(field.id) ?
-                      values.validateErrors[field.id] :
-                      false
-                    }
+                    error={get(values,`validateErrors.${field.id}`,false)}
                   />
                   {needSave && (
                     <IconButton
@@ -266,13 +257,7 @@ class Field extends React.Component {
               label={field.label}
               value={value || this.state.tel}
               error={values && values.validateErrors && values.validateErrors.hasOwnProperty(field.id)}
-              helperText={
-                (values &&
-                  values.validateErrors &&
-                  values.validateErrors.hasOwnProperty(field.id)) ?
-                  values.validateErrors[field.id].message :
-                  get(field, "hint", "")
-              }
+              helperText={get(values,`validateErrors.${field.id}.message`, get(field, "hint", ""))}
               onFocus={field.type === "tel" ? this.onTelInputFocus : null}
               onBlur={field.type === "tel" ? this.onTelInputBlur : null}
               onChange={field.type === "tel" ? this.handleTelInputChange('tel') : this.onChange}
