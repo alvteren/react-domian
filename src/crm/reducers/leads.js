@@ -121,6 +121,7 @@ const form = {
     subdistrict: null
   }
 };
+// validateErrorArr prop will be contain info about invalid fields before save to server
 
 export const formFields = {
   ...form.fieldsSections.main.fields,
