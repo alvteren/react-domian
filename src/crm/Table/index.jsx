@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import PropTypes from "prop-types";
 import keycode from "keycode";
 import Table, {
@@ -16,7 +16,8 @@ import Pagination from "./Pagination";
 import MobileStepper from 'material-ui/MobileStepper';
 import { withStyles } from "material-ui/styles";
 
-import { toArray, isObject } from "lodash";
+import { toArray, isObject, get } from "lodash";
+import { formatDate } from "../../util/leadDataConverter";
 
 import {
   fetchTableHeaders,
@@ -135,6 +136,34 @@ class EnhancedTable extends React.Component {
           }
         }
         if (Array.isArray(value)) {
+          if (id === "reminders") {
+            // debugger;
+            if (get(row, "can.edit", false)) {
+              // if (value.length) {
+              //   return (
+              //     <Fragment>
+              //       {value.map((item, index) => {
+              //         return (
+              //           <div key={index}>
+              //             <p>{(formatDate(item.date))}</p>
+              //             <p>{item.theme}</p>
+              //           </div>
+              //         )})
+              //       }
+              //     </Fragment>
+              //   )
+              // }
+              return (
+                <Link
+                  to={`lead/reminder/new`} // ?????
+                  onClick={e => {e.stopPropagation();}}>
+                  Создать напоминание
+                </Link>
+              )
+            }
+            return " ";
+          }
+          // wishes list case: [String]
           return (
             <div>
               {value.map((item, index) => {
@@ -145,13 +174,7 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (
-            fields &&
-            fields.status_id &&
-            fields.status_id.items &&
-            fields.status_id.items[val] &&
-            fields.status_id.items[val].label
-          ) {
+          if (get(fields, `fields.status_id.items${val}`.label, null)) {
             const statusToStep = {
               NEW: 1,
               ASSIGNED: 2,

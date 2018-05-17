@@ -59,7 +59,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
     if (fields[prop].required) {
       const isPropValid = Boolean(form[prop] || form[prop].length);
       if (isPropValid) return true;
-      console.log("req");
       validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
       return validateErrors;
     }

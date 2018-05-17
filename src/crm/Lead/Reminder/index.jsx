@@ -35,10 +35,10 @@ const styles = theme => ({
   dialogContent: {}
 });
 
-class LeadDetail extends React.Component {
+class Reminder extends React.Component {
   constructor(props) {
     super(props);
-    props.onInit();
+    // props.onInit();
   }
   state = {
     open: true
@@ -77,7 +77,7 @@ class LeadDetail extends React.Component {
               </Hidden>
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
-              Покупатель
+              Новое напоминание
             </Typography>
           </Toolbar>
         </AppBar>
@@ -105,20 +105,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    onSave: () => {
-      // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
-    },
-    onInit: () => {
-      dispatch(onInitLead({ id }));
-    }
+    // onInit: () => {
+    //   dispatch(onInitLead({ id }));
+    // }
   };
 };
 
-LeadDetail.propTypes = {
+Reminder.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(
-  connect(mapStateToProps, null, mergeProps)(withMobileDialog()(LeadDetail))
+  connect(mapStateToProps, null, mergeProps)(withMobileDialog()(Reminder))
 );
