@@ -1,0 +1,13 @@
+.reminderCardForm {
+    padding: 30px 0 20px;
+}
+
+.submitWrapper {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
+

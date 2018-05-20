@@ -5,7 +5,7 @@ import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
-import Reminder from "./Reminder"
+import Reminder from "../Reminder"
 import GroupActions from "../SaleList/GroupActions";
 import Controls from "../SaleList/Controls";
 
@@ -70,7 +70,6 @@ class Lead extends React.Component {
         />
         <Route path="/crm/lead/add" component={Add} />
         <Route path="/crm/lead/show/:id" component={Detail} />
-        <Route path="/crm/lead/reminder/new" component={Reminder} />
       </Fragment>
     );
   }

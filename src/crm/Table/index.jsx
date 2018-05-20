@@ -109,6 +109,34 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
+      if (id === "reminders") {
+        if (value instanceof Object) {
+          if (get(row, "can.edit", false)) {
+            // if (Object.keys(value).length) {
+            //   return (
+            //     <Fragment>
+            //       {value.map((item, index) => {
+            //         return (
+            //           <div key={index}>
+            //             <p>{(formatDate(item.date))}</p>
+            //             <p>{item.theme}</p>
+            //           </div>
+            //         )})
+            //       }
+            //     </Fragment>
+            //   )
+            // }
+            return (
+              <Link
+                to={`lead/${row.id}/reminder/new`} // ?????
+                onClick={e => {e.stopPropagation();}}>
+                Создать напоминание
+              </Link>
+            )
+          }
+          return " ";
+        }
+      }
       if (value != null) {
         if (id === "price") {
           const currency = row.currency || "RUB";
@@ -126,43 +154,12 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (
-          fields &&
-          fields.hasOwnProperty(id) &&
-          fields[id].type === "select"
-        ) {
+        if (get(fields, `${id}.type`, null) === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
         }
         if (Array.isArray(value)) {
-          if (id === "reminders") {
-            // debugger;
-            if (get(row, "can.edit", false)) {
-              // if (value.length) {
-              //   return (
-              //     <Fragment>
-              //       {value.map((item, index) => {
-              //         return (
-              //           <div key={index}>
-              //             <p>{(formatDate(item.date))}</p>
-              //             <p>{item.theme}</p>
-              //           </div>
-              //         )})
-              //       }
-              //     </Fragment>
-              //   )
-              // }
-              return (
-                <Link
-                  to={`lead/reminder/new`} // ?????
-                  onClick={e => {e.stopPropagation();}}>
-                  Создать напоминание
-                </Link>
-              )
-            }
-            return " ";
-          }
           // wishes list case: [String]
           return (
             <div>
@@ -197,7 +194,6 @@ class EnhancedTable extends React.Component {
             )
           }
         }
-
         return value;
       }
 

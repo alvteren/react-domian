@@ -16,7 +16,7 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-import { fetchLead, onInitLead } from "../../actions/lead";
+import { fetchLead, onInitLead } from "../actions/lead";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
