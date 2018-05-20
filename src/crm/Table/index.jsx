@@ -112,20 +112,20 @@ class EnhancedTable extends React.Component {
       if (id === "reminders") {
         if (value instanceof Object) {
           if (get(row, "can.edit", false)) {
-            // if (Object.keys(value).length) {
-            //   return (
-            //     <Fragment>
-            //       {value.map((item, index) => {
-            //         return (
-            //           <div key={index}>
-            //             <p>{(formatDate(item.date))}</p>
-            //             <p>{item.theme}</p>
-            //           </div>
-            //         )})
-            //       }
-            //     </Fragment>
-            //   )
-            // }
+            if (Object.keys(value).length) {
+              return (
+                <Fragment>
+                  {Object.keys(value).map((item, index) => {
+                    return (
+                      <div key={index}>
+                        <p>{(formatDate(value[item].date))}</p>
+                        <p>{value[item].theme}</p>
+                      </div>
+                    )})
+                  }
+                </Fragment>
+              )
+            }
             return (
               <Link
                 to={`lead/${row.id}/reminder/new`} // ?????

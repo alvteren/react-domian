@@ -4,8 +4,9 @@ import { Grid, TextField, Button, FormControlLabel, Switch} from "material-ui"
 import SaveIcon from "material-ui-icons/Save"
 import { withStyles } from "material-ui/styles";
 
-import { isEqual } from "lodash";
+import { isEqual, get } from "lodash";
 
+import { addNewReminder, updateReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -23,17 +24,25 @@ const MuiStyles = theme => ({
 const initState = {
   theme: "",
   description: "",
-  date: "",
+  date: getTomorrowDate(),
   reminder: false,
-  reminderInterval: ""
+  reminderInterval: getTomorrowDate()
 };
+
+function  getTomorrowDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  const ISOdate = date.toISOString();
+  // remove secs and timezone (:ss & .000Z) as Mui requires
+  return ISOdate.substr(0, ISOdate.length - 8);
+}
 
 class Card extends React.Component {
   constructor(props) {
     super(props);
     const { reminder, match } = props;
     const initReminderState = reminder ? reminder : initState;
-    const isNewReminder = Boolean(match.params.reminderID === "new");
+    const isNewReminder = Boolean(match.params.reminderId === "new");
 
     this.state = {
       reminder: {
@@ -43,14 +52,6 @@ class Card extends React.Component {
       isNewReminder
     };
   }
-
-  static _getTomorrowDate() {
-    const date = new Date();
-    date.setDate(date.getDate() + 1);
-    const ISOdate = date.toISOString();
-    // remove secs and timezone (:ss & .000Z) as Mui requires
-    return ISOdate.substr(0, ISOdate.length - 8);
-}
 
   handleChange = key => event => {
     const updated = typeof this.state.reminder[key] === "boolean" ?
@@ -68,21 +69,13 @@ class Card extends React.Component {
     this.setState({ isFormChanged: !isEqual(initState, this.state.reminder) });
   }
 
-  onSave = () => (event) => {
+  onSave = (event) => {
     if(this.state.isNewReminder) {
-      this.saveNewReminder();
+      this.props.addNewReminder(this.state.reminder);
     } else {
-      this.updateReminder();
+      this.props.updateReminder(this.state.reminder);
     }
   };
-
-  saveNewReminder() {
-
-  }
-
-  updateReminder() {
-
-  }
 
   render() {
     const { classes } = this.props;
@@ -93,7 +86,7 @@ class Card extends React.Component {
             id="date"
             label="Когда"
             type="datetime-local"
-            defaultValue={Card._getTomorrowDate()}
+            defaultValue={this.state.reminder.date}
             onChange={this.handleChange("date")}
             // className={}
             InputLabelProps={{
@@ -107,7 +100,6 @@ class Card extends React.Component {
               <Switch
                 checked={this.state.reminder.reminder}
                 onChange={this.handleChange("reminder")}
-                // value="Напомнить"
                 color="primary"
               />
             }
@@ -119,10 +111,9 @@ class Card extends React.Component {
             id="reminderInterval"
             label="Напомнить"
             type="datetime-local"
-            defaultValue={Card._getTomorrowDate()}
+            defaultValue={this.state.reminder.reminderInterval}
             onChange={this.handleChange("reminderInterval")}
             disabled={!this.state.reminder.reminder}
-            // className={}
             InputLabelProps={{
               shrink: true,
             }}
@@ -132,7 +123,6 @@ class Card extends React.Component {
           <TextField
             id="theme"
             label="Тема"
-            // className={classes.textField}
             value={this.state.theme}
             onChange={this.handleChange("theme")}
             margin="normal"
@@ -142,7 +132,6 @@ class Card extends React.Component {
           <TextField
             id="description"
             label="Описание"
-            // className={classes.textField}
             value={this.state.theme}
             onChange={this.handleChange("description")}
             margin="normal"
@@ -153,8 +142,8 @@ class Card extends React.Component {
         {
           this.state.isFormChanged &&
           <div className={styles.submitWrapper}>
-            <Button className={classes.button} color="primary" variant="raised" size="small">
-              <SaveIcon className={`${classes.leftIcon} ${classes.iconSmall}`} onClick={this.onSave}/>
+            <Button className={classes.button} onClick={this.onSave} color="primary" variant="raised" size="small">
+              <SaveIcon className={`${classes.leftIcon} ${classes.iconSmall}`} />
               Сохранить
             </Button>
           </div>
@@ -164,22 +153,27 @@ class Card extends React.Component {
   }
 }
 
-// const mapStateToProps = (state, ownProps) => {
-//   const { match } = ownProps;
-// };
+const mapStateToProps = (state, ownProps) => {
+  const { entityId, elementId, reminderId } = ownProps.match.params;
+  const reminder = get(state, `${entityId}.data.${elementId}.reminders.${reminderId}`, null);
+  return { reminder };
+};
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { match } = ownProps;
-  const { entityId, reminderId } = match.params;
+  const { entityId, elementId, reminderId } = match.params;
 
   return {
     ...stateProps,
     ...ownProps,
-    onSave(reminder) {
-      dispatch(saveReminder({entityId, reminderId, reminder}))
+    addNewReminder(reminder) {
+      dispatch(addNewReminder({entityId, elementId, reminder}))
+    },
+    updateReminder(reminder) {
+      dispatch(updateReminder({entityId, elementId, reminderId, reminder}))
     }
   }
 };
 
-export default withStyles(MuiStyles)(Card);
+export default connect(mapStateToProps, null, mergeProps)(withStyles(MuiStyles)(Card));

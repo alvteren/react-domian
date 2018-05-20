@@ -37,7 +37,7 @@ class Detail extends React.Component {
         fullScreen={fullScreen}
         open={true}
         onClose={this.handleClose}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <AppBar className={styles.appBar}>
           <Toolbar>

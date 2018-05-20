@@ -54,7 +54,7 @@ class Add extends React.Component {
         fullScreen={fullScreen}
         open={this.state.open}
         onClose={this.handleClose}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
