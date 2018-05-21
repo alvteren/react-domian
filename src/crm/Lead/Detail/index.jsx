@@ -103,7 +103,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const objectValues = get(values, elementId, null);
 
   if (objectValues == null || size(objectValues) === 0) {
-    dispatch(fetchDetail({entityId, elementId }));
+    dispatch(fetchDetail({ entityId, elementId }));
   }
   return {
     ...stateProps,
@@ -112,7 +112,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
     },
     onInit: () => {
-      dispatch(onInitDetail({entityId, elementId }));
+      dispatch(onInitDetail({ entityId, elementId }));
     }
   };
 };

@@ -54,7 +54,7 @@ class Add extends React.Component {
     const validateErrors = formValidate({
       form: this.props.values["0"],
       fields: this.props.fields,
-      entityId: "lead"
+      entityId
     });
     if (Boolean(Object.keys(validateErrors).length)) {
       this.props.formValidateError(validateErrors);
@@ -148,7 +148,7 @@ const mapDispatchToProps = (dispatch, props) => {
   return {
     dispatch,
     getLeadFields() {
-      dispatch(fetchFields());
+      dispatch(fetchFields({ entityId }));
     }
   };
 };
@@ -164,6 +164,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     saveFormToServer(formData) {
       dispatch(saveFormToServer({ entityId, elementId: 0, formData }));
+    },
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
+    }
+  };
+};
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { fields, entityId } = stateProps;
+  const { dispatch } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...ownProps,
+    setInitFormState(initState) {
+      dispatch(setInitFormState({ initState, id: entityId }));
+    },
+    saveFormToServer(formData) {
+      dispatch(saveFormToServer({ id: entityId, elementId: 0, formData }));
     },
     formValidateError(errors) {
       dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));

@@ -86,17 +86,13 @@ class Field extends React.Component {
     this.setState({ edit: true, needSave: true });
   };
   onSave = propId => e => {
-    console.log("FIRE");
     const { fields, values, entityId } = this.props;
     const error = fieldValidate({ form: values, fields, entityId, propId });
     if (error instanceof Object) {
-      console.log("ERROR", error);
       this.props.formValidateError(error);
       return;
     }
-    console.log("FIRE2");
     this.props.saveToServer(propId);
-    console.log("FIRE3");
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {

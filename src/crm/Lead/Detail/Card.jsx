@@ -141,8 +141,8 @@ class Card extends React.Component {
 }
 const mapStateToProps = (state, ownProps) => {
   const { fieldsSections } = state.crm[entityId];
-  const { id } = ownProps.match.params;
-  const values = get(state.crm[entityId].values, id, null);
+  const { elementId } = ownProps.match.params;
+  const values = get(state.crm[entityId].values, elementId, null);
   const can = get(values, "can", null);
   const canViewContacts = get(can, "view_contacts", false);
   return { fieldsSections, canViewContacts, values };
