@@ -18,6 +18,7 @@ import { withStyles } from "material-ui/styles";
 
 import { toArray, isObject, get } from "lodash";
 import { formatDate } from "../../util/leadDataConverter";
+import { dateISOToString } from "../../util/dateConverter";
 
 import {
   fetchTableHeaders,
@@ -109,33 +110,31 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
-      if (id === "reminders") {
-        if (value instanceof Object) {
-          if (get(row, "can.edit", false)) {
-            if (Object.keys(value).length) {
-              return (
-                <Fragment>
-                  {Object.keys(value).map((item, index) => {
-                    return (
-                      <div key={index}>
-                        <p>{(formatDate(value[item].date))}</p>
-                        <p>{value[item].theme}</p>
-                      </div>
-                    )})
-                  }
-                </Fragment>
-              )
-            }
+      if (id === "reminders" && value instanceof Object) {
+        if (get(row, "can.edit", false)) {
+          if (Object.keys(value).length) {
             return (
-              <Link
-                to={`lead/${row.id}/reminder/new`} // ?????
-                onClick={e => {e.stopPropagation();}}>
-                Создать напоминание
-              </Link>
+              <Fragment>
+                {Object.keys(value).map((key, index) => {
+                  return (
+                    <Link onClick={(e) => {e.stopPropagation()}} to={`lead/${row.id}/reminder/${key}`} key={index}>
+                      <p>{(dateISOToString(value[key].date))}</p>
+                      <p>{value[key].theme}</p>
+                    </Link>
+                  )})
+                }
+              </Fragment>
             )
           }
-          return " ";
+          return (
+            <Link
+              to={`lead/${row.id}/reminder/new`} // ?????
+              onClick={e => {e.stopPropagation();}}>
+              Создать напоминание
+            </Link>
+          )
         }
+        return " ";
       }
       if (value != null) {
         if (id === "price") {
@@ -171,7 +170,7 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (get(fields, `fields.status_id.items${val}`.label, null)) {
+          if (get(fields, `status_id.items.${val}.label`, null)) {
             const statusToStep = {
               NEW: 1,
               ASSIGNED: 2,

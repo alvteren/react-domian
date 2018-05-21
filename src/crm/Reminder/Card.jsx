@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, TextField, Button, FormControlLabel, Switch} from "material-ui"
+import { Grid, TextField, Button, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem} from "material-ui"
 import SaveIcon from "material-ui-icons/Save"
 import { withStyles } from "material-ui/styles";
 
@@ -19,10 +19,15 @@ const MuiStyles = theme => ({
   iconSmall: {
     fontSize: 20,
   },
+  fullWidth: {
+    width: `100%`,
+    marginBottom: `10px`
+  }
 });
 
 const initState = {
   theme: "",
+  type: "",
   description: "",
   date: getTomorrowDate(),
   reminder: false,
@@ -70,17 +75,36 @@ class Card extends React.Component {
   }
 
   onSave = (event) => {
+    const formData = this.state.reminder;
+    formData.date = (new Date(formData.date)).toISOString();
+    formData.reminder ?
+      formData.reminderInterval = (new Date(formData.date)).toISOString() :
+      formData.reminderInterval = "";
     if(this.state.isNewReminder) {
       this.props.addNewReminder(this.state.reminder);
     } else {
       this.props.updateReminder(this.state.reminder);
     }
+    this.props.close();
   };
 
   render() {
     const { classes } = this.props;
     return (
       <form className={styles.reminderCardForm} action="">
+        <FormControl className={classes.fullWidth}>
+          <InputLabel htmlFor="type">Тип</InputLabel>
+          <Select
+            value={this.state.reminder.type}
+            onChange={this.handleChange("type")}
+            inputProps={{
+              name: 'type',
+              id: 'type',
+            }}>
+            <MenuItem value="call">Звонок</MenuItem>
+            <MenuItem value="meeting">Встреча</MenuItem>
+          </Select>
+        </FormControl>
         <div className="inputWrapper">
           <TextField
             id="date"
@@ -88,7 +112,6 @@ class Card extends React.Component {
             type="datetime-local"
             defaultValue={this.state.reminder.date}
             onChange={this.handleChange("date")}
-            // className={}
             InputLabelProps={{
               shrink: true,
             }}
@@ -154,9 +177,10 @@ class Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const { close } = ownProps;
   const { entityId, elementId, reminderId } = ownProps.match.params;
-  const reminder = get(state, `${entityId}.data.${elementId}.reminders.${reminderId}`, null);
-  return { reminder };
+  const reminder = get(state, `crm.${entityId}.data.${entityId}_${elementId}.reminders.${reminderId}`, null);
+  return { reminder, close };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

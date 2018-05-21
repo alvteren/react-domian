@@ -16,7 +16,6 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-import { fetchLead, onInitLead } from "../actions/lead";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -38,7 +37,6 @@ const styles = theme => ({
 class Reminder extends React.Component {
   constructor(props) {
     super(props);
-    // props.onInit();
   }
   state = {
     open: true
@@ -47,10 +45,6 @@ class Reminder extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
     this.props.history.push("/crm/lead");
-  };
-  handleClickSave = () => {
-    this.props.onSave();
-    this.handleClose();
   };
 
   render() {
@@ -82,40 +76,17 @@ class Reminder extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Card match={this.props.match} />
+          <Card close={this.handleClose} match={this.props.match} />
         </DialogContent>
       </Dialog>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  const { values } = state.crm.lead;
-  return { id, values };
-};
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { id, values } = stateProps;
-  const { dispatch } = dispatchProps;
-  const objectValues = get(values, id, null);
-
-  if (objectValues == null || size(objectValues) === 0) {
-    dispatch(fetchLead(id));
-  }
-  return {
-    ...stateProps,
-    ...ownProps,
-    // onInit: () => {
-    //   dispatch(onInitLead({ id }));
-    // }
-  };
-};
-
 Reminder.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, null, mergeProps)(withMobileDialog()(Reminder))
+export default withStyles(styles)((withMobileDialog()(Reminder))
 );
