@@ -39,10 +39,13 @@ export const fetchFields = async props => {
   const { entityId } = props;
   const version = get(props, "version", lastApiVersion);
 
-  const response = await fetch(baseURL + `/${version}/crm/${entityId}/`, {
-    credentials: "include",
-    mode: "cors"
-  });
+  const response = await fetch(
+    baseURL + `/${version}/crm/${entityId}/fields/`,
+    {
+      credentials: "include",
+      mode: "cors"
+    }
+  );
   return response.json();
 };
 

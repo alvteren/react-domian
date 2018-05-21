@@ -1,13 +1,13 @@
 import { combineReducers } from "redux";
 
 import filterObjects from "./filter";
-import objects from "./objects";
+import sale from "./sale";
 import form from "./form";
-import lead from "./leads";
+import lead from "./lead";
 
 export const reducers = combineReducers({
   filterObjects,
-  objects,
+  sale,
   form,
   lead
 });

@@ -37,7 +37,7 @@ const EnhancedToolbar = props => {
     classes,
     filterComponent,
     groupActionsComponent,
-    id: entityId
+    entityId
   } = props;
 
   return (
@@ -62,7 +62,7 @@ const EnhancedToolbar = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { tooltipTitle } = state.crm[ownProps.id];
+  const { tooltipTitle } = state.crm[ownProps.entityId];
   return { tooltipTitle };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

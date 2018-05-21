@@ -5,6 +5,8 @@ import filterData from "./filterData";
 import formData from "./formData";
 import wishData from "./wishData";
 
+import { entities } from "../../constants";
+
 const chips = {
   chips: {},
   selectedChips: {},
@@ -376,14 +378,9 @@ export const initialState = {
 };
 
 export default (state = initialState, { type, payload }) => {
-  if (type === "FETCH_OBJECTS_SUCCESS") {
-    const { data, count } = payload;
-
-    return { ...state, data: { ...state.data, ...data }, count };
-  }
   const entityId = get(payload, "entityId", null);
-  const id = get(payload, "id", null);
-  if (id === "objects" || id === "sale" || entityId === "sale") {
+
+  if (entityId === entities.sale) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

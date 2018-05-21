@@ -1,7 +1,7 @@
 import { entities } from "../constants";
 
 import { rules as leadRules } from "../crm/Lead/validate";
-import { formFields as leadFormFields } from "../crm/reducers/leads";
+import { formFields as leadFormFields } from "../crm/reducers/lead";
 
 export const typeRules = {
   email(val) {
@@ -15,14 +15,14 @@ export const typeRules = {
     const re = /^(\+7)(\(\d{3}\))\d{3}-\d{2}-\d{2}$/;
     const isValid = re.test(val);
     if (isValid) return true;
-    return { message: "Введите телефон в формате +7(999)999-99-99" }
+    return { message: "Введите телефон в формате +7(999)999-99-99" };
   },
   number(val) {
     const re = /,/gi;
-    const testedValue= val.replace(re, ".");
+    const testedValue = val.replace(re, ".");
     const isValid = !isNaN(Number(testedValue));
     if (isValid) return true;
-    return { message: "Значение должно быть числом" }
+    return { message: "Значение должно быть числом" };
   }
 };
 
@@ -31,7 +31,7 @@ const forms = {
 };
 
 const idRules = {
-  lead: leadRules,
+  lead: leadRules
   // object: objectIdRules
 };
 
@@ -67,7 +67,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /* Check for rules follow by type */
     if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
       const isValid = typeRules[fields[prop].type](form[prop]);
-      if ( isValid === true) return true;
+      if (isValid === true) return true;
       console.log("type");
       validateErrors[prop] = isValid;
       return validateErrors;
@@ -76,7 +76,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /* Check for rules follow by id */
     if (isFilled && typeRules[prop]) {
       const isValid = typeRules[prop](form[prop]);
-      if ( isValid === true) return true;
+      if (isValid === true) return true;
       validateErrors[prop] = isValid;
       return validateErrors;
     }
@@ -84,7 +84,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /*
       Branch for iterate over whole form (on new instance create)
      */
-    Object.keys(forms[entityId]).forEach( prop => {
+    Object.keys(forms[entityId]).forEach(prop => {
       const isFilled = isEmpty(form[prop]);
       /* Service props exclude */
       if (serviceProps && serviceProps.includes(prop)) return;
@@ -93,7 +93,9 @@ export default function formValidate({ form, fields, entityId, propId }) {
       if (fields[prop].required) {
         const isPropValid = Boolean(form[prop] || form[prop].length);
         if (!isPropValid) {
-          validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
+          validateErrors[prop] = {
+            message: "Это поле обязательно для заполнения"
+          };
           return;
         }
       }
@@ -101,18 +103,18 @@ export default function formValidate({ form, fields, entityId, propId }) {
       /* Check for rules follow by type */
       if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
         const isValid = typeRules[fields[prop].type](form[prop]);
-        if ( isValid === true) return;
+        if (isValid === true) return;
         validateErrors[prop] = isValid;
       }
 
       /* Check for rules follow by id */
       if (isFilled && typeRules[prop]) {
         const isValid = typeRules[prop](form[prop]);
-        if ( isValid === true) return;
+        if (isValid === true) return;
         validateErrors[prop] = isValid;
       }
     });
-    return  validateErrors;
+    return validateErrors;
   }
   // if tested prop neither filled or required
   return true;
@@ -120,10 +122,14 @@ export default function formValidate({ form, fields, entityId, propId }) {
 
 function isEmpty(prop) {
   switch (typeof prop) {
-    case "boolean": return true;
-    case "string": return Boolean(prop.length);
-    case "object": if (Array.isArray(prop)) return Boolean(prop.length);
+    case "boolean":
       return true;
-    default: return false;
+    case "string":
+      return Boolean(prop.length);
+    case "object":
+      if (Array.isArray(prop)) return Boolean(prop.length);
+      return true;
+    default:
+      return false;
   }
 }

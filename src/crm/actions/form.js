@@ -1,14 +1,15 @@
 import {
   uploadFile,
-  fetchSearchResult as fetchSearchResultApi,
-  savePropToServer as savePropToServerApi,
-  saveFormToServer as saveFormToServerApi
+  fetchSearchResult as fetchSearchResultApi
 } from "../../api/form";
+
+import { savePropToServer } from "./crm";
+
 export const setInitFormState = props => dispatch => {
-  const { initState, id } = props;
+  const { initState, entityId } = props;
   dispatch({
     type: "SET_INIT_FORM_STATE",
-    payload: { initState, id }
+    payload: { initState, entityId }
   });
 };
 export const saveToStore = props => async dispatch => {
@@ -18,44 +19,7 @@ export const saveToStore = props => async dispatch => {
     payload: { id, elementId, name, value }
   });
 };
-export const savePropToServer = props => async dispatch => {
-  try {
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_START",
-      payload: {}
-    });
-    const data = await savePropToServerApi(props);
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_SUCCESS",
-      payload: { ...data }
-    });
-  } catch (err) {
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_ERROR",
-      payload: err,
-      error: true
-    });
-  }
-};
-export const saveFormToServer = props => async dispatch => {
-  try {
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_START",
-      payload: {}
-    });
-    const data = await saveFormToServerApi(props);
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_SUCCESS",
-      payload: { ...data }
-    });
-  } catch (err) {
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_ERROR",
-      payload: err,
-      error: true
-    });
-  }
-};
+
 export const saveFile = props => async dispatch => {
   const { id, elementId, name, file } = props;
   const result = await uploadFile(file);
