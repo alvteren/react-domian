@@ -59,7 +59,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
     if (fields[prop].required) {
       const isPropValid = Boolean(form[prop] || form[prop].length);
       if (isPropValid) return true;
-      console.log("req");
       validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
       return validateErrors;
     }
@@ -68,7 +67,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
     if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
       const isValid = typeRules[fields[prop].type](form[prop]);
       if ( isValid === true) return true;
-      console.log("type");
       validateErrors[prop] = isValid;
       return validateErrors;
     }

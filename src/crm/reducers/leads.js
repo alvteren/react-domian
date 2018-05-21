@@ -3,6 +3,7 @@ import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+import convert from "../../util/leadDataConverter";
 
 import DistrictInput from "../Field/District";
 import TypeRealtyInput from "../Field/TypeRealty";
@@ -166,6 +167,9 @@ export default function reducer(state = initialState, { type, payload }) {
       // const { name, value, elementId } = payload;
     }
     if (newTableState) {
+      if (type === "TABLE_FETCH_DATA_SUCCESS") {
+        convert(newTableState.data);
+      }
       return { ...state, ...newTableState };
     } else if (newFilterState) {
       return { ...state, ...newFilterState };

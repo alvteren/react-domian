@@ -2,8 +2,6 @@ import { fetchLeads as fetchLeadsApi } from "../../api/lead";
 import { fetchLead as fetchLeadApi } from "../../api/lead";
 import { fetchLeadFields as fetchLeadFieldsApi } from "../../api/lead";
 import { fetchLeadField as fetchLeadFieldApi } from "../../api/lead";
-import convert from "../../util/leadDataConverter";
-import { setTypeByID } from "../Field/District/districtTreeConverter";
 
 // Action types
 
@@ -20,7 +18,6 @@ export const fetchLeads = props => async dispatch => {
       orderBy,
       order
     });
-    convert(data);
     dispatch({
       type: "TABLE_FETCH_DATA_SUCCESS",
       payload: { id: "lead", ...data }

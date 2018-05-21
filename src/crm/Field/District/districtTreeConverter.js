@@ -3,8 +3,6 @@ import getVisibleValues from "../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
 export const SUB_DISTRICTS = "uf_crm_subdistrict";
-const TYPE = "district";
-const keysToMatch = [DISTRICTS, SUB_DISTRICTS];
 
 /**
  *
