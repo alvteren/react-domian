@@ -3,8 +3,10 @@ import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+import convert from "../../util/leadDataConverter";
 
 import DistrictInput from "../Field/District";
+import TypeRealtyInput from "../Field/TypeRealty";
 
 const chips = {
   chips: {},
@@ -32,6 +34,10 @@ const chips = {
     rejections: {
       id: "rejections",
       label: "Мои отказы"
+    },
+    favorites: {
+      id: "wishes",
+      label: "Избранное"
     }
   }
 };
@@ -85,7 +91,8 @@ const form = {
         status_id: true,
         opportunity: true,
         opened: true,
-        email: true
+        email: true,
+        phone: true
       }
     },
     more: {
@@ -98,7 +105,8 @@ const form = {
         district: true,
         uf_crm_s_area: true,
         uf_type_object_2: true,
-        uf_source: true
+        uf_source: true,
+        uf_currency: true
       }
     }
   },
@@ -114,6 +122,13 @@ const form = {
     subdistrict: null
   }
 };
+// validateErrorArr prop will be contain info about invalid fields before save to server
+
+export const formFields = {
+  ...form.fieldsSections.main.fields,
+  ...form.fieldsSections.more.fields
+};
+// validateErrorArr prop will be contain info about invalid fields before save to server
 
 const fields = {}; // will be fetched from API
 
@@ -133,7 +148,7 @@ export const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const id = get(payload, "id", null);
-  if (id === "leads") {
+  if (id === "lead") {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
@@ -151,8 +166,10 @@ export default function reducer(state = initialState, { type, payload }) {
     if (type === "FORM_SAVE_TO_STORE") {
       // const { name, value, elementId } = payload;
     }
-
     if (newTableState) {
+      if (type === "TABLE_FETCH_DATA_SUCCESS") {
+        convert(newTableState.data);
+      }
       return { ...state, ...newTableState };
     } else if (newFilterState) {
       return { ...state, ...newFilterState };
@@ -165,6 +182,16 @@ export default function reducer(state = initialState, { type, payload }) {
           label: "Районы",
           depended: "uf_crm_district_all",
           link: [false]
+        };
+        newFormState.fields["uf_crm_type_realty"] = {
+          ...newFormState.fields["uf_crm_type_realty"],
+          ...{
+            id: "uf_crm_type_realty",
+            type: "custom",
+            component: TypeRealtyInput,
+            label: "Тип недвижимости",
+            depended: null
+          }
         };
       }
       return {

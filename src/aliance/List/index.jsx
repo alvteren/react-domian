@@ -53,6 +53,7 @@ class AlianceList extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
+    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClickByJoin = alianceId => {
@@ -67,6 +68,7 @@ class AlianceList extends React.Component {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    document.removeEventListener("click", this.handleClose, false);
   };
   handleCloseDialog = id => {
     this.setState({ dialogs: { ...this.state.dialogs, [id]: false } });

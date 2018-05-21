@@ -91,7 +91,7 @@ class LeadDetail extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
-  const { values } = state.crm.leads;
+  const { values } = state.crm.lead;
   return { id, values };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

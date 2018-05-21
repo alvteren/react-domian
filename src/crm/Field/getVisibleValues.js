@@ -13,10 +13,10 @@ const getVisibleValues = (field, values) => {
       linkedValue = linkedValue.id;
     }
     if (field["link"]) {
-      return noStrictIncludes(field.link, linkedValue) ? true : null;
+      return noStrictIncludes(field.link, linkedValue) ? field.items || true : null;
     }
     if (field["exclude_link"]) {
-      return noStrictExcludes(field.exclude_link, linkedValue) ? true : null;
+      return noStrictExcludes(field.exclude_link, linkedValue) ? field.items || true : null;
     }
     if (get(field, "items", false)) {
       const items = reduce(
