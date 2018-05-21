@@ -1,8 +1,0 @@
-.nested {
-  margin-left: 32px;
-}
-@media all and (min-width: 480px) {
-  .wrapper {
-    min-width: 480px;
-  }
-}

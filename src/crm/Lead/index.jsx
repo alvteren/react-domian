@@ -5,8 +5,8 @@ import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
-import GroupActions from "../SaleList/GroupActions";
-import Controls from "../SaleList/Controls";
+// import GroupActions from "./GroupActions";
+// import Controls from "./Controls";
 
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
@@ -33,25 +33,25 @@ class Lead extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
-    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
-    document.removeEventListener("click", this.handleClose, false);
   };
 
   render() {
     const { classes } = this.props;
     const open = Boolean(this.state.anchorEl);
+
     return (
       <Fragment>
         <EnhancedTable
-          id="lead"
+          id="leads"
+          controls={["favorite"]}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="lead" />}
-          groupActionsComponent={GroupActions}
-          controlComponents={Controls}
+          filterComponent={<Filter id="leads" />}
+          // groupActionsComponents={GroupActions}
+          // controlComponents={Controls}
         />
         <Button
           variant="fab"

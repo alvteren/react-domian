@@ -94,14 +94,14 @@ class Form extends React.Component {
             scrollButtons="auto"
           >
             {map(fieldsSections, (section, code) => (
-              <Tab disabled={this.props.loadFields} label={section.name} value={code} key={code} />
+              <Tab label={section.name} value={code} key={code} />
             ))}
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="lead"/>
+              <Field id={id} key={id} edit={true} match={this.props.match} entityId="leads"/>
             ))}
           </Grid>
         </TabContainer>
@@ -110,9 +110,8 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.lead;
-  const { loadFields } = ownProps;
-  return { fieldsSections, loadFields };
+  const { fieldsSections } = state.crm.leads;
+  return { fieldsSections };
 };
 
 Form.propTypes = {

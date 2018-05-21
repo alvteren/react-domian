@@ -34,12 +34,10 @@ class SaleList extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
-    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
-    document.removeEventListener("click", this.handleClose, false);
   };
 
   render() {
@@ -50,10 +48,9 @@ class SaleList extends React.Component {
       <Fragment>
         <EnhancedTable
           id="objects"
-          controls={["favorite"]}
           onChangePage={this.props.onChangePage}
           filterComponent={<Filter id="objects" />}
-          groupActionsComponent={GroupActions}
+          groupActionsComponents={GroupActions}
           controlComponents={Controls}
         />
         <Button

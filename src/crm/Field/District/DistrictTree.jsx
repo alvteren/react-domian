@@ -47,8 +47,7 @@ class DistrictTree extends React.PureComponent {
         } else {
           --updated[districtIndex].checkedLength;
         }
-        updated[districtIndex].checked = updated[districtIndex].checkedLength === updated[districtIndex].children.length;
-        this.setState({ districtTree: updated });
+        this.setState({districtTree: updated});
         break;
       default: break;
     }
@@ -80,7 +79,7 @@ class DistrictTree extends React.PureComponent {
                   <Fragment key={index}>
                     <ListItem button onClick={this.toggleCollapse(district.value)}>
                       <Checkbox
-                        checked={district.checked || district.checkedLength === district.children.length || false}
+                        checked={district.checked || false}
                         indeterminate={Boolean(district.checkedLength) && district.checkedLength < district.children.length}
                         tabIndex={-1}
                         disableRipple
@@ -118,12 +117,12 @@ const mapStateToProps = (state, ownProps) => {
   const {
     uf_crm_district,
     uf_crm_subdistrict
-  } = state.crm.lead.fields;
+  } = state.crm.leads.fields;
   const fields = { uf_crm_district, uf_crm_subdistrict };
 
   const { objectId } = ownProps;
 
-  const lead = state.crm.lead.values[objectId];
+  const lead = state.crm.leads.values[objectId];
 
   return { fields, lead };
 };
