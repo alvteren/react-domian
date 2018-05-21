@@ -3,6 +3,19 @@ import getVisibleValues from "../getVisibleValues";
 
 export const DISTRICTS = "uf_crm_district";
 export const SUB_DISTRICTS = "uf_crm_subdistrict";
+const TYPE = "district";
+const keysToMatch = [DISTRICTS, SUB_DISTRICTS];
+
+/**
+ *
+ * @param values - {Object}
+ * @return undefined
+ */
+export function setTypeByID(values) {
+  forOwn(values, (item, key) => {
+    if (keysToMatch.includes(key)) item.type = TYPE;
+  });
+}
 
 /**
  *
@@ -32,9 +45,9 @@ export function districtTreeConverter(lead, fields) {
         if (subDistrict.link.indexOf(district.value) === -1) {
           return result;
         }
-        const subDistrictChecked =
-          prefers.subDistrict.indexOf(parseInt(subDistrict.value, 10)) !== -1 || checked;
-        return [...result, { ...subDistrict, checked: subDistrictChecked }];
+        const checked =
+          prefers.subDistrict.indexOf(parseInt(subDistrict.value, 10)) !== -1;
+        return [...result, { ...subDistrict, checked }];
       },
       []
     );

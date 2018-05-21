@@ -47,15 +47,15 @@ class District extends React.PureComponent {
     const data = [
       {
         name: DISTRICTS,
-        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS].map(item => Number(item)) : false
+        value:  this.state[DISTRICTS].length ? this.state[DISTRICTS] : false
       },
       {
         name: SUB_DISTRICTS,
-        value: this.state[SUB_DISTRICTS].map(item => Number(item))
+        value: this.state[SUB_DISTRICTS]
       }
     ];
     onChange(data);
-    this.setState({ isTreeChanged: false, open: false })
+    this.setState({ open: false })
   };
 
   render() {
@@ -73,6 +73,7 @@ class District extends React.PureComponent {
     const subDistricts = this.props.uf_crm_district
       ? this.props.uf_crm_subdistrict.filter(item => {
         const links = this.props.subDistrictFields.items[item].link;
+        // debugger;
         for (let i = 0; i < links.length; i++) {
           if (!this.props.uf_crm_district.some(item => item === links[i])) continue;
           return false;
@@ -104,18 +105,16 @@ class District extends React.PureComponent {
                     )
                   })
                 }
-                {!districts.length && !subDistricts.length ?
-                    canEdit ? <span>Добавьте районы, кликнув </span> : <span>Не указано </span>
-                  : subDistricts.map((subDistrict, subDistrictIndex) => {
+                {
+                  subDistricts.map((subDistrict, subDistrictIndex) => {
                     return (
                       <Chip
                         key={subDistrictIndex}
                         label={this.props.subDistrictFields.items[subDistrict].label}
-                        onDelete={canEdit ? this.onChangeValue({
+                        onDelete={this.onChangeValue({
                           name: "uf_crm_subdistrict",
                           value: this.props.subDistrictFields.items[subDistrict].value
-                        }) :
-                        false}
+                        })}
                         className={styles.chip}
                       />
                     )
@@ -145,8 +144,8 @@ class District extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { objectId } = ownProps;
-  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.lead.fields;
-  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.lead.values[objectId];
+  const { uf_crm_district: districtFields, uf_crm_subdistrict: subDistrictFields } = state.crm.leads.fields;
+  const { can, uf_crm_district, uf_crm_subdistrict } = state.crm.leads.values[objectId];
   const { edit: canEdit = false } = can;
   return { objectId, canEdit, uf_crm_district, uf_crm_subdistrict, districtFields, subDistrictFields };
 };
@@ -154,7 +153,7 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { objectId: elementId } = stateProps;
-  const entityId = "lead";
+  const entityId = "leads";
   return {
     ...stateProps,
     ...ownProps,
