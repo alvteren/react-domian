@@ -11,6 +11,8 @@ import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
+import { entities } from "../../../constants";
+const entityId = entities.sale;
 
 const styles = theme => ({
   root: {},
@@ -101,7 +103,13 @@ class Form extends React.Component {
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="objects"/>
+              <Field
+                id={id}
+                key={id}
+                edit={true}
+                match={this.props.match}
+                entityId={entityId}
+              />
             ))}
           </Grid>
         </TabContainer>
@@ -110,7 +118,7 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.objects;
+  const { fieldsSections } = state.crm[entityId];
   return { fieldsSections };
 };
 

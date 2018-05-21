@@ -43,26 +43,26 @@ const Pagination = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { count, rowsPerPage, page } = state.crm[ownProps.id];
+  const { count, rowsPerPage, page } = state.crm[ownProps.entityId];
   return { count, rowsPerPage, page };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const tableId = ownProps.id;
+  const { entityId } = ownProps;
   return {
     onChangePage: page => {
-      dispatch(changePage({ id: tableId, page }));
+      dispatch(changePage({ entityId, page }));
       const onChangePage = get(ownProps, "onChangePage", null);
       if (onChangePage) {
         onChangePage(page);
       }
     },
     onChangeRowsPerPage: rowsPerPage => {
-      dispatch(changeRowsPerPage({ id: tableId, rowsPerPage }));
+      dispatch(changeRowsPerPage({ entityId, rowsPerPage }));
     }
   };
 };
 Pagination.propTypes = {
-  id: PropTypes.string.isRequired,
+  entityId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
   rowsPerPage: PropTypes.number.isRequired
 };

@@ -12,6 +12,9 @@ import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
 
 import { map, get, reduce, findIndex } from "lodash";
+import { entities } from "../../../constants";
+const entityId = entities.sale;
+
 const styles = theme => ({
   root: {},
   container: {
@@ -126,7 +129,7 @@ class Card extends React.Component {
                 key={id}
                 edit={currentEdit === id}
                 match={this.props.match}
-                entityId="objects"
+                entityId={entityId}
               />
             ))}
           </Grid>
@@ -136,9 +139,9 @@ class Card extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.objects;
-  const { id } = ownProps.match.params;
-  const values = get(state.crm.objects.values, id, null);
+  const { fieldsSections } = state.crm[entityId];
+  const { elementId } = ownProps.match.params;
+  const values = get(state.crm[entityId].values, elementId, null);
   const can = get(values, "can", null);
   const canViewContacts = get(can, "view_contacts", false);
   return { fieldsSections, canViewContacts, values };

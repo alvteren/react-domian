@@ -16,7 +16,9 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-import { fetchObject, onInitObject } from "../../actions/objects";
+import { fetchDetail, onInitDetail } from "../../actions/crm";
+import { entities } from "../../../constants";
+const entityId = entities.sale;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -90,17 +92,17 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
+  const { elementId } = ownProps.match.params;
   const { values } = state.crm.objects;
-  return { id, values };
+  return { elementId, values };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { id, values } = stateProps;
+  const { elementId, values } = stateProps;
   const { dispatch } = dispatchProps;
-  const objectValues = get(values, id, null);
+  const objectValues = get(values, elementId, null);
 
   if (objectValues == null || size(objectValues) === 0) {
-    dispatch(fetchObject(id));
+    dispatch(fetchDetail({ entityId, elementId }));
   }
   return {
     ...stateProps,
@@ -109,7 +111,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
     },
     onInit: () => {
-      dispatch(onInitObject({ id }));
+      dispatch(onInitDetail({ entityId, elementId }));
     }
   };
 };

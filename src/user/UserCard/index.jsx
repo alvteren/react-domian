@@ -13,7 +13,7 @@ const UserCard = props => {
       {user && (
         <Fragment>
           {user.avatar ? (
-            <Avatar src={constants.imgBaseUrl + user.avatar} />
+            <Avatar src={user.avatar} />
           ) : (
             <Avatar>{user.initial}</Avatar>
           )}

@@ -14,10 +14,13 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import {saveFormToServer, saveToStore, validateFormError, setInitFormState} from "../../actions/form";
-import { fetchLeadFields } from "../../actions/lead";
-import {find} from "lodash";
+import { validateFormError, setInitFormState } from "../../actions/form";
+import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
+import { find } from "lodash";
 import formValidate from "../../../util/formValidate";
+import { entities } from "../../../constants";
+
+const entityId = entities.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -48,7 +51,11 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    const validateErrors = formValidate({ form: this.props.values["0"], fields: this.props.fields, entityId: "lead" });
+    const validateErrors = formValidate({
+      form: this.props.values["0"],
+      fields: this.props.fields,
+      entityId
+    });
     if (Boolean(Object.keys(validateErrors).length)) {
       this.props.formValidateError(validateErrors);
     } else {
@@ -75,7 +82,9 @@ class Add extends React.Component {
     const initState = {};
     Object.keys(fields).forEach(key => {
       if (String(key) === "undefined") return;
-      initState[key] = fields[key].hasOwnProperty("default") ? fields[key].default : "";
+      initState[key] = fields[key].hasOwnProperty("default")
+        ? fields[key].default
+        : "";
       if (key === "uf_crm_type_realty") initState[key] = [];
     });
     initState.can = { edit: true };
@@ -132,15 +141,32 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const entityId = "lead";
   const { fields, values } = state.crm[entityId];
-  return { fields, entityId, values };
+  return { fields, values };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
     dispatch,
     getLeadFields() {
-      dispatch(fetchLeadFields());
+      dispatch(fetchFields({ entityId }));
+    }
+  };
+};
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { fields } = stateProps;
+  const { dispatch } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...ownProps,
+    setInitFormState(initState) {
+      dispatch(setInitFormState({ initState, entityId }));
+    },
+    saveFormToServer(formData) {
+      dispatch(saveFormToServer({ entityId, elementId: 0, formData }));
+    },
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
     }
   };
 };
@@ -152,7 +178,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...ownProps,
     setInitFormState(initState) {
-      dispatch(setInitFormState({ initState, id: entityId }))
+      dispatch(setInitFormState({ initState, id: entityId }));
     },
     saveFormToServer(formData) {
       dispatch(saveFormToServer({ id: entityId, elementId: 0, formData }));
@@ -160,7 +186,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     formValidateError(errors) {
       dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
     }
-  }
+  };
 };
 
 Add.propTypes = {
@@ -169,5 +195,7 @@ Add.propTypes = {
 };
 
 export default withMobileDialog()(
-  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(Add))
+  withStyles(styles)(
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(Add)
+  )
 );
