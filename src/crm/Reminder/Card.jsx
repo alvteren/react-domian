@@ -44,13 +44,13 @@ function  getTomorrowDate() {
 
 function convertDateForMui (reminder) {
   const keys = ["date", "reminderInterval"];
-  debugger;
+  const converted = Object.assign({}, reminder);
   keys.forEach((key, index) => {
-    if (reminder[key] && typeof reminder[key] === "string") {
-      reminder[key] = reminder[key].substr(0, reminder[key].length - 9);
+    if (converted[key] && typeof converted[key] === "string") {
+      converted[key] = converted[key].substr(0, converted[key].length - 9);
     }
   });
-  return reminder;
+  return converted;
 }
 
 class Card extends React.Component {
@@ -157,7 +157,7 @@ class Card extends React.Component {
           <TextField
             id="theme"
             label="Тема"
-            value={this.state.theme}
+            value={this.state.reminder.theme}
             onChange={this.handleChange("theme")}
             margin="normal"
           />
@@ -166,7 +166,7 @@ class Card extends React.Component {
           <TextField
             id="description"
             label="Описание"
-            value={this.state.theme}
+            value={this.state.reminder.description}
             onChange={this.handleChange("description")}
             margin="normal"
             multiline={true}

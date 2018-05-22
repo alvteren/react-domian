@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import keycode from "keycode";
 import Table, {
@@ -17,7 +17,6 @@ import MobileStepper from "material-ui/MobileStepper";
 import { withStyles } from "material-ui/styles";
 
 import { toArray, isObject, get } from "lodash";
-import { formatDate } from "../../util/leadDataConverter";
 import { dateToString } from "../../util/dateConverter";
 
 import {
