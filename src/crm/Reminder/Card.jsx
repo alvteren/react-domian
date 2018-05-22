@@ -1,10 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, TextField, Button, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem} from "material-ui"
+// import { Grid, TextField, Button, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem} from "material-ui"
+import { Button } from "material-ui"
 import SaveIcon from "material-ui-icons/Save"
 import { withStyles } from "material-ui/styles";
+import Field from "../Field";
 
-import { isEqual, get } from "lodash";
+import { isEqual, get, map } from "lodash";
 
 import { addNewReminder, updateReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
@@ -100,79 +102,20 @@ class Card extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, entityId } = this.props;
     return (
       <form className={styles.reminderCardForm} action="">
-        <FormControl className={classes.fullWidth}>
-          <InputLabel htmlFor="type">Тип</InputLabel>
-          <Select
-            value={this.state.reminder.type}
-            onChange={this.handleChange("type")}
-            inputProps={{
-              name: 'type',
-              id: 'type',
-            }}>
-            <MenuItem value="call">Звонок</MenuItem>
-            <MenuItem value="meeting">Встреча</MenuItem>
-          </Select>
-        </FormControl>
-        <div className="inputWrapper">
-          <TextField
-            id="date"
-            label="Когда"
-            type="datetime-local"
-            defaultValue={this.state.reminder.date}
-            onChange={this.handleChange("date")}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </div>
-        <div className="inputWrapper">
-          <FormControlLabel
-            control={
-              <Switch
-                checked={this.state.reminder.reminder}
-                onChange={this.handleChange("reminder")}
-                color="primary"
-              />
-            }
-            label="Напомнить"
-          />
-        </div>
-        <div className="inputWrapper">
-          <TextField
-            id="reminderInterval"
-            label="Напомнить"
-            type="datetime-local"
-            defaultValue={this.state.reminder.reminderInterval}
-            onChange={this.handleChange("reminderInterval")}
-            disabled={!this.state.reminder.reminder}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </div>
-        <div className="inputWrapper">
-          <TextField
-            id="theme"
-            label="Тема"
-            value={this.state.reminder.theme}
-            onChange={this.handleChange("theme")}
-            margin="normal"
-          />
-        </div>
-        <div className="inputWrapper">
-          <TextField
-            id="description"
-            label="Описание"
-            value={this.state.reminder.description}
-            onChange={this.handleChange("description")}
-            margin="normal"
-            multiline={true}
-            rowsMax="4"
-          />
-        </div>
+        {map(this.props.fields, (val, id) => (
+          <Field
+            id={id} // id from {Fields}
+            key={id}
+            edit={true}
+            match={this.props.match}
+            entityId={"reminder"}/>
+        ))}
+        {/*<div className="inputWrapper">*/}
+
+        {/*</div>*/}
         {
           this.state.isFormChanged &&
           <div className={styles.submitWrapper}>
@@ -190,8 +133,9 @@ class Card extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const { close } = ownProps;
   const { entityId, elementId, reminderId } = ownProps.match.params;
+  const { fields } = state.crm.reminder;
   const reminder = get(state, `crm.${entityId}.data.${entityId}_${elementId}.reminders.${reminderId}`, null);
-  return { reminder, close };
+  return { reminder, close, fields };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

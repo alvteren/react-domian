@@ -14,6 +14,7 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
+import DateField from "./DateField";
 import MaskedInput from "react-text-mask";
 
 import styles from "./Field.module.css";
@@ -38,6 +39,10 @@ function TextMaskCustom(props) {
     />
   );
 }
+
+/**
+ *
+ */
 
 class Field extends React.PureComponent {
   state = {
@@ -100,7 +105,8 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, elementId } = this.props;
+    const { id, field, values, value, classes, can, ...other } = this.props;
+    console.log(value, "value");
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -248,6 +254,16 @@ class Field extends React.PureComponent {
             </Grid>
           );
         }
+        if (field.type === "date") {
+          debugger;
+          return (
+            <DateField
+              id={id}
+              value={value}
+              onChange={this.onChange}
+            />
+          )
+        }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
             <TextField
@@ -347,7 +363,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const elementId = get(params, "elementId", 0); // 0 by default values[id] for new item form
+  let elementId = get(params, "reminderId", null) || get(params, "elementId", 0); // 0 by default values[id] for new item form
+  if (elementId === "new") elementId = 0;
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};

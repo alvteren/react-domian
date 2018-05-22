@@ -123,6 +123,11 @@ class EnhancedTable extends React.Component {
                     </Link>
                   )})
                 }
+                <Link
+                  to={`lead/${row.id}/reminder/new`} // ?????
+                  onClick={e => {e.stopPropagation();}}>
+                  Создать напоминание
+                </Link>
               </Fragment>
             )
           }
