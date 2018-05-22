@@ -11,23 +11,27 @@ import AddIcon from "material-ui-icons/Add";
 import EditDialog from "./EditDialog";
 
 import styles from "./index.module.css";
-import {saveToStore} from "../../actions/form";
+import { saveToStore } from "../../actions/form";
 import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
+import { entities } from "./../../../constants";
+
+const entityId = entities.lead;
 
 class TypeRealty extends React.PureComponent {
   state = {
     open: false,
     isTreeChanged: false,
     [SECTION]: this.props[SECTION] || [],
-    [TYPE_REALTY]: this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
-      ? this.props[TYPE_REALTY]
-      : []
+    [TYPE_REALTY]:
+      this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
+        ? this.props[TYPE_REALTY]
+        : []
   };
 
   onChangeValue = ({ name, value }) => () => {
-    const updated = this.state[name].filter((item) => String(item)!== value);
+    const updated = this.state[name].filter(item => String(item) !== value);
     const { onChange } = this.props;
-    this.setState({[name]: updated});
+    this.setState({ [name]: updated });
     onChange(name, updated);
   };
   onOpenDialog = () => {
@@ -39,8 +43,8 @@ class TypeRealty extends React.PureComponent {
   onTreeChange = ({ name, value, add }) => {
     const updated = add
       ? this.state[name].splice(0).concat([parseInt(value)]) // if item was added
-      : this.state[name].splice(0).filter((item) => String(item) !== value); // for delete item case
-    this.setState({ isTreeChanged: true, [name]: updated })
+      : this.state[name].splice(0).filter(item => String(item) !== value); // for delete item case
+    this.setState({ isTreeChanged: true, [name]: updated });
   };
   onSaveToStore = () => {
     const { onChange } = this.props;
@@ -51,7 +55,7 @@ class TypeRealty extends React.PureComponent {
       }
     ];
     onChange(data);
-    this.setState({ open: false })
+    this.setState({ open: false });
   };
 
   render() {
@@ -74,23 +78,36 @@ class TypeRealty extends React.PureComponent {
                 {field.label}
               </Typography>
               <div className={styles.chips}>
-                {!typeRealty.length ?
-                    canEdit ? <span>Добавьте тип недвижимости, кликнув </span> : <span>Не указано </span>
-                  : typeRealty.map((typeRealtyItem, typeRealtyItemIndex) => {
+                {!typeRealty.length ? (
+                  canEdit ? (
+                    <span>Добавьте тип недвижимости, кликнув </span>
+                  ) : (
+                    <span>Не указано </span>
+                  )
+                ) : (
+                  typeRealty.map((typeRealtyItem, typeRealtyItemIndex) => {
                     return (
                       <Chip
                         key={typeRealtyItemIndex}
-                        label={this.props.typeRealtyFields.items[typeRealtyItem].label}
-                        onDelete={canEdit ? this.onChangeValue({
-                          name: "uf_crm_type_realty",
-                          value: this.props.typeRealtyFields.items[typeRealtyItem].value
-                        }):
-                        false}
+                        label={
+                          this.props.typeRealtyFields.items[typeRealtyItem]
+                            .label
+                        }
+                        onDelete={
+                          canEdit
+                            ? this.onChangeValue({
+                                name: "uf_crm_type_realty",
+                                value: this.props.typeRealtyFields.items[
+                                  typeRealtyItem
+                                ].value
+                              })
+                            : false
+                        }
                         className={styles.chip}
                       />
-                    )
+                    );
                   })
-                }
+                )}
                 {canEdit && (
                   <IconButton color="primary" onClick={this.onOpenDialog}>
                     <AddIcon />
@@ -114,24 +131,31 @@ class TypeRealty extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { objectId } = ownProps;
-  const { section: sectionFields, uf_crm_type_realty: typeRealtyFields } = state.crm.lead.fields;
-  const { can, section, uf_crm_type_realty } = state.crm.lead.values[objectId];
+  const { elementId, can, fields } = ownProps;
+  const {
+    section: sectionFields,
+    uf_crm_type_realty: typeRealtyFields
+  } = fields;
+
+  const { values } = state.crm[entityId];
+  const { section, uf_crm_type_realty } = values[elementId];
   const { edit: canEdit = false } = can;
-  return { objectId, canEdit, section, uf_crm_type_realty, sectionFields, typeRealtyFields };
-};
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { dispatch } = dispatchProps;
-  const { objectId: elementId } = stateProps;
-  const entityId = "lead";
   return {
-    ...stateProps,
-    ...ownProps,
-    onChange(name, value) {
-      dispatch(saveToStore({ id: entityId, elementId, name, value }))
-    }
-  }
+    canEdit,
+    section,
+    uf_crm_type_realty,
+    sectionFields,
+    typeRealtyFields
+  };
 };
 
-export default connect(mapStateToProps, null, mergeProps)(TypeRealty);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { elementId } = ownProps;
+  return {
+    onChange(name, value) {
+      dispatch(saveToStore({ entityId, elementId, name, value }));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TypeRealty);

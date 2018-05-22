@@ -1,11 +1,9 @@
 export default function convertLeadData(data) {
-  debugger;
   Object.keys(data).forEach(key => {
     let obj = data[key];
     obj.created = formatDate(obj.date_create);
     obj.responsible = `${obj.assigned_by_name} ${obj.assigned_by_last_name}`;
     obj.reminders = null;
-    debugger;
   })
 };
 

@@ -6,14 +6,15 @@ import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 import fieldValidate from "../../util/formValidate";
 
-import {saveToStore, saveFile, savePropToServer, validateFormError} from "../actions/form";
+import { saveToStore, saveFile, validateFormError } from "../actions/form";
+import { savePropToServer } from "../actions/crm";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-import MaskedInput from 'react-text-mask';
+import MaskedInput from "react-text-mask";
 
 import styles from "./Field.module.css";
 
@@ -31,13 +32,14 @@ function TextMaskCustom(props) {
     <MaskedInput
       {...other}
       ref={inputRef}
+      // prettier-ignore
       mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
       //showMask
     />
   );
 }
 
-class Field extends React.Component {
+class Field extends React.PureComponent {
   state = {
     edit: get(this.props, "edit", false),
     needSave: false,
@@ -46,21 +48,21 @@ class Field extends React.Component {
 
   handleTelInputChange = name => event => {
     this.setState({
-      [name]: event.target.value,
+      [name]: event.target.value
     });
     this.props.handleChange(event);
   };
 
   onTelInputFocus = event => {
     if (!this.state.tel) {
-      this.setState({tel: "9"});
+      this.setState({ tel: "9" });
       event.target.selectionStart = 2; // not working
     }
   };
 
   onTelInputBlur = event => {
     if (this.state.tel === "9") {
-      this.setState({tel: ""});
+      this.setState({ tel: "" });
     }
   };
 
@@ -69,7 +71,7 @@ class Field extends React.Component {
   };
   onSave = propId => e => {
     const { fields, values, entityId } = this.props;
-    const error = fieldValidate({form: values, fields, entityId, propId});
+    const error = fieldValidate({ form: values, fields, entityId, propId });
     if (error instanceof Object) {
       this.props.formValidateError(error);
       return;
@@ -98,7 +100,7 @@ class Field extends React.Component {
   };
 
   render() {
-    const { id, field, values, value, classes, can, objectId } = this.props;
+    const { id, field, values, value, classes, can, elementId } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -143,7 +145,7 @@ class Field extends React.Component {
 
       if (visibleValues) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0){
+          if (size(visibleValues) > 0) {
             return (
               <Grid item xs={12} sm={6}>
                 <div className={classes.valueWrapper}>
@@ -154,11 +156,12 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
-                    error={values &&
-                    values.validateErrors &&
-                    values.validateErrors.hasOwnProperty(field.id) ?
-                      values.validateErrors[field.id] :
-                      false
+                    error={
+                      values &&
+                      values.validateErrors &&
+                      values.validateErrors.hasOwnProperty(field.id)
+                        ? values.validateErrors[field.id]
+                        : false
                     }
                   />
                   {needSave && (
@@ -261,21 +264,32 @@ class Field extends React.Component {
               name={id}
               label={field.label}
               value={value || this.state.tel}
-              error={values && values.validateErrors && values.validateErrors.hasOwnProperty(field.id)}
+              error={
+                values &&
+                values.validateErrors &&
+                values.validateErrors.hasOwnProperty(field.id)
+              }
               helperText={
-                (values &&
-                  values.validateErrors &&
-                  values.validateErrors.hasOwnProperty(field.id)) ?
-                  values.validateErrors[field.id].message :
-                  get(field, "hint", "")
+                values &&
+                values.validateErrors &&
+                values.validateErrors.hasOwnProperty(field.id)
+                  ? values.validateErrors[field.id].message
+                  : get(field, "hint", "")
               }
               onFocus={field.type === "tel" ? this.onTelInputFocus : null}
               onBlur={field.type === "tel" ? this.onTelInputBlur : null}
-              onChange={field.type === "tel" ? this.handleTelInputChange('tel') : this.onChange}
-              InputProps={field.type === "tel" ?
-                {
-                inputComponent: TextMaskCustom,
-                } : {}}
+              onChange={
+                field.type === "tel"
+                  ? this.handleTelInputChange("tel")
+                  : this.onChange
+              }
+              InputProps={
+                field.type === "tel"
+                  ? {
+                      inputComponent: TextMaskCustom
+                    }
+                  : {}
+              }
             />
             {needSave && (
               <IconButton
@@ -349,20 +363,20 @@ const mapStateToProps = (state, ownProps) => {
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const objectId = get(params, "id", 0); // 0 by default values[id] for new item form
-  const objectValues = get(values, objectId, null);
-  const value = objectValues != null ? get(objectValues, id, null) : null;
-  const can = objectValues != null ? get(objectValues, "can", {}) : {};
+  const elementId = get(params, "elementId", 0); // 0 by default values[id] for new item form
+  const elementValues = get(values, elementId, null);
+  const value = elementValues != null ? get(elementValues, id, null) : null;
+  const can = elementValues != null ? get(elementValues, "can", {}) : {};
 
-  if (objectId === 0) {
+  if (elementId === 0) {
     can.edit = true;
   }
 
   return {
-    objectId,
+    elementId,
     fields,
     field,
-    values: objectValues,
+    values: elementValues,
     value,
     can,
     entityId
@@ -370,7 +384,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { objectId: elementId, field } = stateProps;
+  const { elementId, field } = stateProps;
   const { entityId } = ownProps;
   const name = field.id;
 
@@ -379,17 +393,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: e => {
       const { value } = e.target;
-      dispatch(saveToStore({ id: entityId, elementId, name, value }));
+      dispatch(saveToStore({ entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      dispatch(saveToStore({ id: entityId, elementId, name, value: checked }));
+      dispatch(saveToStore({ entityId, elementId, name, value: checked }));
     },
     saveFile: file => {
-      dispatch(saveFile({ id: entityId, elementId, name: "photo", file }));
+      dispatch(saveFile({ entityId, elementId, name: "photo", file }));
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(savePropToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ entityId, elementId, name, value }));
     },
     formValidateError(errorObj) {
       dispatch(validateFormError({ entityId, elementId, errorObj }));

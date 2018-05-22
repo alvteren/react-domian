@@ -1,10 +1,10 @@
 import { fetchTableHeaders as fetchTableHeadersApi } from "../../api/table";
 
 export const fetchTableHeaders = props => async dispatch => {
-  const { id } = props;
+  const { entityId } = props;
   try {
     dispatch({ type: "TABLE_FETCH_SETTING_START" });
-    await fetchTableHeadersApi({ id });
+    await fetchTableHeadersApi({ entityId });
     dispatch({ type: "TABLE_FETCH_SETTING_SUCCESS" });
   } catch (err) {
     dispatch({ type: "TABLE_FETCH_SETTING_ERROR", payload: err, error: true });

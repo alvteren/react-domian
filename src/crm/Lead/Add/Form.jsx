@@ -11,6 +11,9 @@ import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
+import { entities } from "../../../constants";
+
+const entityId = entities.lead;
 
 const styles = theme => ({
   root: {},
@@ -94,14 +97,25 @@ class Form extends React.Component {
             scrollButtons="auto"
           >
             {map(fieldsSections, (section, code) => (
-              <Tab disabled={this.props.loadFields} label={section.name} value={code} key={code} />
+              <Tab
+                disabled={this.props.loadFields}
+                label={section.name}
+                value={code}
+                key={code}
+              />
             ))}
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
           <Grid container className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="lead"/>
+              <Field
+                id={id}
+                key={id}
+                edit={true}
+                match={this.props.match}
+                entityId={entityId}
+              />
             ))}
           </Grid>
         </TabContainer>
@@ -110,7 +124,7 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.lead;
+  const { fieldsSections } = state.crm[entityId];
   const { loadFields } = ownProps;
   return { fieldsSections, loadFields };
 };

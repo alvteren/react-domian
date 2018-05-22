@@ -8,6 +8,8 @@ import { Hidden, IconButton, Tooltip } from "material-ui";
 import styles from "./index.module.css";
 
 import { activeTool } from "../../actions/rightTools";
+import { entities } from "../../../constants";
+const entityId = entities.sale;
 
 class RightTools extends React.Component {
   state = {
@@ -51,14 +53,14 @@ class RightTools extends React.Component {
 }
 
 const mapToStateProps = state => {
-  const { rightTools } = state.crm.objects;
+  const { rightTools } = state.crm[entityId];
   return { rightTools };
 };
 
 const mapToDispatchProps = dispatch => {
   return {
     toolAction: toolId => () => {
-      dispatch(activeTool(toolId));
+      dispatch(activeTool({ entityId, toolId }));
     }
   };
 };
