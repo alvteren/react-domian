@@ -32,30 +32,14 @@ function TextMaskCustom(props) {
     <MaskedInput
       {...other}
       ref={inputRef}
-      mask={[
-        "+",
-        "7",
-        "(",
-        /[1-9]/,
-        /\d/,
-        /\d/,
-        ")",
-        /\d/,
-        /\d/,
-        /\d/,
-        "-",
-        /\d/,
-        /\d/,
-        "-",
-        /\d/,
-        /\d/
-      ]}
+      // prettier-ignore
+      mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
       //showMask
     />
   );
 }
 
-class Field extends React.Component {
+class Field extends React.PureComponent {
   state = {
     edit: get(this.props, "edit", false),
     needSave: false,
@@ -116,7 +100,7 @@ class Field extends React.Component {
   };
 
   render() {
-    const { id, field, values, value, classes, can, objectId } = this.props;
+    const { id, field, values, value, classes, can, elementId } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -379,20 +363,20 @@ const mapStateToProps = (state, ownProps) => {
 
   const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const objectId = get(params, "id", 0); // 0 by default values[id] for new item form
-  const objectValues = get(values, objectId, null);
-  const value = objectValues != null ? get(objectValues, id, null) : null;
-  const can = objectValues != null ? get(objectValues, "can", {}) : {};
+  const elementId = get(params, "elementId", 0); // 0 by default values[id] for new item form
+  const elementValues = get(values, elementId, null);
+  const value = elementValues != null ? get(elementValues, id, null) : null;
+  const can = elementValues != null ? get(elementValues, "can", {}) : {};
 
-  if (objectId === 0) {
+  if (elementId === 0) {
     can.edit = true;
   }
 
   return {
-    objectId,
+    elementId,
     fields,
     field,
-    values: objectValues,
+    values: elementValues,
     value,
     can,
     entityId
@@ -400,7 +384,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { objectId: elementId, field } = stateProps;
+  const { elementId, field } = stateProps;
   const { entityId } = ownProps;
   const name = field.id;
 
@@ -409,17 +393,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: e => {
       const { value } = e.target;
-      dispatch(saveToStore({ id: entityId, elementId, name, value }));
+      dispatch(saveToStore({ entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      dispatch(saveToStore({ id: entityId, elementId, name, value: checked }));
+      dispatch(saveToStore({ entityId, elementId, name, value: checked }));
     },
     saveFile: file => {
-      dispatch(saveFile({ id: entityId, elementId, name: "photo", file }));
+      dispatch(saveFile({ entityId, elementId, name: "photo", file }));
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(savePropToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ entityId, elementId, name, value }));
     },
     formValidateError(errorObj) {
       dispatch(validateFormError({ entityId, elementId, errorObj }));

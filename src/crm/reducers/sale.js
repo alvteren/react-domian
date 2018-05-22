@@ -361,6 +361,13 @@ const rightTools = {
   }
 };
 
+export const formFields = {
+  ...form.fieldsSections.main.fields,
+  ...form.fieldsSections.more.fields,
+  ...form.fieldsSections.contact.fields,
+  ...form.fieldsSections.serviceInfo.fields
+};
+
 export const initialState = {
   ...chips,
   ...list,

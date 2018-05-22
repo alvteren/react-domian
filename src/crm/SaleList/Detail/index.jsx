@@ -92,12 +92,12 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { elementId } = ownProps.match.params;
-  const { values } = state.crm.objects;
-  return { elementId, values };
+  const { values } = state.crm[entityId];
+  return { values };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { elementId, values } = stateProps;
+  const { elementId } = ownProps.match.params;
+  const { values } = stateProps;
   const { dispatch } = dispatchProps;
   const objectValues = get(values, elementId, null);
 

@@ -10,17 +10,17 @@ export const deleteChip = props => dispatch => {
 };
 
 export const fetchChips = props => async dispatch => {
-  const { id, query } = props;
+  const { entityId, query } = props;
   try {
-    dispatch({ type: "CHIPS_FETCH_STARTED", payload: { id } });
+    dispatch({ type: "CHIPS_FETCH_STARTED", payload: { entityId } });
 
     const data = await fetchChipsApi({
-      id,
+      entityId,
       query
     });
     dispatch({
       type: "CHIPS_FETCH_SUCCESS",
-      payload: { id: id, data: data }
+      payload: { entityId, data: data }
     });
   } catch (err) {
     dispatch({ type: "CHIPS_FETCH_ERROR", payload: err, error: true });

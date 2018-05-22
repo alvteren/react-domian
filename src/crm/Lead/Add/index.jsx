@@ -170,24 +170,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   };
 };
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { fields, entityId } = stateProps;
-  const { dispatch } = dispatchProps;
-
-  return {
-    ...stateProps,
-    ...ownProps,
-    setInitFormState(initState) {
-      dispatch(setInitFormState({ initState, id: entityId }));
-    },
-    saveFormToServer(formData) {
-      dispatch(saveFormToServer({ id: entityId, elementId: 0, formData }));
-    },
-    formValidateError(errors) {
-      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
-    }
-  };
-};
 
 Add.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
