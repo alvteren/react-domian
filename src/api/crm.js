@@ -83,7 +83,7 @@ export const savePropToServer = async props => {
 };
 
 export const saveFormToServer = async props => {
-  const { id: entityId, formData } = props;
+  const { entityId, formData } = props;
   const version = get(props, "version", lastApiVersion);
 
   const params = {

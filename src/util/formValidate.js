@@ -1,7 +1,9 @@
 import { entities } from "../constants";
 
 import { rules as leadRules } from "../crm/Lead/validate";
+import { rules as saleRules } from "../crm/SaleList/validate";
 import { formFields as leadFormFields } from "../crm/reducers/lead";
+import { formFields as saleFormFields } from "../crm/reducers/sale";
 
 export const typeRules = {
   email(val) {
@@ -27,12 +29,13 @@ export const typeRules = {
 };
 
 const forms = {
-  [entities.lead]: leadFormFields
+  [entities.lead]: leadFormFields,
+  [entities.lead]: saleFormFields
 };
 
 const idRules = {
-  lead: leadRules
-  // object: objectIdRules
+  [entities.lead]: leadRules,
+  [entities.sale]: saleRules
 };
 
 /**
@@ -46,52 +49,54 @@ const idRules = {
 
 export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
-  const serviceProps = idRules[entityId].serviceProps;
+  const { exludeValidationProps } = idRules[entityId];
 
   if (propId) {
-    const prop = propId;
-    const isFilled = isEmpty(form[prop]);
+    const isFilled = isEmpty(form[propId]);
     /*
       Branch for check only one prop (on edit)
      */
 
     /* Check for required props */
-    if (fields[prop].required) {
-      const isPropValid = Boolean(form[prop] || form[prop].length);
+    if (fields[propId].required) {
+      const isPropValid = Boolean(form[propId] || form[propId].length);
       if (isPropValid) return true;
-      validateErrors[prop] = { message: "Это поле обязательно для заполнения" };
+      validateErrors[propId] = {
+        message: "Это поле обязательно для заполнения"
+      };
       return validateErrors;
     }
 
     /* Check for rules follow by type */
-    if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
-      const isValid = typeRules[fields[prop].type](form[prop]);
+    if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+      const isValid = typeRules[fields[propId].type](form[propId]);
       if (isValid === true) return true;
-      validateErrors[prop] = isValid;
+      validateErrors[propId] = isValid;
       return validateErrors;
     }
 
     /* Check for rules follow by id */
-    if (isFilled && typeRules[prop]) {
-      const isValid = typeRules[prop](form[prop]);
+    if (isFilled && typeRules[propId]) {
+      const isValid = typeRules[propId](form[propId]);
       if (isValid === true) return true;
-      validateErrors[prop] = isValid;
+      validateErrors[propId] = isValid;
       return validateErrors;
     }
   } else {
     /*
       Branch for iterate over whole form (on new instance create)
      */
-    Object.keys(forms[entityId]).forEach(prop => {
-      const isFilled = isEmpty(form[prop]);
+    Object.keys(forms[entityId]).forEach(propId => {
+      const isFilled = isEmpty(form[propId]);
       /* Service props exclude */
-      if (serviceProps && serviceProps.includes(prop)) return;
+      if (exludeValidationProps && exludeValidationProps.includes(propId))
+        return;
 
       /* Check for required props */
-      if (fields[prop].required) {
-        const isPropValid = Boolean(form[prop] || form[prop].length);
+      if (fields[propId].required) {
+        const isPropValid = Boolean(form[propId] || form[propId].length);
         if (!isPropValid) {
-          validateErrors[prop] = {
+          validateErrors[propId] = {
             message: "Это поле обязательно для заполнения"
           };
           return;
@@ -99,17 +104,17 @@ export default function formValidate({ form, fields, entityId, propId }) {
       }
 
       /* Check for rules follow by type */
-      if (isFilled && typeRules.hasOwnProperty(fields[prop].type)) {
-        const isValid = typeRules[fields[prop].type](form[prop]);
+      if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+        const isValid = typeRules[fields[propId].type](form[propId]);
         if (isValid === true) return;
-        validateErrors[prop] = isValid;
+        validateErrors[propId] = isValid;
       }
 
       /* Check for rules follow by id */
-      if (isFilled && typeRules[prop]) {
-        const isValid = typeRules[prop](form[prop]);
+      if (isFilled && typeRules[propId]) {
+        const isValid = typeRules[propId](form[propId]);
         if (isValid === true) return;
-        validateErrors[prop] = isValid;
+        validateErrors[propId] = isValid;
       }
     });
     return validateErrors;

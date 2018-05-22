@@ -14,6 +14,10 @@ import IconButton from "material-ui/IconButton";
 import CloseIcon from "material-ui-icons/Close";
 import DeleteIcon from "material-ui-icons/DeleteForever";
 
+import { entities } from "../../constants";
+
+const entityId = entities.sale;
+
 const PhotoBig = props => {
   const { index, items, hidePhoto } = props;
   const renderImage = item => {
@@ -94,7 +98,7 @@ const PhotoBig = props => {
 };
 
 const mapToStateProps = state => {
-  const { current } = state.crm.objects;
+  const { current } = state.crm[entityId];
 
   return { current };
 };
@@ -105,7 +109,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...ownProps,
     deletePhoto: index => {
-      dispatch(deletePhoto({  id: "objects", index, elementId: current }));
+      dispatch(deletePhoto({ entityId, index, elementId: current }));
     }
   };
 };
