@@ -85,13 +85,13 @@ const mapStateToProps = state => {
   return { open: active, loading };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { id } = ownProps;
+  const { entityId } = ownProps;
   return {
     openSearch: () => {
-      dispatch(activeTool({ entity: id, toolId: "search" }));
+      dispatch(activeTool({ entityId, toolId: "search" }));
     },
     closeSearch: () => {
-      dispatch(deactivedTool({ entity: id, toolId: "search" }));
+      dispatch(deactivedTool({ entityId, toolId: "search" }));
     }
   };
 };

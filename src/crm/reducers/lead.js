@@ -8,6 +8,8 @@ import convert from "../../util/leadDataConverter";
 import DistrictInput from "../Field/District";
 import TypeRealtyInput from "../Field/TypeRealty";
 
+import { entities } from "../../constants";
+
 const chips = {
   chips: {},
   selectedChips: {},
@@ -147,8 +149,8 @@ export const initialState = {
 };
 
 export default function reducer(state = initialState, { type, payload }) {
-  const id = get(payload, "id", null);
-  if (id === "lead") {
+  const entityId = get(payload, "entityId", null);
+  if (entityId === entities.lead) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

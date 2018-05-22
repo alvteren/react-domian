@@ -1,71 +1,34 @@
 import {
   uploadFile,
-  fetchSearchResult as fetchSearchResultApi,
-  savePropToServer as savePropToServerApi,
-  saveFormToServer as saveFormToServerApi
+  fetchSearchResult as fetchSearchResultApi
 } from "../../api/form";
+
+import { savePropToServer } from "./crm";
+
 export const setInitFormState = props => dispatch => {
-  const { initState, id } = props;
+  const { initState, entityId } = props;
   dispatch({
     type: "SET_INIT_FORM_STATE",
-    payload: { initState, id }
+    payload: { initState, entityId }
   });
 };
 export const saveToStore = props => async dispatch => {
-  const { id, elementId, name, value } = props;
+  const { entityId, elementId, name, value } = props;
   dispatch({
     type: "FORM_SAVE_TO_STORE",
-    payload: { id, elementId, name, value }
+    payload: { entityId, elementId, name, value }
   });
 };
-export const savePropToServer = props => async dispatch => {
-  try {
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_START",
-      payload: {}
-    });
-    const data = await savePropToServerApi(props);
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_SUCCESS",
-      payload: { ...data }
-    });
-  } catch (err) {
-    dispatch({
-      type: "PROP_SAVE_TO_SERVER_ERROR",
-      payload: err,
-      error: true
-    });
-  }
-};
-export const saveFormToServer = props => async dispatch => {
-  try {
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_START",
-      payload: {}
-    });
-    const data = await saveFormToServerApi(props);
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_SUCCESS",
-      payload: { ...data }
-    });
-  } catch (err) {
-    dispatch({
-      type: "FORM_SAVE_TO_SERVER_ERROR",
-      payload: err,
-      error: true
-    });
-  }
-};
 export const saveFile = props => async dispatch => {
-  const { id, elementId, name, file } = props;
+  const { entityId, elementId, name, file } = props;
   const result = await uploadFile(file);
   const { preview } = file;
   const value = preview ? { ...result, src: preview } : result;
   dispatch({
     type: "FORM_SAVE_FILE",
-    payload: { id, elementId, name, value }
+    payload: { entityId, elementId, name, value }
   });
-  dispatch(savePropToServer({ id, elementId, name, value }));
+  dispatch(savePropToServer({ entityId, elementId, name, value }));
 };
 
 export const openLocationSearch = props => async dispatch => {

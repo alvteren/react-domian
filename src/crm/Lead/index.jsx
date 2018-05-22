@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { fetchLeads, fetchLeadFields } from "../actions/lead";
+import { fetchList, fetchFields } from "../actions/crm";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
@@ -16,6 +16,10 @@ import { Route } from "react-router-dom";
 import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
+
+import { entities } from "../../constants";
+
+const entityId = entities.lead;
 
 const styles = theme => ({
   buttonAdd: {
@@ -48,9 +52,9 @@ class Lead extends React.Component {
     return (
       <Fragment>
         <EnhancedTable
-          id="lead"
+          entityId={entityId}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="lead" />}
+          filterComponent={<Filter entityId={entityId} />}
           groupActionsComponent={GroupActions}
           controlComponents={Controls}
         />
@@ -68,15 +72,17 @@ class Lead extends React.Component {
           open={open}
           onClose={this.handleClose}
         />
-        <Route path="/crm/lead/add" component={Add} />
-        <Route path="/crm/lead/show/:id" component={Detail} />
+        <Route path={`/crm/${entityId}/add`} component={Add} />
+        <Route path={`/crm/${entityId}/show/:elementId`} component={Detail} />
       </Fragment>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm.objects;
+  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm[
+    entityId
+  ];
   return {
     filter,
     page,
@@ -94,13 +100,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     onInit: () => {
-      dispatch(fetchLeadFields());
-      dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
+      dispatch(fetchFields({ entityId }));
+      dispatch(
+        fetchList({ entityId, filter, page, rowsPerPage, orderBy, order })
+      );
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))
         dispatch(
-          fetchLeads({ filter, page: newPage, rowsPerPage, orderBy, order })
+          fetchList({
+            entityId,
+            filter,
+            page: newPage,
+            rowsPerPage,
+            orderBy,
+            order
+          })
         );
     }
   };

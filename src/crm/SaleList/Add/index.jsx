@@ -14,6 +14,8 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
+import { entities } from "../../../constants";
+const entityId = entities.sale;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;

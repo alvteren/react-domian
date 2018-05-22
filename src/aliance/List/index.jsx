@@ -116,7 +116,7 @@ class AlianceList extends React.Component {
                 <Grid className={styles.flex} container>
                   <Grid className={styles.flex} item xs={6} md={2}>
                     {aliance.img ? (
-                      <Avatar src={constants.imgBaseUrl + aliance.img} />
+                      <Avatar src={aliance.img} />
                     ) : (
                       <Avatar>
                         <GroupIcon />
