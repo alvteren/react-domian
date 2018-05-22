@@ -42,11 +42,22 @@ function  getTomorrowDate() {
   return ISOdate.substr(0, ISOdate.length - 8);
 }
 
+function convertDateForMui (reminder) {
+  const keys = ["date", "reminderInterval"];
+  debugger;
+  keys.forEach((key, index) => {
+    if (reminder[key] && typeof reminder[key] === "string") {
+      reminder[key] = reminder[key].substr(0, reminder[key].length - 9);
+    }
+  });
+  return reminder;
+}
+
 class Card extends React.Component {
   constructor(props) {
     super(props);
     const { reminder, match } = props;
-    const initReminderState = reminder ? reminder : initState;
+    const initReminderState = reminder ? convertDateForMui(reminder) : initState;
     const isNewReminder = Boolean(match.params.reminderId === "new");
 
     this.state = {

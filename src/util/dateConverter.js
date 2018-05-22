@@ -1,11 +1,15 @@
 /**
  *
- * @param dateStr - date string ISO
+ * @param dateStr - valid date string
  * @return {string} in format dd.mm.yyyy
  */
 
-export const dateISOToString = function(dateStr) {
+export const dateToString = function(dateStr) {
   const date = new Date(dateStr);
+  if (isNaN(date)) {
+    console.warn("invalid date format");
+    return "";
+  }
   let dd = date.getDate();
   let mm = date.getMonth() + 1; // Month count from '0'
 

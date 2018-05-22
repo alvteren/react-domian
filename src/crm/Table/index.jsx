@@ -18,7 +18,7 @@ import { withStyles } from "material-ui/styles";
 
 import { toArray, isObject, get } from "lodash";
 import { formatDate } from "../../util/leadDataConverter";
-import { dateISOToString } from "../../util/dateConverter";
+import { dateToString } from "../../util/dateConverter";
 
 import {
   fetchTableHeaders,
@@ -118,7 +118,7 @@ class EnhancedTable extends React.Component {
                 {Object.keys(value).map((key, index) => {
                   return (
                     <Link onClick={(e) => {e.stopPropagation()}} to={`lead/${row.id}/reminder/${key}`} key={index}>
-                      <p>{(dateISOToString(value[key].date))}</p>
+                      <p>{(dateToString(value[key].date))}</p>
                       <p>{value[key].theme}</p>
                     </Link>
                   )})

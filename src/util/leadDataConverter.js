@@ -1,4 +1,4 @@
-import { dateISOToString } from "./dateConverter";
+import { dateToString } from "./dateConverter";
 
 export default function convertLeadData(data) {
   Object.keys(data).forEach(key => {
@@ -21,5 +21,5 @@ export function   formatDate(dateString) {
   date = new Date(dateStr);
   // if no success after replace operation return empty String
   if (isNaN(date)) return '';
-  return dateISOToString(dateStr);
+  return dateToString(dateStr);
 }
