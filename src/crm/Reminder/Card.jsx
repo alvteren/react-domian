@@ -106,16 +106,14 @@ class Card extends React.Component {
     return (
       <form className={styles.reminderCardForm} action="">
         {map(this.props.fields, (val, id) => (
-          <Field
-            id={id} // id from {Fields}
-            key={id}
-            edit={true}
-            match={this.props.match}
-            entityId={"reminder"}/>
+          <div key={id} className={styles.inputWrapper}>
+            <Field
+              id={id} // id from {Fields}
+              edit={true}
+              match={this.props.match}
+              entityId={"reminder"}/>
+          </div>
         ))}
-        {/*<div className="inputWrapper">*/}
-
-        {/*</div>*/}
         {
           this.state.isFormChanged &&
           <div className={styles.submitWrapper}>

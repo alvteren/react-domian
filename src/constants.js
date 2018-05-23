@@ -1,4 +1,5 @@
 export const entities = {
   lead: "lead",
-  sale: "sale"
+  sale: "sale",
+  reminder: "reminder"
 };

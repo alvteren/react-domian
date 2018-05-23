@@ -38,6 +38,10 @@ const getVisibleValues = (field, values) => {
       );
       return size(items) > 0 ? items : null;
     }
+    if (field.dependedValue) {
+      const hidden = field.dependedValue !== linkedValue;
+      return {[field.dependedAction]: hidden };
+    }
   }
 
   return get(field, "items", true);

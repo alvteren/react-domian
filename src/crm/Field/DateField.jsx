@@ -1,8 +1,8 @@
 import React from "react";
 import { TextField} from "material-ui"
+import { get } from "lodash";
 
 const DateField = props => {
-  debugger;
 
   function  getTomorrowDate() {
     const date = new Date();
@@ -18,8 +18,7 @@ const DateField = props => {
    * @return {string} only "2018-05-22T20:20" part
    */
   function convertDateForMui (dateStr) {
-    debugger;
-    if (dateStr) return null;
+    if (!dateStr) return null;
     dateStr = dateStr.substr(0, dateStr.length - 9);
     return dateStr;
   }
@@ -31,7 +30,7 @@ const DateField = props => {
       type={props.dateType || "datetime-local"}
       defaultValue={convertDateForMui(props.value) || getTomorrowDate()}
       onChange={props.onChange}
-      disabled={props.disabled}
+      disabled={get(props, "visibleValues.disabled")}
       InputLabelProps={{
         shrink: true,
       }}

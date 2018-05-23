@@ -1,4 +1,6 @@
 import { get } from "lodash";
+import formData from "./formData";
+import {entities} from "../../constants";
 
 export const fields = {
   theme: {
@@ -29,8 +31,8 @@ export const fields = {
     type: "date",
     required: true
   },
-  reminder: {
-    id: "reminder",
+  remind: {
+    id: "remind",
     label: "Напомнить",
     type: "switch",
     required: false
@@ -40,7 +42,9 @@ export const fields = {
     label: "Дата напоминания",
     type: "date",
     required: true,
-    depended: "reminder"
+    depended: "remind",
+    dependedValue: true,
+    dependedAction: "disabled"
   },
   description: {
     id: "description",
@@ -57,7 +61,7 @@ const values = {
     type: "",
     description: "",
     date: "",
-    reminder: false,
+    remind: false,
     reminderInterval: ""
   }
 };
@@ -68,16 +72,36 @@ const initialState = {
 };
 
 export default function reducer(state = initialState, { type, payload }) {
+  const entityId = get(payload, "entityId", null);
+  if (entityId === entities.reminder) {
+    const newFormState = formData(state, { type, payload });
+    if (newFormState) {
+      return {
+        ...state,
+        ...newFormState
+      };
+    }
+  }
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
-    const items = get(payload, "data.items", null);
+    // debugger;
+    const items = get(payload, "data", null);
     const values = {};
     if (items) {
-      const values = {};
       Object.keys(items).forEach((key) => {
-        if (items.key.reminders) {
-          console.log("REM");
+        if (items[key].reminders) {
+          for (let reminderId in items[key].reminders) {
+            values[reminderId] = items[key].reminders[reminderId];
+            values[reminderId].can = { edit: true };
+          }
         }
       });
+    }
+    return {
+      ...state,
+      values: {
+        ...state.values,
+        ...values
+      }
     }
   }
   return state;

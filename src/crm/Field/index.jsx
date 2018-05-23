@@ -106,7 +106,6 @@ class Field extends React.PureComponent {
 
   render() {
     const { id, field, values, value, classes, can, ...other } = this.props;
-    console.log(value, "value");
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -255,12 +254,12 @@ class Field extends React.PureComponent {
           );
         }
         if (field.type === "date") {
-          debugger;
           return (
             <DateField
               id={id}
               value={value}
               onChange={this.onChange}
+              visibleValues={visibleValues}
             />
           )
         }
