@@ -34,7 +34,7 @@ const AuthForm = props => {
   };
 
   return (
-    <Dialog fullScreen={fullScreen} open={true} transition={Transition}>
+    <Dialog fullScreen={fullScreen} open={true} TransitionComponent={Transition}>
       <form onSubmit={onSubmitAuth}>
         <AppBar className={styles.appBar}>
           <Toolbar>
