@@ -67,7 +67,7 @@ class LocationSearch extends React.Component {
           fullScreen={fullScreen}
           open={open}
           onClose={closeSearch}
-          transition={Transition}
+          TransitionComponent={Transition}
         >
           <AppBar color="inherit" className={styles.appBar}>
             <Toolbar>
