@@ -193,7 +193,7 @@ class AlianceList extends React.Component {
         />
         <Dialog
           open={this.state.dialogs.linkingTelegram}
-          transition={Transition}
+          TransitionComponent={Transition}
           keepMounted
           onClose={() => {
             this.handleCloseDialog("linkingTelegram");
@@ -245,7 +245,7 @@ class AlianceList extends React.Component {
         </Dialog>
         <Dialog
           open={this.state.dialogs.joined}
-          transition={Transition}
+          TransitionComponent={Transition}
           keepMounted
           onClose={() => {
             this.handleCloseDialog("joined");
