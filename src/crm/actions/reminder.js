@@ -15,7 +15,7 @@ export const addNewReminder = props => async dispatch => {
 
 };
 
-export const updateReminder = props =>  async dispatch => {
+export const updateReminder = props => async dispatch => {
   const { entityId, elementId, reminderId, reminder } = props;
   try {
     const data = await updateReminderApi({ entityId, elementId, reminderId, reminder });
@@ -26,4 +26,11 @@ export const updateReminder = props =>  async dispatch => {
   } catch (err) {
 
   }
+};
+
+export const setNewReminderToDefault = props => dispatch => {
+  dispatch({
+    type: "REMINDER_NEW_SET_DEFAULT",
+    payload: {}
+  })
 };

@@ -4,6 +4,10 @@ import { get } from "lodash";
 
 const DateField = props => {
 
+  /**
+   * Getting tomorrow date for set as default
+   * @return {string} ISO date "2018-05-22T20:20" part
+   */
   function  getTomorrowDate() {
     const date = new Date();
     date.setDate(date.getDate() + 1);
@@ -13,7 +17,7 @@ const DateField = props => {
   }
 
   /**
-   *
+   * Convert server ISO date str for Mui
    * @param dateStr - ISO date str in "2018-05-22T20:20:08+03:00" format
    * @return {string} only "2018-05-22T20:20" part
    */

@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-// import { Grid, TextField, Button, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem} from "material-ui"
 import { Button } from "material-ui"
 import SaveIcon from "material-ui-icons/Save"
 import { withStyles } from "material-ui/styles";
 import Field from "../Field";
+import { entities } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
@@ -27,64 +27,30 @@ const MuiStyles = theme => ({
   }
 });
 
-const initState = {
-  theme: "",
-  type: "",
-  description: "",
-  date: getTomorrowDate(),
-  reminder: false,
-  reminderInterval: getTomorrowDate()
-};
-
-function  getTomorrowDate() {
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
-  const ISOdate = date.toISOString();
-  // remove secs and timezone (:ss & .000Z) as Mui requires
-  return ISOdate.substr(0, ISOdate.length - 8);
-}
-
-function convertDateForMui (reminder) {
-  const keys = ["date", "reminderInterval"];
-  const converted = Object.assign({}, reminder);
-  keys.forEach((key, index) => {
-    if (converted[key] && typeof converted[key] === "string") {
-      converted[key] = converted[key].substr(0, converted[key].length - 9);
-    }
-  });
-  return converted;
-}
-
 class Card extends React.Component {
   constructor(props) {
     super(props);
-    const { reminder, match } = props;
-    const initReminderState = reminder ? convertDateForMui(reminder) : initState;
+    const { match } = props;
     const isNewReminder = Boolean(match.params.reminderId === "new");
 
     this.state = {
-      reminder: {
-        ...initReminderState
-      },
       isFormChanged: false,
-      isNewReminder
-    };
+      isNewReminder,
+      initState: null
+    }
   }
 
-  handleChange = key => event => {
-    const updated = typeof this.state.reminder[key] === "boolean" ?
-      !this.state.reminder[key] :
-      event.target.value;
+  componentDidUpdate(prevProps){
+    if (!this.state.initState) {
+      this.setInitState(prevProps.reminder);
+    }
+    if (!isEqual(prevProps.reminder, this.props.reminder)) {
+      this.setState({ isFormChanged: !isEqual(this.state.initState, this.props.reminder) });
+    }
+  }
 
-    this.setState({
-      reminder: {
-        ...this.state.reminder,
-        [key]: updated
-      }}, this.checkFormForChange);
-  };
-
-  checkFormForChange() {
-    this.setState({ isFormChanged: !isEqual(initState, this.state.reminder) });
+  setInitState(initState) {
+    this.setState({ initState });
   }
 
   onSave = (event) => {
@@ -102,7 +68,7 @@ class Card extends React.Component {
   };
 
   render() {
-    const { classes, entityId } = this.props;
+    const { classes } = this.props;
     return (
       <form className={styles.reminderCardForm} action="">
         {map(this.props.fields, (val, id) => (
@@ -111,7 +77,7 @@ class Card extends React.Component {
               id={id} // id from {Fields}
               edit={true}
               match={this.props.match}
-              entityId={"reminder"}/>
+              entityId={entities.reminder}/>
           </div>
         ))}
         {
@@ -130,9 +96,10 @@ class Card extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const { close } = ownProps;
-  const { entityId, elementId, reminderId } = ownProps.match.params;
+  let { reminderId } = ownProps.match.params;
   const { fields } = state.crm.reminder;
-  const reminder = get(state, `crm.${entityId}.data.${entityId}_${elementId}.reminders.${reminderId}`, null);
+  reminderId === "new" ? reminderId = 0 : reminderId;
+  const reminder = get(state, `crm.${entities.reminder}.values.${reminderId}`, null);
   return { reminder, close, fields };
 };
 

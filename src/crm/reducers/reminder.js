@@ -54,16 +54,18 @@ export const fields = {
   }
 };
 
+export const defaultValues = {
+  theme: "",
+  type: "",
+  description: "",
+  date: "",
+  remind: false,
+  reminderInterval: ""
+};
+
 const values = {
-  // default props
-  0: {
-    theme: "",
-    type: "",
-    description: "",
-    date: "",
-    remind: false,
-    reminderInterval: ""
-  }
+  // default props for new instance
+  0: defaultValues
 };
 
 const initialState = {
@@ -83,7 +85,6 @@ export default function reducer(state = initialState, { type, payload }) {
     }
   }
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
-    // debugger;
     const items = get(payload, "data", null);
     const values = {};
     if (items) {
@@ -101,6 +102,16 @@ export default function reducer(state = initialState, { type, payload }) {
       values: {
         ...state.values,
         ...values
+      }
+    }
+  }
+
+  if (type === "REMINDER_NEW_SET_DEFAULT") {
+    return {
+      ...state,
+      values: {
+        ...state.values,
+        0: defaultValues
       }
     }
   }
