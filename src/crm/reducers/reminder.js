@@ -1,6 +1,7 @@
-import { get } from "lodash";
+import { get, toArray } from "lodash";
 import formData from "./formData";
-import {entities} from "../../constants";
+import { entities } from "../../constants";
+import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
 export const fields = {
   theme: {
@@ -37,8 +38,8 @@ export const fields = {
     type: "switch",
     required: false
   },
-  reminderInterval: {
-    id: "reminderInterval",
+  remindInterval: {
+    id: "remindInterval",
     label: "Дата напоминания",
     type: "date",
     required: true,
@@ -54,13 +55,18 @@ export const fields = {
   }
 };
 
-export const defaultValues = {
+const dateFields = [];
+toArray(fields).forEach((item, index) => {
+  if (item.type === "date") dateFields.push(item.id);
+});
+
+const defaultValues = {
   theme: "",
   type: "",
   description: "",
-  date: "",
+  date: getTomorrowDate(),
   remind: false,
-  reminderInterval: ""
+  remindInterval: getTomorrowDate()
 };
 
 const values = {
@@ -84,15 +90,24 @@ export default function reducer(state = initialState, { type, payload }) {
       };
     }
   }
+
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
     const items = get(payload, "data", null);
     const values = {};
+
     if (items) {
       Object.keys(items).forEach((key) => {
         if (items[key].reminders) {
           for (let reminderId in items[key].reminders) {
             values[reminderId] = items[key].reminders[reminderId];
             values[reminderId].can = { edit: true };
+
+            /* Date fields convert for Mui */
+            dateFields.forEach((field) => {
+              values[reminderId][field] = items[key].reminders[reminderId][field] ?
+                convertDateForMui(items[key].reminders[reminderId][field]) :
+                getTomorrowDate();
+            });
           }
         }
       });
@@ -102,6 +117,16 @@ export default function reducer(state = initialState, { type, payload }) {
       values: {
         ...state.values,
         ...values
+      }
+    }
+  }
+
+  if (type === "REMINDER_ADD_SUCCESS") {
+    return {
+      ...state,
+      values: {
+        ...state.values,
+        [payload.id]: payload.reminder
       }
     }
   }

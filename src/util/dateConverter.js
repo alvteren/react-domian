@@ -22,3 +22,26 @@ export const dateToString = function(dateStr) {
   }
   return `${dd}.${mm}.${yyyy}`;
 };
+
+/**
+ * Getting tomorrow date for set as default
+ * @return {string} ISO date "2018-05-22T20:20" part
+ */
+export const getTomorrowDate = function() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  const ISOdate = date.toISOString();
+  // remove secs and timezone (:ss & .000Z) as Mui requires
+  return ISOdate.substr(0, 16);
+};
+
+/**
+ * Convert server ISO date str for Mui
+ * @param dateStr - ISO date str in "2018-05-22T20:20:08+03:00" format
+ * @return {string} only "2018-05-22T20:20" part
+ */
+export const convertDateForMui = function(dateStr) {
+  if (!dateStr) return null;
+  dateStr = dateStr.substr(0, 16);
+  return dateStr;
+};

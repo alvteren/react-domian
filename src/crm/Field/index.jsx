@@ -308,7 +308,7 @@ class Field extends React.PureComponent {
           ((canEdit && isDepended && visibleValues !== null) ||
             (canEdit && !isDepended))) ||
         (!canEdit && value != null && value !== "");
-      debugger;
+
       if (isShowedField) {
         const formatValue = () => {
           if (field.items) {

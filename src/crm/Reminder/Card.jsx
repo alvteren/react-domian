@@ -54,15 +54,10 @@ class Card extends React.Component {
   }
 
   onSave = (event) => {
-    const formData = this.state.reminder;
-    formData.date = (new Date(formData.date)).toISOString();
-    formData.reminder ?
-      formData.reminderInterval = (new Date(formData.date)).toISOString() :
-      formData.reminderInterval = "";
     if(this.state.isNewReminder) {
-      this.props.addNewReminder(this.state.reminder);
+      this.props.addNewReminder(this.props.reminder);
     } else {
-      this.props.updateReminder(this.state.reminder);
+      this.props.updateReminder(this.props.reminder);
     }
     this.props.close();
   };
