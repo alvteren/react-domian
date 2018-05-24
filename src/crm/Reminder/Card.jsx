@@ -8,7 +8,7 @@ import { entities } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import { addNewReminder, updateReminder } from "../actions/reminder";
+import { addNewReminder, updateReminder, setEditedProp } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -34,7 +34,7 @@ class Card extends React.Component {
     const isNewReminder = Boolean(match.params.reminderId === "new");
 
     this.state = {
-      isFormChanged: false,
+      isFormEdited: false,
       isNewReminder,
       initState: null
     }
@@ -45,12 +45,18 @@ class Card extends React.Component {
       this.setInitState(prevProps.reminder);
     }
     if (!isEqual(prevProps.reminder, this.props.reminder)) {
-      this.setState({ isFormChanged: !isEqual(this.state.initState, this.props.reminder) });
+      this.setState({ isFormEdited: !isEqual(this.state.initState, this.props.reminder) });
     }
   }
 
   setInitState(initState) {
     this.setState({ initState });
+  }
+
+  componentWillUnmount() {
+    if (this.state.isFormEdited) {
+      this.props.setEditedProp();
+    }
   }
 
   onSave = (event) => {
@@ -76,7 +82,7 @@ class Card extends React.Component {
           </div>
         ))}
         {
-          this.state.isFormChanged &&
+          (this.state.isFormEdited || this.props.reminder.edited) &&
           <div className={styles.submitWrapper}>
             <Button className={classes.button} onClick={this.onSave} color="primary" variant="raised" size="small">
               <SaveIcon className={`${classes.leftIcon} ${classes.iconSmall}`} />
@@ -95,13 +101,14 @@ const mapStateToProps = (state, ownProps) => {
   const { fields } = state.crm.reminder;
   reminderId === "new" ? reminderId = 0 : reminderId;
   const reminder = get(state, `crm.${entities.reminder}.values.${reminderId}`, null);
-  return { reminder, close, fields };
+  return { reminder, close, fields, reminderId };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { reminderId } = stateProps;
   const { dispatch } = dispatchProps;
   const { match } = ownProps;
-  const { entityId, elementId, reminderId } = match.params;
+  const { entityId, elementId } = match.params;
 
   return {
     ...stateProps,
@@ -111,6 +118,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     updateReminder(reminder) {
       dispatch(updateReminder({entityId, elementId, reminderId, reminder}))
+    },
+    setEditedProp() {
+      dispatch(setEditedProp({ reminderId }));
     }
   }
 };

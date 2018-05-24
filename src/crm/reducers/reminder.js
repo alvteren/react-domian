@@ -140,5 +140,20 @@ export default function reducer(state = initialState, { type, payload }) {
       }
     }
   }
+
+  if (type === "REMINDER_SET_EDITED_PROP") {
+    const { reminderId } = payload;
+    return {
+      ...state,
+      values: {
+        ...state.values,
+        [reminderId]: {
+          ...state.values[reminderId],
+          edited: true
+        }
+      }
+    }
+  }
+
   return state;
 }

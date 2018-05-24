@@ -46,3 +46,11 @@ export const setNewReminderToDefault = props => dispatch => {
     payload: {}
   })
 };
+
+export const setEditedProp = props => dispatch => {
+  const { reminderId } = props;
+  dispatch({
+    type: "REMINDER_SET_EDITED_PROP",
+    payload: { reminderId }
+  })
+};
