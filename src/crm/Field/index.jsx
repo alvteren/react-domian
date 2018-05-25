@@ -15,7 +15,7 @@ import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
 import DateField from "./DateField";
-import MaskedInput from "react-text-mask";
+import TelField from "./TelField";
 
 import styles from "./Field.module.css";
 
@@ -26,49 +26,10 @@ import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={inputRef}
-      // prettier-ignore
-      mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
-      //showMask
-    />
-  );
-}
-
-/**
- *
- */
-
 class Field extends React.PureComponent {
   state = {
     edit: get(this.props, "edit", false),
-    needSave: false,
-    tel: ""
-  };
-
-  handleTelInputChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
-    this.props.handleChange(event);
-  };
-
-  onTelInputFocus = event => {
-    if (!this.state.tel) {
-      this.setState({ tel: "9" });
-      event.target.selectionStart = 2; // not working
-    }
-  };
-
-  onTelInputBlur = event => {
-    if (this.state.tel === "9") {
-      this.setState({ tel: "" });
-    }
+    needSave: false
   };
 
   onStartEdit = () => {
@@ -263,6 +224,18 @@ class Field extends React.PureComponent {
             />
           );
         }
+        if (field.type === "tel") {
+          return (
+            <Grid item xs={12} sm={6} className={classes.valueWrapper}>
+              <TelField
+                field={field}
+                id={field.id}
+                values={values}
+                onChange={this.onChange}
+              />
+            </Grid>
+          )
+        }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
             <TextField
@@ -272,31 +245,14 @@ class Field extends React.PureComponent {
               required={field.required}
               name={id}
               label={field.label}
-              value={value || this.state.tel}
-              error={
-                values &&
-                values.validateErrors &&
-                values.validateErrors.hasOwnProperty(field.id)
-              }
+              value={value || ""}
+              error={get(values, "validateErrors", {}).hasOwnProperty(field.id)}
               helperText={get(
                 values,
                 `validateErrors.${field.id}.message`,
                 get(field, "hint", "")
               )}
-              onFocus={field.type === "tel" ? this.onTelInputFocus : null}
-              onBlur={field.type === "tel" ? this.onTelInputBlur : null}
-              onChange={
-                field.type === "tel"
-                  ? this.handleTelInputChange("tel")
-                  : this.onChange
-              }
-              InputProps={
-                field.type === "tel"
-                  ? {
-                      inputComponent: TextMaskCustom
-                    }
-                  : {}
-              }
+              onChange={this.onChange}
             />
             {needSave && (
               <IconButton
