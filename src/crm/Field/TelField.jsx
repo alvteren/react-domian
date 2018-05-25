@@ -44,14 +44,14 @@ class TelField extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value } = this.props;
+    const { field, values, value } = this.props;
 
     return (
       <TextField
         type="tel"
         fullWidth
         required={field.required}
-        name={id}
+        name={field.id}
         label={field.label}
         value={value || this.state.tel}
         error={get(values, "validateErrors", {}).hasOwnProperty(field.id)}

@@ -16,6 +16,7 @@ import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
 import DateField from "./DateField";
 import TelField from "./TelField";
+import DefaultTextField from "./DefaultTextField"
 
 import styles from "./Field.module.css";
 
@@ -67,6 +68,7 @@ class Field extends React.PureComponent {
 
   render() {
     const { id, field, values, value, classes, can, ...other } = this.props;
+    console.log(id===field.id);
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -228,8 +230,9 @@ class Field extends React.PureComponent {
           return (
             <Grid item xs={12} sm={6} className={classes.valueWrapper}>
               <TelField
+                className={formControl}
                 field={field}
-                id={field.id}
+                value={value || ""}
                 values={values}
                 onChange={this.onChange}
               />
@@ -238,20 +241,11 @@ class Field extends React.PureComponent {
         }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-            <TextField
-              type={field.type}
+            <DefaultTextField
               className={formControl}
-              fullWidth
-              required={field.required}
-              name={id}
-              label={field.label}
-              value={value || ""}
-              error={get(values, "validateErrors", {}).hasOwnProperty(field.id)}
-              helperText={get(
-                values,
-                `validateErrors.${field.id}.message`,
-                get(field, "hint", "")
-              )}
+              field={field}
+              value={value}
+              values={values}
               onChange={this.onChange}
             />
             {needSave && (
