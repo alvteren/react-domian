@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import keycode from "keycode";
 import Table, {
@@ -7,8 +7,8 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import { Tooltip, Paper, Checkbox } from "material-ui";
-import { Pageview as PageviewIcon } from "material-ui-icons";
+import { Tooltip, Paper, Checkbox, ListItem, Avatar, ListItemText, Divider, List } from "material-ui";
+import { Pageview as PageviewIcon, AddAlert as AddAlertIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -16,7 +16,8 @@ import Pagination from "./Pagination";
 import MobileStepper from "material-ui/MobileStepper";
 import { withStyles } from "material-ui/styles";
 
-import { toArray, isObject } from "lodash";
+import { toArray, isObject, get } from "lodash";
+import { dateToString } from "../../util/dateConverter";
 
 import {
   fetchTableHeaders,
@@ -109,6 +110,52 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
+      if (id === "reminders" && value instanceof Object) {
+        if (get(row, "can.edit", false)) {
+          if (Object.keys(value).length) {
+            return (
+              <List>
+                {Object.keys(value).map((key, index) => {
+                  const reminder = value[key];
+                  return (
+                    <Link onClick={(e) => {e.stopPropagation()}} to={`lead/${row.id}/reminder/${key}`} key={index}>
+                        <ListItem className={styles.reminderWrapper}>
+                          <Avatar>
+                            {
+                              reminder.type === "call" ?
+                                <CallIcon /> :
+                                <MeetIcon />
+                            }
+                          </Avatar>
+                          <ListItemText primary={reminder.theme} secondary={(dateToString(reminder.date))} />
+                        </ListItem>
+                        <Divider inset component="li" />
+                    </Link>
+                  )})
+                }
+                <Link
+                  to={`lead/${row.id}/reminder/new`} // ?????
+                  onClick={e => {e.stopPropagation();}}>
+                  <ListItem className={styles.reminderWrapper}>
+                    <Avatar>
+                      <AddAlertIcon />
+                    </Avatar>
+                    <ListItemText primary="Создать напоминание" />
+                  </ListItem>
+                </Link>
+              </List>
+            )
+          }
+          return (
+            <Link
+              to={`lead/${row.id}/reminder/new`} // ?????
+              onClick={e => {e.stopPropagation();}}>
+              Создать напоминание
+            </Link>
+          )
+        }
+        return " ";
+      }
       if (value != null) {
         if (id === "price") {
           const currency = row.currency || "RUB";
@@ -126,16 +173,13 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (
-          fields &&
-          fields.hasOwnProperty(id) &&
-          fields[id].type === "select"
-        ) {
+        if (get(fields, `${id}.type`, null) === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
         }
         if (Array.isArray(value)) {
+          // wishes list case: [String]
           return (
             <div>
               {value.map((item, index) => {
@@ -146,13 +190,7 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (
-            fields &&
-            fields.status_id &&
-            fields.status_id.items &&
-            fields.status_id.items[val] &&
-            fields.status_id.items[val].label
-          ) {
+          if (get(fields, `status_id.items.${val}.label`, null)) {
             const statusToStep = {
               NEW: 1,
               ASSIGNED: 2,

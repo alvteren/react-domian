@@ -14,6 +14,7 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
+import DateField from "./DateField";
 import MaskedInput from "react-text-mask";
 
 import styles from "./Field.module.css";
@@ -38,6 +39,10 @@ function TextMaskCustom(props) {
     />
   );
 }
+
+/**
+ *
+ */
 
 class Field extends React.PureComponent {
   state = {
@@ -100,7 +105,7 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, elementId } = this.props;
+    const { id, field, values, value, classes, can, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -156,13 +161,7 @@ class Field extends React.PureComponent {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
-                    error={
-                      values &&
-                      values.validateErrors &&
-                      values.validateErrors.hasOwnProperty(field.id)
-                        ? values.validateErrors[field.id]
-                        : false
-                    }
+                    error={get(values, `validateErrors.${field.id}`, false)}
                   />
                   {needSave && (
                     <IconButton
@@ -254,6 +253,16 @@ class Field extends React.PureComponent {
             </Grid>
           );
         }
+        if (field.type === "date") {
+          return (
+            <DateField
+              id={id}
+              value={value}
+              onChange={this.onChange}
+              visibleValues={visibleValues}
+            />
+          );
+        }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
             <TextField
@@ -269,13 +278,11 @@ class Field extends React.PureComponent {
                 values.validateErrors &&
                 values.validateErrors.hasOwnProperty(field.id)
               }
-              helperText={
-                values &&
-                values.validateErrors &&
-                values.validateErrors.hasOwnProperty(field.id)
-                  ? values.validateErrors[field.id].message
-                  : get(field, "hint", "")
-              }
+              helperText={get(
+                values,
+                `validateErrors.${field.id}.message`,
+                get(field, "hint", "")
+              )}
               onFocus={field.type === "tel" ? this.onTelInputFocus : null}
               onBlur={field.type === "tel" ? this.onTelInputBlur : null}
               onChange={
@@ -358,12 +365,11 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, match, entityId } = ownProps;
+  const { id, entityId, elementId } = ownProps;
   const { fields, values } = state.crm[entityId];
 
-  const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const elementId = get(params, "elementId", 0); // 0 by default values[id] for new item form
+
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
@@ -373,19 +379,17 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    elementId,
     fields,
     field,
     values: elementValues,
     value,
-    can,
-    entityId
+    can
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { elementId, field } = stateProps;
-  const { entityId } = ownProps;
+  const { field } = stateProps;
+  const { entityId, elementId } = ownProps;
   const name = field.id;
 
   return {
@@ -450,7 +454,9 @@ const stylesMUI = theme => ({
 });
 Field.propTypes = {
   classes: PropTypes.object.isRequired,
-  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  entityId: PropTypes.string.isRequired,
+  elementId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 export default connect(mapStateToProps, null, mergeProps)(
   withStyles(stylesMUI)(Field)

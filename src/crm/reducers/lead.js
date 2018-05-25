@@ -168,6 +168,43 @@ export default function reducer(state = initialState, { type, payload }) {
     if (type === "FORM_SAVE_TO_STORE") {
       // const { name, value, elementId } = payload;
     }
+
+    if (type === "REMINDER_ADD_SUCCESS") {
+      const { elementId, reminder, id } = payload;
+      const fullID = `${entities.lead}_${elementId}`;
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [fullID]: {
+            ...state.data[fullID],
+            reminders: {
+              ...state.data[fullID].reminders,
+              [id]: reminder
+            }
+          }
+        }
+      }
+    }
+
+    if (type === "REMINDER_UPDATE_SUCCESS") {
+      const { elementId, reminderId, reminder } = payload;
+      const fullID = `${entities.lead}_${elementId}`;
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [fullID]: {
+            ...state.data[fullID],
+            reminders: {
+              ...state.data[fullID].reminders,
+              [reminderId]: reminder
+            }
+          }
+        }
+      }
+    }
+
     if (newTableState) {
       if (type === "TABLE_FETCH_DATA_SUCCESS") {
         convert(newTableState.data);

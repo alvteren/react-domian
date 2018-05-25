@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { map } from "lodash";
+import { map, get } from "lodash";
 
 import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
@@ -107,7 +107,7 @@ class Form extends React.Component {
                 id={id}
                 key={id}
                 edit={true}
-                match={this.props.match}
+                elementId={get(this.props, "match.params.elementId", 0)}
                 entityId={entityId}
               />
             ))}
