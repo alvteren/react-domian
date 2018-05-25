@@ -4,6 +4,8 @@ import { updateReminder as updateReminderApi } from "../../api/reminder";
 export const addNewReminder = props => async dispatch => {
   const { entityId, elementId, reminder } = props;
 
+  /* remove unnecessary props */
+  delete reminder.edited;
   /* Below we add secs and timezone parts to date fields */
   const formData = Object.assign({}, reminder); // For operate on copied reminder and return origin as payload if save will be succeed
   formData.date = (new Date(formData.date)).toISOString();
