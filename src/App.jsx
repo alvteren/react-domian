@@ -9,6 +9,7 @@ import AlianceList from "./aliance/List";
 import TelegramLink from "./aliance/TelegramLink";
 import Auth from "./user/Auth";
 import Lead from "./crm/Lead";
+import Reminder from "./crm/Reminder";
 
 import { JssProvider } from "react-jss";
 import { create } from "jss";
@@ -101,6 +102,7 @@ class App extends Component {
                     />
                   </main>
                   <Route path="/crm/lead" component={Lead} />
+                  <Route path="/crm/:entityId/:elementId/reminder/:reminderId" component={Reminder} />
                 </Fragment>
               </ConnectedRouter>
             </Auth>
