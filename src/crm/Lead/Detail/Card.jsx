@@ -129,7 +129,7 @@ class Card extends React.Component {
                 id={id}
                 key={id}
                 edit={currentEdit === id}
-                match={this.props.match}
+                elementId={get(this.props, "match.params.elementId", 0)}
                 entityId={entityId}
               />
             ))}

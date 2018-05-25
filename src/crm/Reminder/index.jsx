@@ -16,7 +16,6 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-
 const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
@@ -71,11 +70,9 @@ class Reminder extends React.Component {
               </Hidden>
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
-              {
-                this.props.match.params.reminderId === "new" ?
-                  "Новое напоминание" :
-                  "Редактирование"
-              }
+              {this.props.match.params.reminderId === "add"
+                ? "Новое напоминание"
+                : "Редактирование"}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -92,5 +89,4 @@ Reminder.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)((withMobileDialog()(Reminder))
-);
+export default withStyles(styles)(withMobileDialog()(Reminder));

@@ -161,7 +161,7 @@ class Field extends React.PureComponent {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
-                    error={get(values,`validateErrors.${field.id}`,false)}
+                    error={get(values, `validateErrors.${field.id}`, false)}
                   />
                   {needSave && (
                     <IconButton
@@ -261,7 +261,7 @@ class Field extends React.PureComponent {
               onChange={this.onChange}
               visibleValues={visibleValues}
             />
-          )
+          );
         }
         return (
           <Grid item xs={12} sm={6} className={classes.valueWrapper}>
@@ -273,8 +273,16 @@ class Field extends React.PureComponent {
               name={id}
               label={field.label}
               value={value || this.state.tel}
-              error={values && values.validateErrors && values.validateErrors.hasOwnProperty(field.id)}
-              helperText={get(values,`validateErrors.${field.id}.message`, get(field, "hint", ""))}
+              error={
+                values &&
+                values.validateErrors &&
+                values.validateErrors.hasOwnProperty(field.id)
+              }
+              helperText={get(
+                values,
+                `validateErrors.${field.id}.message`,
+                get(field, "hint", "")
+              )}
               onFocus={field.type === "tel" ? this.onTelInputFocus : null}
               onBlur={field.type === "tel" ? this.onTelInputBlur : null}
               onChange={
@@ -357,13 +365,11 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, match, entityId } = ownProps;
+  const { id, entityId, elementId } = ownProps;
   const { fields, values } = state.crm[entityId];
 
-  const params = get(match, "params", false);
   const field = get(fields, id, false);
-  let elementId = get(params, "reminderId", null) || get(params, "elementId", 0); // 0 by default values[id] for new item form
-  if (elementId === "new") elementId = 0;
+
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
@@ -373,19 +379,17 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    elementId,
     fields,
     field,
     values: elementValues,
     value,
-    can,
-    entityId
+    can
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { elementId, field } = stateProps;
-  const { entityId } = ownProps;
+  const { field } = stateProps;
+  const { entityId, elementId } = ownProps;
   const name = field.id;
 
   return {
@@ -450,7 +454,9 @@ const stylesMUI = theme => ({
 });
 Field.propTypes = {
   classes: PropTypes.object.isRequired,
-  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  entityId: PropTypes.string.isRequired,
+  elementId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 export default connect(mapStateToProps, null, mergeProps)(
   withStyles(stylesMUI)(Field)
