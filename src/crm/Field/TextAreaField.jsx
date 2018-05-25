@@ -3,7 +3,7 @@ import { TextField } from "material-ui";
 import {get} from "lodash";
 
 const TextAreaField = (props) => {
-  const { field, values, value, onChange } = props;
+  const { field, value, onChange } = props;
 
   return (
     <TextField

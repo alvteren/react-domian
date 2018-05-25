@@ -7,7 +7,7 @@ const DefaultTextField = (props) => {
 
   return (
     <TextField
-      type="text"
+      type={field.type}
       fullWidth
       required={field.required}
       name={field.id}
