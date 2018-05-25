@@ -122,7 +122,7 @@ class Card extends React.Component {
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
-          <Grid container className={classes.container}>
+          <Grid container spacing={24} className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
               <Field
                 id={id}
