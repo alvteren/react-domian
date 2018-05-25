@@ -17,6 +17,7 @@ import LocationFieldEdit from "./edit/Location";
 import DateField from "./DateField";
 import TelField from "./TelField";
 import DefaultTextField from "./DefaultTextField"
+import TextAreaField from "./TextAreaField";
 
 import styles from "./Field.module.css";
 
@@ -68,7 +69,6 @@ class Field extends React.PureComponent {
 
   render() {
     const { id, field, values, value, classes, can, ...other } = this.props;
-    console.log(id===field.id);
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -191,18 +191,10 @@ class Field extends React.PureComponent {
         if (field.type === "textarea") {
           return (
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
-              <TextField
-                type="text"
+              <TextAreaField
                 className={formControl}
-                fullWidth
-                required={field.required}
-                name={id}
-                label={field.label}
-                onChange={this.onChange}
-                value={value || ""}
-                multiline
-                rowsMax="4"
-                helperText={get(field, "hint", "")}
+                field={field}
+                value={value}
               />
               {needSave && (
                 <IconButton
