@@ -71,7 +71,11 @@ class Reminder extends React.Component {
               </Hidden>
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
-              Новое напоминание
+              {
+                this.props.match.params.reminderId === "new" ?
+                  "Новое напоминание" :
+                  "Редактирование"
+              }
             </Typography>
           </Toolbar>
         </AppBar>

@@ -7,8 +7,8 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import { Tooltip, Paper, Checkbox } from "material-ui";
-import { Pageview as PageviewIcon } from "material-ui-icons";
+import { Tooltip, Paper, Checkbox, ListItem, Avatar, ListItemText, Divider, List } from "material-ui";
+import { Pageview as PageviewIcon, AddAlert as AddAlertIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -114,21 +114,36 @@ class EnhancedTable extends React.Component {
         if (get(row, "can.edit", false)) {
           if (Object.keys(value).length) {
             return (
-              <Fragment>
+              <List>
                 {Object.keys(value).map((key, index) => {
+                  const reminder = value[key];
                   return (
                     <Link onClick={(e) => {e.stopPropagation()}} to={`lead/${row.id}/reminder/${key}`} key={index}>
-                      <p>{(dateToString(value[key].date))}</p>
-                      <p>{value[key].theme}</p>
+                        <ListItem className={styles.reminderWrapper}>
+                          <Avatar>
+                            {
+                              reminder.type === "call" ?
+                                <CallIcon /> :
+                                <MeetIcon />
+                            }
+                          </Avatar>
+                          <ListItemText primary={reminder.theme} secondary={(dateToString(reminder.date))} />
+                        </ListItem>
+                        <Divider inset component="li" />
                     </Link>
                   )})
                 }
                 <Link
                   to={`lead/${row.id}/reminder/new`} // ?????
                   onClick={e => {e.stopPropagation();}}>
-                  Создать напоминание
+                  <ListItem className={styles.reminderWrapper}>
+                    <Avatar>
+                      <AddAlertIcon />
+                    </Avatar>
+                    <ListItemText primary="Создать напоминание" />
+                  </ListItem>
                 </Link>
-              </Fragment>
+              </List>
             )
           }
           return (

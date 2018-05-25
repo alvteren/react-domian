@@ -6,6 +6,7 @@ export const addNewReminder = props => async dispatch => {
 
   /* remove unnecessary props */
   delete reminder.edited;
+  delete reminder.can;
   /* Below we add secs and timezone parts to date fields */
   const formData = Object.assign({}, reminder); // For operate on copied reminder and return origin as payload if save will be succeed
   formData.date = (new Date(formData.date)).toISOString();
@@ -15,6 +16,7 @@ export const addNewReminder = props => async dispatch => {
   try {
     const data = await addNewReminderApi({ entityId, elementId, reminder: formData });
     // const data = { success: true, id: 9999 }; //for test
+    reminder.can = { edit: true };
     dispatch({
       type: "REMINDER_ADD_SUCCESS",
       payload: { entityId, ...data, elementId, reminder }
@@ -31,7 +33,7 @@ export const updateReminder = props => async dispatch => {
   const { entityId, elementId, reminderId, reminder } = props;
   try {
     const data = await updateReminderApi({ entityId, elementId, reminderId, reminder });
-    // const data = {}; for test
+    // const data = {}; // for test
     dispatch({
       type: "REMINDER_UPDATE_SUCCESS",
       payload: { entityId, elementId, reminderId, reminder, ...data }
