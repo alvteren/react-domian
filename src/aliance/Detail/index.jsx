@@ -3,7 +3,18 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import Dialog, { DialogContent, withMobileDialog } from "material-ui/Dialog";
-import { AppBar, Toolbar, IconButton, Typography, Grid, Avatar, Paper,  Badge, Tooltip, LinearProgress } from 'material-ui';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Grid,
+  Avatar,
+  Paper,
+  Badge,
+  Tooltip,
+  LinearProgress
+} from "material-ui";
 
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
@@ -11,7 +22,7 @@ import Slide from "material-ui/transitions/Slide";
 import styles from "./Detail.module.css";
 
 import { getMembers } from "../actions/aliance";
-import constants from "../../constants";
+import { entities } from "../../constants";
 import { map } from "lodash";
 
 const Transition = props => {
@@ -37,7 +48,7 @@ class Detail extends React.Component {
         fullScreen={fullScreen}
         open={true}
         onClose={this.handleClose}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <AppBar className={styles.appBar}>
           <Toolbar>
@@ -66,16 +77,19 @@ class Detail extends React.Component {
                   <Grid item xs={12} sm={6} key={id}>
                     <Paper className={styles.userCard}>
                       {user.avatar ? (
-                        <Avatar src={constants.imgBaseUrl + user.avatar} />
+                        <Avatar src={user.avatar} />
                       ) : (
                         <Avatar>{user.initial}</Avatar>
                       )}
                       <div className={styles.username}>{user.name}</div>
                       <Tooltip title="Задатки">
                         <div className={styles.depositBadgeWrapper}>
-                          <Badge color="primary" badgeContent={user.deposit || 0}>
+                          <Badge
+                            color="primary"
+                            badgeContent={user.deposit || 0}
+                          >
                             {/*Badge component required a child element*/}
-                            <div></div>
+                            <div />
                           </Badge>
                         </div>
                       </Tooltip>

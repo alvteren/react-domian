@@ -102,7 +102,7 @@ class SearchResult extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const table = state.crm[ownProps.id];
+  const table = state.crm[ownProps.entityId];
   const { chips, loading } = table;
   return {
     chips,
@@ -110,7 +110,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const tableId = ownProps.id;
+  const { entityId } = ownProps;
   return {
     init: () => {},
     onDeleteChip: id => {
@@ -120,7 +120,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // dispatch(fetchChips({ id: tableId, query }));
     },
     onApplyChips: chip => {
-      dispatch(selectChip({ id: tableId, chip }));
+      dispatch(selectChip({ entityId, chip }));
     }
   };
 };

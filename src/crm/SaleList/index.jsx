@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { fetchObjects, fetchObjectFields } from "../actions/objects";
+import { fetchList, fetchFields } from "../actions/crm";
 import { fetchWish } from "../actions/wish";
 import EnhancedTable from "../Table";
 import Add from "./Add";
@@ -16,6 +16,9 @@ import { Route } from "react-router-dom";
 import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
+
+import { entities } from "../../constants";
+const entityId = entities.sale;
 
 const styles = theme => ({
   buttonAdd: {
@@ -34,10 +37,12 @@ class SaleList extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
+    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    document.removeEventListener("click", this.handleClose, false);
   };
 
   render() {
@@ -47,10 +52,11 @@ class SaleList extends React.Component {
     return (
       <Fragment>
         <EnhancedTable
-          id="objects"
+          entityId={entityId}
+          controls={["favorite"]}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="objects" />}
-          groupActionsComponents={GroupActions}
+          filterComponent={<Filter entityId={entityId} />}
+          groupActionsComponent={GroupActions}
           controlComponents={Controls}
         />
         <Button
@@ -67,15 +73,17 @@ class SaleList extends React.Component {
           open={open}
           onClose={this.handleClose}
         />
-        <Route path="/crm/sale/add" component={Add} />
-        <Route path="/crm/sale/show/:id" component={Detail} />
+        <Route path={`/crm/${entityId}/add`} component={Add} />
+        <Route path={`/crm/${entityId}/show/:elementId`} component={Detail} />
       </Fragment>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm.objects;
+  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm[
+    entityId
+  ];
   return {
     filter,
     page,
@@ -93,14 +101,23 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     onInit: () => {
-      dispatch(fetchObjectFields());
-      dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
-      dispatch(fetchWish({ entityId: "sale" }));
+      dispatch(fetchFields({ entityId }));
+      dispatch(
+        fetchList({ entityId, filter, page, rowsPerPage, orderBy, order })
+      );
+      dispatch(fetchWish({ entityId }));
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))
         dispatch(
-          fetchObjects({ filter, page: newPage, rowsPerPage, orderBy, order })
+          fetchList({
+            entityId,
+            filter,
+            page: newPage,
+            rowsPerPage,
+            orderBy,
+            order
+          })
         );
     }
   };
