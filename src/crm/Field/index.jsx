@@ -318,7 +318,6 @@ const mapStateToProps = (state, ownProps) => {
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
-  debugger;
 
   if (elementId === 0) {
     can.edit = true;

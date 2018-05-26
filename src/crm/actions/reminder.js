@@ -7,7 +7,7 @@ export const addNewReminder = props => async dispatch => {
 
   /* remove unnecessary props */
   omit(reminder, ["edited", "can"]);
-  console.log(reminder);
+
   /* Below we add secs and timezone parts to date fields */
   const formData = Object.assign({}, reminder); // For operate on copied reminder and return origin as payload if save will be succeed
   formData.date = (new Date(formData.date)).toISOString();

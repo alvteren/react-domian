@@ -49,10 +49,10 @@ class Card extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.state.initState) {
+    if (!this.state.initState && this.props.reminder) {
       this.setInitState(prevProps.reminder);
     }
-    if (!isEqual(prevProps.reminder, this.props.reminder)) {
+    if (!isEqual(prevProps.reminder, this.props.reminder) && prevProps.reminder) {
       this.setState({
         isFormEdited: !isEqual(this.state.initState, this.props.reminder)
       });
@@ -83,7 +83,7 @@ class Card extends React.PureComponent {
     if (!reminder) {
       return <CircularProgress className={classes.progress}/>
     }
-    debugger;
+
     return (
       <form className={styles.reminderCardForm} action="">
         {map(this.props.fields, (val, id) => (
