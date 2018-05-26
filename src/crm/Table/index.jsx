@@ -134,7 +134,7 @@ class EnhancedTable extends React.Component {
                   )})
                 }
                 <Link
-                  to={`lead/${row.id}/reminder/new`} // ?????
+                  to={`lead/${row.id}/reminder/add`} // ?????
                   onClick={e => {e.stopPropagation();}}>
                   <ListItem className={styles.reminderWrapper}>
                     <Avatar>

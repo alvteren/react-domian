@@ -11,9 +11,9 @@ import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 const styles = theme => ({
   root: {},

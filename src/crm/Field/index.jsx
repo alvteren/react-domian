@@ -14,15 +14,15 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-import DateField from "./DateField";
-import TelField from "./TelField";
-import DefaultTextField from "./DefaultTextField"
-import TextAreaField from "./TextAreaField";
+import Date from "./edit/DateField";
+import Tel from "./edit/Tel";
+import Text from "./edit/Text"
+import TextArea from "./edit/TextArea";
 
 import styles from "./Field.module.css";
 
 import { withStyles } from "material-ui/styles";
-import { TextField, Grid, IconButton } from "material-ui";
+import { Grid, IconButton } from "material-ui";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
@@ -68,10 +68,11 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, ...other } = this.props;
+    const { id, field, values, value, classes, can, gridType, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
+    const col = gridType ? gridType : 6;
 
     if (field === false) {
       return <span />;
@@ -191,7 +192,7 @@ class Field extends React.PureComponent {
         if (field.type === "textarea") {
           return (
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
-              <TextAreaField
+              <TextArea
                 className={formControl}
                 field={field}
                 value={value}
@@ -210,18 +211,20 @@ class Field extends React.PureComponent {
         }
         if (field.type === "date") {
           return (
-            <DateField
-              id={id}
-              value={value}
-              onChange={this.onChange}
-              visibleValues={visibleValues}
-            />
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Date
+                id={id}
+                value={value}
+                onChange={this.onChange}
+                visibleValues={visibleValues}
+              />
+            </Grid>
           );
         }
         if (field.type === "tel") {
           return (
-            <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-              <TelField
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Tel
                 className={formControl}
                 field={field}
                 value={value || ""}
@@ -232,8 +235,8 @@ class Field extends React.PureComponent {
           )
         }
         return (
-          <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-            <DefaultTextField
+          <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+            <Text
               className={formControl}
               field={field}
               value={value}
@@ -307,7 +310,7 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, entityId, elementId } = ownProps;
+  const { id, entityId, elementId, gridType } = ownProps;
   const { fields, values } = state.crm[entityId];
 
   const field = get(fields, id, false);
@@ -315,6 +318,7 @@ const mapStateToProps = (state, ownProps) => {
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
+  debugger;
 
   if (elementId === 0) {
     can.edit = true;
@@ -325,7 +329,8 @@ const mapStateToProps = (state, ownProps) => {
     field,
     values: elementValues,
     value,
-    can
+    can,
+    gridType
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

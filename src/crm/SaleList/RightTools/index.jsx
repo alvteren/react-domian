@@ -8,8 +8,8 @@ import { Hidden, IconButton, Tooltip } from "material-ui";
 import styles from "./index.module.css";
 
 import { activeTool } from "../../actions/rightTools";
-import { entities } from "../../../constants";
-const entityId = entities.sale;
+import { ENTITIES } from "../../../constants";
+const entityId = ENTITIES.sale;
 
 class RightTools extends React.Component {
   state = {

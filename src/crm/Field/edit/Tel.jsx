@@ -18,7 +18,7 @@ function TextMaskCustom(props) {
   );
 }
 
-class TelField extends React.PureComponent {
+class Tel extends React.PureComponent {
   state = {
     tel: ""
   };
@@ -71,4 +71,4 @@ class TelField extends React.PureComponent {
   }
 }
 
-export default TelField;
+export default Tel;

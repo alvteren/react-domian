@@ -1,6 +1,6 @@
 import { get, toArray } from "lodash";
 import formData from "./formData";
-import { entities } from "../../constants";
+import { ENTITIES } from "../../constants";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
 export const fields = {
@@ -81,7 +81,7 @@ const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
-  if (entityId === entities.reminder) {
+  if (entityId === ENTITIES.reminder) {
     const newFormState = formData(state, { type, payload });
     if (newFormState) {
       return {

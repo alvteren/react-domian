@@ -13,9 +13,9 @@ import EditDialog from "./EditDialog";
 import styles from "./index.module.css";
 import { saveToStore } from "../../actions/form";
 import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
-import { entities } from "./../../../constants";
+import { ENTITIES } from "./../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 class TypeRealty extends React.PureComponent {
   state = {

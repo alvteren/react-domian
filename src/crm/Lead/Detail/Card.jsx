@@ -12,9 +12,9 @@ import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
 
 import { map, get, reduce, findIndex } from "lodash";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 const styles = theme => ({
   root: {},

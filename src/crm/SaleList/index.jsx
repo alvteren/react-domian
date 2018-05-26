@@ -17,8 +17,8 @@ import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
 
-import { entities } from "../../constants";
-const entityId = entities.sale;
+import { ENTITIES } from "../../constants";
+const entityId = ENTITIES.sale;
 
 const styles = theme => ({
   buttonAdd: {

@@ -2,7 +2,7 @@ import React from "react";
 import { TextField } from "material-ui";
 import {get} from "lodash";
 
-const DefaultTextField = (props) => {
+const Text = (props) => {
   const { field, values, value, onChange } = props;
 
   return (
@@ -24,4 +24,4 @@ const DefaultTextField = (props) => {
   )
 };
 
-export default DefaultTextField;
+export default Text;

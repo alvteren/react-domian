@@ -14,9 +14,9 @@ import IconButton from "material-ui/IconButton";
 import CloseIcon from "material-ui-icons/Close";
 import DeleteIcon from "material-ui-icons/DeleteForever";
 
-import { entities } from "../../constants";
+import { ENTITIES } from "../../constants";
 
-const entityId = entities.sale;
+const entityId = ENTITIES.sale;
 
 const PhotoBig = props => {
   const { index, items, hidePhoto } = props;

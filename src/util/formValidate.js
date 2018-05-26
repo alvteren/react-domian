@@ -1,4 +1,4 @@
-import { entities } from "../constants";
+import { ENTITIES } from "../constants";
 
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
@@ -29,13 +29,13 @@ export const typeRules = {
 };
 
 const forms = {
-  [entities.lead]: leadFormFields,
-  [entities.lead]: saleFormFields
+  [ENTITIES.lead]: leadFormFields,
+  [ENTITIES.lead]: saleFormFields
 };
 
 const idRules = {
-  [entities.lead]: leadRules,
-  [entities.sale]: saleRules
+  [ENTITIES.lead]: leadRules,
+  [ENTITIES.sale]: saleRules
 };
 
 /**
