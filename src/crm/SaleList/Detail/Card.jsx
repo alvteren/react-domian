@@ -12,8 +12,8 @@ import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
 
 import { map, get, reduce, findIndex } from "lodash";
-import { entities } from "../../../constants";
-const entityId = entities.sale;
+import { ENTITIES } from "../../../constants";
+const entityId = ENTITIES.sale;
 
 const styles = theme => ({
   root: {},

@@ -5,7 +5,7 @@ import filterData from "./filterData";
 import formData from "./formData";
 import wishData from "./wishData";
 
-import { entities } from "../../constants";
+import { ENTITIES } from "../../constants";
 
 const chips = {
   chips: {},
@@ -387,7 +387,7 @@ export const initialState = {
 export default (state = initialState, { type, payload }) => {
   const entityId = get(payload, "entityId", null);
 
-  if (entityId === entities.sale) {
+  if (entityId === ENTITIES.sale) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button } from "material-ui";
+import { Button, CircularProgress } from "material-ui";
 import SaveIcon from "material-ui-icons/Save";
 import { withStyles } from "material-ui/styles";
 import Field from "../Field";
-import { entities } from "../../constants";
+import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
@@ -26,12 +26,16 @@ const MuiStyles = theme => ({
     fontSize: 20
   },
   fullWidth: {
-    width: `100%`,
-    marginBottom: `10px`
+    width: "100%",
+    marginBottom: "10px"
+  },
+  progress: {
+    display: "block",
+    margin: "30px auto"
   }
 });
 
-class Card extends React.Component {
+class Card extends React.PureComponent {
   constructor(props) {
     super(props);
     const { match } = props;
@@ -75,7 +79,11 @@ class Card extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, reminder } = this.props;
+    if (!reminder) {
+      return <CircularProgress className={classes.progress}/>
+    }
+    debugger;
     return (
       <form className={styles.reminderCardForm} action="">
         {map(this.props.fields, (val, id) => (
@@ -83,8 +91,9 @@ class Card extends React.Component {
             <Field
               id={id} // id from {Fields}
               edit={true}
-              elementId={get(this.props, "match.params.reminderId", 0)}
-              entityId={entities.reminder}
+              elementId={get(this.props, "reminderId", 0)}
+              entityId={ENTITIES.reminder}
+              gridType={GRID.singleColumn}
             />
           </div>
         ))}
@@ -113,10 +122,10 @@ const mapStateToProps = (state, ownProps) => {
   const { close } = ownProps;
   let { reminderId } = ownProps.match.params;
   const { fields } = state.crm.reminder;
-  reminderId === "new" ? (reminderId = 0) : reminderId;
+  reminderId === "add" ? (reminderId = 0) : reminderId;
   const reminder = get(
     state,
-    `crm.${entities.reminder}.values.${reminderId}`,
+    `crm.${ENTITIES.reminder}.values.${reminderId}`,
     null
   );
   return { reminder, close, fields, reminderId };

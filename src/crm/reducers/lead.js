@@ -8,7 +8,7 @@ import convert from "../../util/leadDataConverter";
 import DistrictInput from "../Field/District";
 import TypeRealtyInput from "../Field/TypeRealty";
 
-import { entities } from "../../constants";
+import { ENTITIES } from "../../constants";
 
 const chips = {
   chips: {},
@@ -150,7 +150,7 @@ export const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
-  if (entityId === entities.lead) {
+  if (entityId === ENTITIES.lead) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
@@ -171,7 +171,7 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === "REMINDER_ADD_SUCCESS") {
       const { elementId, reminder, id } = payload;
-      const fullID = `${entities.lead}_${elementId}`;
+      const fullID = `${ENTITIES.lead}_${elementId}`;
       return {
         ...state,
         data: {
@@ -189,7 +189,7 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === "REMINDER_UPDATE_SUCCESS") {
       const { elementId, reminderId, reminder } = payload;
-      const fullID = `${entities.lead}_${elementId}`;
+      const fullID = `${ENTITIES.lead}_${elementId}`;
       return {
         ...state,
         data: {

@@ -14,61 +14,24 @@ import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-import DateField from "./DateField";
-import MaskedInput from "react-text-mask";
+import Date from "./edit/DateField";
+import Tel from "./edit/Tel";
+import Text from "./edit/Text"
+import TextArea from "./edit/TextArea";
 
 import styles from "./Field.module.css";
 
 import { withStyles } from "material-ui/styles";
-import { TextField, Grid, IconButton } from "material-ui";
+import { Grid, IconButton } from "material-ui";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={inputRef}
-      // prettier-ignore
-      mask={["+", "7", "(", /[1-9]/, /\d/, /\d/, ")", /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
-      //showMask
-    />
-  );
-}
-
-/**
- *
- */
-
 class Field extends React.PureComponent {
   state = {
     edit: get(this.props, "edit", false),
-    needSave: false,
-    tel: ""
-  };
-
-  handleTelInputChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
-    this.props.handleChange(event);
-  };
-
-  onTelInputFocus = event => {
-    if (!this.state.tel) {
-      this.setState({ tel: "9" });
-      event.target.selectionStart = 2; // not working
-    }
-  };
-
-  onTelInputBlur = event => {
-    if (this.state.tel === "9") {
-      this.setState({ tel: "" });
-    }
+    needSave: false
   };
 
   onStartEdit = () => {
@@ -105,10 +68,11 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, ...other } = this.props;
+    const { id, field, values, value, classes, can, gridType, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
+    const col = gridType ? gridType : 6;
 
     if (field === false) {
       return <span />;
@@ -228,18 +192,10 @@ class Field extends React.PureComponent {
         if (field.type === "textarea") {
           return (
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
-              <TextField
-                type="text"
+              <TextArea
                 className={formControl}
-                fullWidth
-                required={field.required}
-                name={id}
-                label={field.label}
-                onChange={this.onChange}
-                value={value || ""}
-                multiline
-                rowsMax="4"
-                helperText={get(field, "hint", "")}
+                field={field}
+                value={value}
               />
               {needSave && (
                 <IconButton
@@ -255,48 +211,37 @@ class Field extends React.PureComponent {
         }
         if (field.type === "date") {
           return (
-            <DateField
-              id={id}
-              value={value}
-              onChange={this.onChange}
-              visibleValues={visibleValues}
-            />
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Date
+                id={id}
+                value={value}
+                onChange={this.onChange}
+                visibleValues={visibleValues}
+              />
+            </Grid>
           );
         }
+        if (field.type === "tel") {
+          return (
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Tel
+                className={formControl}
+                field={field}
+                value={value || ""}
+                values={values}
+                onChange={this.onChange}
+              />
+            </Grid>
+          )
+        }
         return (
-          <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-            <TextField
-              type={field.type}
+          <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+            <Text
               className={formControl}
-              fullWidth
-              required={field.required}
-              name={id}
-              label={field.label}
-              value={value || this.state.tel}
-              error={
-                values &&
-                values.validateErrors &&
-                values.validateErrors.hasOwnProperty(field.id)
-              }
-              helperText={get(
-                values,
-                `validateErrors.${field.id}.message`,
-                get(field, "hint", "")
-              )}
-              onFocus={field.type === "tel" ? this.onTelInputFocus : null}
-              onBlur={field.type === "tel" ? this.onTelInputBlur : null}
-              onChange={
-                field.type === "tel"
-                  ? this.handleTelInputChange("tel")
-                  : this.onChange
-              }
-              InputProps={
-                field.type === "tel"
-                  ? {
-                      inputComponent: TextMaskCustom
-                    }
-                  : {}
-              }
+              field={field}
+              value={value}
+              values={values}
+              onChange={this.onChange}
             />
             {needSave && (
               <IconButton
@@ -365,7 +310,7 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, entityId, elementId } = ownProps;
+  const { id, entityId, elementId, gridType } = ownProps;
   const { fields, values } = state.crm[entityId];
 
   const field = get(fields, id, false);
@@ -373,6 +318,7 @@ const mapStateToProps = (state, ownProps) => {
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
+  debugger;
 
   if (elementId === 0) {
     can.edit = true;
@@ -383,7 +329,8 @@ const mapStateToProps = (state, ownProps) => {
     field,
     values: elementValues,
     value,
-    can
+    can,
+    gridType
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
