@@ -1,12 +1,13 @@
 import { addNewReminder as addNewReminderApi } from "../../api/reminder";
 import { updateReminder as updateReminderApi } from "../../api/reminder";
+import { omit } from "lodash";
 
 export const addNewReminder = props => async dispatch => {
   const { entityId, elementId, reminder } = props;
 
   /* remove unnecessary props */
-  delete reminder.edited;
-  delete reminder.can;
+  omit(reminder, ["edited", "can"]);
+  console.log(reminder);
   /* Below we add secs and timezone parts to date fields */
   const formData = Object.assign({}, reminder); // For operate on copied reminder and return origin as payload if save will be succeed
   formData.date = (new Date(formData.date)).toISOString();
@@ -31,9 +32,13 @@ export const addNewReminder = props => async dispatch => {
 
 export const updateReminder = props => async dispatch => {
   const { entityId, elementId, reminderId, reminder } = props;
+
+  /* remove unnecessary props */
+  omit(reminder, ["edited", "can"]);
   try {
     const data = await updateReminderApi({ entityId, elementId, reminderId, reminder });
     // const data = {}; // for test
+    reminder.can = { edit: true };
     dispatch({
       type: "REMINDER_UPDATE_SUCCESS",
       payload: { entityId, elementId, reminderId, reminder, ...data }

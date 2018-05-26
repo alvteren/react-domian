@@ -18,9 +18,9 @@ import { validateFormError, setInitFormState } from "../../actions/form";
 import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
 import { find } from "lodash";
 import formValidate from "../../../util/formValidate";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;

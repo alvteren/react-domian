@@ -10,9 +10,9 @@ import { districtTreeConverter } from "./districtTreeConverter";
 import { cloneDeep } from "lodash";
 
 import styles from "./DistrictTree.module.css";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 class DistrictTree extends React.PureComponent {
   state = {

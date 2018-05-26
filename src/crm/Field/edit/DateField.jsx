@@ -2,7 +2,7 @@ import React from "react";
 import { TextField} from "material-ui"
 import { get } from "lodash";
 
-const DateField = props => {
+const Date = props => {
   return (
     <TextField
       id={props.id}
@@ -18,4 +18,4 @@ const DateField = props => {
   )
 };
 
-export default DateField;
+export default Date;

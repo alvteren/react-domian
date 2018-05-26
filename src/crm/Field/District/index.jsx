@@ -13,9 +13,9 @@ import DistrictSelect from "./DistrictSelect";
 import styles from "./index.module.css";
 import { saveToStore } from "../../actions/form";
 import { DISTRICTS, SUB_DISTRICTS } from "./districtTreeConverter";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 class District extends React.PureComponent {
   state = {
