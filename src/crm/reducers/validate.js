@@ -1,5 +1,4 @@
 import * as typeActions from "../actions/validate";
-import {VALIDATE_SUBMIT_CLEAR} from "../actions/validate";
 
 export default (state, { type, payload }) => {
   let newState = null;
@@ -23,38 +22,38 @@ export default (state, { type, payload }) => {
         validate: {}
       };
     }
-  }
 
-  if (type === typeActions.VALIDATE_FORM_SUBMIT) {
-    const { elementId } = payload;
-    newState = {
-      ...state,
-      submit: {
-        [elementId]: true
-      }
-    };
-  }
+    if (type === typeActions.VALIDATE_FORM_SUBMIT) {
+      const { elementId } = payload;
+      newState = {
+        ...state,
+        submit: {
+          [elementId]: true
+        }
+      };
+    }
 
-  if (type === typeActions.VALIDATE_SUBMIT_CLEAR) {
-    newState = {
-      ...state,
-      submit: {}
-    };
-  }
+    if (type === typeActions.VALIDATE_SUBMIT_CLEAR) {
+      newState = {
+        ...state,
+        submit: {}
+      };
+    }
 
-  // if (type === "SET_VALIDATE_ERRORS") {
-  //   const { entityId, elementId, validateErrors } = payload;
-  //   return {
-  //     ...state,
-  //     [entityId]: {
-  //       ...state[entityId],
-  //       [elementId]: {
-  //         ...state[entityId][elementId],
-  //         ...validateErrors
-  //       }
-  //     }
-  //   }
-  // }
+    if (type === typeActions.VALIDATE_SET_FORM_ERRORS) {
+      const { elementId, key, data } = payload;
+      newState = {
+        ...state,
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            [key]: data
+          }
+        }
+      };
+    }
+  }
 
   return newState;
 }

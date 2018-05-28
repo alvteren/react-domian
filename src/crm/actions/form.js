@@ -4,18 +4,25 @@ import {
 } from "../../api/form";
 
 import { savePropToServer } from "./crm";
+export const SET_INIT_FORM_STATE = "SET_INIT_FORM_STATE";
+export const FORM_SAVE_TO_STORE = "FORM_SAVE_TO_STORE";
+export const FORM_SAVE_FILE = "FORM_SAVE_FILE";
+export const FORM_LOCATION_SEARCH_OPENED = "FORM_LOCATION_SEARCH_OPENED";
+export const FORM_LOCATION_SEARCH_FETCH_START = "FORM_LOCATION_SEARCH_FETCH_START";
+export const FORM_LOCATION_SEARCH_FETCH_SUCCESS = "FORM_LOCATION_SEARCH_FETCH_SUCCESS";
+export const FORM_LOCATION_SEARCH_FETCH_ERROR = "FORM_LOCATION_SEARCH_FETCH_ERROR";
 
 export const setInitFormState = props => dispatch => {
   const { initState, entityId } = props;
   dispatch({
-    type: "SET_INIT_FORM_STATE",
+    type: SET_INIT_FORM_STATE,
     payload: { initState, entityId }
   });
 };
 export const saveToStore = props => async dispatch => {
   const { entityId, elementId, name, value } = props;
   dispatch({
-    type: "FORM_SAVE_TO_STORE",
+    type: FORM_SAVE_TO_STORE,
     payload: { entityId, elementId, name, value }
   });
 };
@@ -25,7 +32,7 @@ export const saveFile = props => async dispatch => {
   const { preview } = file;
   const value = preview ? { ...result, src: preview } : result;
   dispatch({
-    type: "FORM_SAVE_FILE",
+    type: FORM_SAVE_FILE,
     payload: { entityId, elementId, name, value }
   });
   dispatch(savePropToServer({ entityId, elementId, name, value }));
@@ -39,7 +46,7 @@ export const closeLocationSearch = props => async dispatch => {
 };
 export const switchLocationSearch = props => async dispatch => {
   dispatch({
-    type: "FORM_LOCATION_SEARCH_OPENED",
+    type: FORM_LOCATION_SEARCH_OPENED,
     payload: props
   });
 };
@@ -47,26 +54,20 @@ export const switchLocationSearch = props => async dispatch => {
 export const fetchSearchResult = query => async dispatch => {
   try {
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_START",
+      type: FORM_LOCATION_SEARCH_FETCH_START,
       payload: {}
     });
     const data = await fetchSearchResultApi({ query });
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_SUCCESS",
+      type: FORM_LOCATION_SEARCH_FETCH_SUCCESS,
       payload: { ...data }
     });
   } catch (err) {
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_ERROR",
+      type: FORM_LOCATION_SEARCH_FETCH_ERROR,
       payload: err,
       error: true
     });
   }
 };
-export const validateFormError = props => dispatch => {
-  const { entityId, elementId, errorObj } = props;
-  dispatch({
-    type: "FORM_VALIDATION_ERROR",
-    payload: { id: entityId, elementId, errorObj }
-  });
-};
+

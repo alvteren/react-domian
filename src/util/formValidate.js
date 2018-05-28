@@ -30,7 +30,7 @@ export const typeRules = {
 
 const forms = {
   [ENTITIES.lead]: leadFormFields,
-  [ENTITIES.lead]: saleFormFields
+  [ENTITIES.sale]: saleFormFields
 };
 
 const idRules = {
@@ -44,11 +44,12 @@ const idRules = {
  * @param fields {Object}
  * @param entityId "String"
  * @param propId "String"
- * @return {Object} with error fields keys
+ * @return {Object}|null with error fields keys or null if form has no validate errors
  */
 
 export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
+  let checked = false;
   const { exludeValidationProps } = idRules[entityId];
 
   if (propId) {
@@ -58,29 +59,29 @@ export default function formValidate({ form, fields, entityId, propId }) {
      */
 
     /* Check for required props */
-    if (fields[propId].required) {
+    if (fields[propId].required && !checked) {
       const isPropValid = Boolean(form[propId] || form[propId].length);
       if (isPropValid) return true;
       validateErrors[propId] = {
         message: "Это поле обязательно для заполнения"
       };
-      return validateErrors;
+      checked = true;
     }
 
     /* Check for rules follow by type */
-    if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+    if (isFilled && typeRules.hasOwnProperty(fields[propId].type) && !checked) {
       const isValid = typeRules[fields[propId].type](form[propId]);
       if (isValid === true) return true;
       validateErrors[propId] = isValid;
-      return validateErrors;
+      checked = true;
     }
 
     /* Check for rules follow by id */
-    if (isFilled && typeRules[propId]) {
+    if (isFilled && typeRules[propId] && !checked) {
       const isValid = typeRules[propId](form[propId]);
       if (isValid === true) return true;
       validateErrors[propId] = isValid;
-      return validateErrors;
+      checked = true;
     }
   } else {
     /*
@@ -117,10 +118,11 @@ export default function formValidate({ form, fields, entityId, propId }) {
         validateErrors[propId] = isValid;
       }
     });
-    return validateErrors;
+    //return validateErrors;
   }
+  return Object.keys(validateErrors).length ? validateErrors : null;
   // if tested prop neither filled or required
-  return true;
+  // return true;
 }
 
 function isEmpty(prop) {

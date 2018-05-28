@@ -14,9 +14,9 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import { validateFormError, setInitFormState } from "../../actions/form";
+import { setInitFormState } from "../../actions/form";
 import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
-import {formSubmit, formSubmitClear} from "../../actions/validate";
+import { formSubmit, validateFormError } from "../../actions/validate";
 import { find } from "lodash";
 import formValidate from "../../../util/formValidate";
 import { ENTITIES } from "../../../constants";
@@ -52,11 +52,17 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    const a = this.props.formSubmit();
-    debugger;
-    console.log(this.props.submit["0"]);
-    // this.props.saveFormToServer(this.props.values["0"]);
-    // this.handleClose();
+    // const validateErrors = formValidate({
+    //   form: this.props.values["0"],
+    //   fields: this.props.fields,
+    //   entityId
+    // });
+    // if (Boolean(Object.keys(validateErrors).length)) {
+    //   this.props.formValidateError(validateErrors);
+    // } else {
+      this.props.saveFormToServer(this.props.values["0"]);
+      // this.handleClose();
+    // }
   };
 
   componentDidMount() {
@@ -70,10 +76,6 @@ class Add extends React.Component {
     if (JSON.stringify(this.props.fields) === JSON.stringify(fields)) return;
     this.setInitFormData(fields);
     this.setState({ loading: false });
-  }
-
-  componentWillUnmount() {
-    this.props.formSubmitClear();
   }
 
   setInitFormData(fields) {
@@ -140,8 +142,8 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { fields, values, submit } = state.crm[entityId];
-  return { fields, values, submit };
+  const { fields, values } = state.crm[entityId];
+  return { fields, values };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
@@ -162,16 +164,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       dispatch(setInitFormState({ initState, entityId }));
     },
     saveFormToServer(formData) {
-      dispatch(saveFormToServer({ entityId, elementId: 0, formData }));
+      dispatch(saveFormToServer({ entityId, elementId: 0 }));
     },
     formValidateError(errors) {
-      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
-    },
-    formSubmit() {
-      dispatch(formSubmit({ entityId, elementId: 0 }))
-    },
-    formSubmitClear() {
-      dispatch(formSubmitClear({ entityId }));
+      dispatch(validateFormError({ entityId, elementId: 0, errors }));
     }
   };
 };

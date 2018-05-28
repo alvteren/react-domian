@@ -6,7 +6,8 @@ import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 import fieldValidate from "../../util/formValidate";
 
-import { saveToStore, saveFile, validateFormError } from "../actions/form";
+import { saveToStore, saveFile } from "../actions/form";
+import { validateFormError } from "../actions/validate";
 import { savePropToServer } from "../actions/crm";
 
 import FieldViewImage from "./view/Image";
@@ -355,8 +356,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       const { value } = stateProps;
       dispatch(savePropToServer({ entityId, elementId, name, value }));
     },
-    formValidateError(errorObj) {
-      dispatch(validateFormError({ entityId, elementId, errorObj }));
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId, errors }));
     }
   };
 };
