@@ -3,6 +3,7 @@ import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+import validate from "./validate";
 import convert from "../../util/leadDataConverter";
 
 import DistrictInput from "../Field/District";
@@ -155,6 +156,7 @@ export default function reducer(state = initialState, { type, payload }) {
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
+    const newValidateState = validate(state, { type, payload });
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
@@ -239,6 +241,8 @@ export default function reducer(state = initialState, { type, payload }) {
       };
     } else if (newWishState) {
       return { ...state, wish: newWishState };
+    } else if (newValidateState) {
+      return { ...newValidateState }
     }
   }
   return state;
