@@ -2,8 +2,10 @@ import { ENTITIES } from "../constants";
 
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
+import { rules as reminderRules } from "../crm/Reminder/validate";
 import { formFields as leadFormFields } from "../crm/reducers/lead";
 import { formFields as saleFormFields } from "../crm/reducers/sale";
+import { formFields as reminderFields } from "../crm/reducers/reminder";
 
 export const typeRules = {
   email(val) {
@@ -25,17 +27,26 @@ export const typeRules = {
     const isValid = !isNaN(Number(testedValue));
     if (isValid) return true;
     return { message: "Значение должно быть числом" };
+  },
+  date(val) {
+    const today = new Date();
+    const date = new Date(val);
+    if (isNaN(date)) return { message: "Неверный формат даты" };
+    if (date < today) return { message: "Дата не может быть меньше текущей" };
+    return true;
   }
 };
 
 const forms = {
   [ENTITIES.lead]: leadFormFields,
-  [ENTITIES.sale]: saleFormFields
+  [ENTITIES.sale]: saleFormFields,
+  [ENTITIES.reminder]: reminderFields
 };
 
 const idRules = {
   [ENTITIES.lead]: leadRules,
-  [ENTITIES.sale]: saleRules
+  [ENTITIES.sale]: saleRules,
+  [ENTITIES.reminder]: reminderRules
 };
 
 /**
@@ -51,7 +62,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
   let checked = false;
   const { exludeValidationProps } = idRules[entityId];
-
   if (propId) {
     const isFilled = isEmpty(form[propId]);
     /*

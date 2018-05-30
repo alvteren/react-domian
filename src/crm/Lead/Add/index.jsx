@@ -52,17 +52,7 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    // const validateErrors = formValidate({
-    //   form: this.props.values["0"],
-    //   fields: this.props.fields,
-    //   entityId
-    // });
-    // if (Boolean(Object.keys(validateErrors).length)) {
-    //   this.props.formValidateError(validateErrors);
-    // } else {
-      this.props.saveFormToServer(this.props.values["0"]);
-      // this.handleClose();
-    // }
+    this.props.saveFormToServer(this.props.values["0"]);
   };
 
   componentDidMount() {
@@ -165,9 +155,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     saveFormToServer(formData) {
       dispatch(saveFormToServer({ entityId, elementId: 0 }));
-    },
-    formValidateError(errors) {
-      dispatch(validateFormError({ entityId, elementId: 0, errors }));
     }
   };
 };

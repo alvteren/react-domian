@@ -146,7 +146,8 @@ export const initialState = {
     form: false,
     chips: false,
     data: true
-  }
+  },
+  validation: {}
 };
 
 export default function reducer(state = initialState, { type, payload }) {

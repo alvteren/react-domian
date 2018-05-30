@@ -127,7 +127,7 @@ class EnhancedTable extends React.Component {
                                 <MeetIcon />
                             }
                           </Avatar>
-                          <ListItemText primary={reminder.theme} secondary={(dateToString(reminder.date))} />
+                          <ListItemText primary={reminder.subject} secondary={(dateToString(reminder.date))} />
                         </ListItem>
                         <Divider inset component="li" />
                     </Link>

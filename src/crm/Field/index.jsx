@@ -69,11 +69,12 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, gridType, ...other } = this.props;
+    const { id, field, values, value, classes, can, gridType, validation, elementId, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
+    const validateError = get(validation, `${elementId}.validateErrors.${id}`, null);
 
     if (field === false) {
       return <span />;
@@ -126,6 +127,7 @@ class Field extends React.PureComponent {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
+                    validateError={validateError}
                     error={get(values, `validateErrors.${field.id}`, false)}
                   />
                   {needSave && (
@@ -176,6 +178,7 @@ class Field extends React.PureComponent {
                 value={value}
                 onChange={this.onChange}
                 field={field}
+                validateError={validateError}
               />
 
               {needSave && (
@@ -195,8 +198,10 @@ class Field extends React.PureComponent {
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
               <TextArea
                 className={formControl}
+                onChange={this.onChange}
                 field={field}
                 value={value}
+                validateError={validateError}
               />
               {needSave && (
                 <IconButton
@@ -214,10 +219,11 @@ class Field extends React.PureComponent {
           return (
             <Grid item xs={12} sm={col} className={classes.valueWrapper}>
               <Date
-                id={id}
+                field={field}
                 value={value}
                 onChange={this.onChange}
                 visibleValues={visibleValues}
+                validateError={validateError}
               />
             </Grid>
           );
@@ -231,6 +237,7 @@ class Field extends React.PureComponent {
                 value={value || ""}
                 values={values}
                 onChange={this.onChange}
+                validateError={validateError}
               />
             </Grid>
           )
@@ -243,6 +250,7 @@ class Field extends React.PureComponent {
               value={value}
               values={values}
               onChange={this.onChange}
+              validateError={validateError}
             />
             {needSave && (
               <IconButton
@@ -312,7 +320,7 @@ class Field extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId, elementId, gridType } = ownProps;
-  const { fields, values } = state.crm[entityId];
+  const { fields, values, validation } = state.crm[entityId];
 
   const field = get(fields, id, false);
 
@@ -330,7 +338,9 @@ const mapStateToProps = (state, ownProps) => {
     values: elementValues,
     value,
     can,
-    gridType
+    gridType,
+    validation,
+    elementId
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

@@ -8,11 +8,8 @@ import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import {
-  addNewReminder,
-  updateReminder,
-  setEditedProp
-} from "../actions/reminder";
+import { setEditedProp } from "../actions/reminder";
+import { saveFormToServer} from "../actions/crm";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -70,12 +67,8 @@ class Card extends React.PureComponent {
   }
 
   onSave = event => {
-    if (this.state.isNewReminder) {
-      this.props.addNewReminder(this.props.reminder);
-    } else {
-      this.props.updateReminder(this.props.reminder);
-    }
-    this.props.close();
+    this.props.saveReminder(this.props.reminder);
+    // this.props.close();
   };
 
   render() {
@@ -140,11 +133,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    addNewReminder(reminder) {
-      dispatch(addNewReminder({ entityId, elementId, reminder }));
-    },
-    updateReminder(reminder) {
-      dispatch(updateReminder({ entityId, elementId, reminderId, reminder }));
+    saveReminder(formData) {
+      dispatch(saveFormToServer({ parent: { entityId, elementId }, child: { entityId: ENTITIES.reminder, elementId: reminderId }, formData }));
     },
     setEditedProp() {
       dispatch(setEditedProp({ reminderId }));

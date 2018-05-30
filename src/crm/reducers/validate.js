@@ -41,14 +41,12 @@ export default (state, { type, payload }) => {
     }
 
     if (type === typeActions.VALIDATE_SET_FORM_ERRORS) {
-      const { elementId, key, data } = payload;
+      const { elementId, validateErrors } = payload;
       newState = {
         ...state,
-        values: {
-          ...state.values,
+        validation: {
           [elementId]: {
-            ...state.values[elementId],
-            [key]: data
+            validateErrors
           }
         }
       };

@@ -3,7 +3,7 @@ import { TextField } from "material-ui";
 import {get} from "lodash";
 
 const TextArea = (props) => {
-  const { field, value, onChange } = props;
+  const { field, value, onChange, validateError } = props;
 
   return (
     <TextField
@@ -16,7 +16,8 @@ const TextArea = (props) => {
       value={value || ""}
       multiline
       rowsMax="4"
-      helperText={get(field, "hint", "")}
+      error={Boolean(validateError)}
+      helperText={get(validateError, "message", get(field, "hint", ""))}
     />
   )
 };

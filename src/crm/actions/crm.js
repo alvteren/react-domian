@@ -128,13 +128,27 @@ export const savePropToServer = props => async dispatch => {
     });
   }
 };
+/**
+ *
+ * @param props
+ *  props = { entityId, elementId, formData } ||
+ *          { parent: {entityId, elementId}, child: {entityId, elementId}, formData }
+ * @return {function(*)}
+ */
 export const saveFormToServer = props => async dispatch => {
-  const { entityId, elementId } = props;
+  const { formData } = props;
+  let entityId, elementId;
+  if (props.parent && props.child) {
+    [entityId, elementId] = [props.child.entityId, props.child.elementId];
+  } else {
+    [entityId, elementId] = [props.entityId, props.elementId]
+  }
   try {
     dispatch({
       type: FORM_SAVE_TO_SERVER_START,
-      payload: { ...props }
+      payload: { entityId, elementId, formData }
     });
+    debugger;
     const data = await saveFormToServerApi(props);
     dispatch({
       type: FORM_SAVE_TO_SERVER_SUCCESS,

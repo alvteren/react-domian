@@ -1,11 +1,12 @@
 import { get, toArray } from "lodash";
 import formData from "./formData";
+import validateData from "./validate";
 import { ENTITIES } from "../../constants";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
 export const fields = {
-  theme: {
-    id: "theme",
+  subject: {
+    id: "subject",
     label: "Тема",
     type: "text",
     required: true,
@@ -32,8 +33,8 @@ export const fields = {
     type: "date",
     required: true
   },
-  remind: {
-    id: "remind",
+  reminder: {
+    id: "reminder",
     label: "Напомнить",
     type: "switch",
     required: false
@@ -43,7 +44,7 @@ export const fields = {
     label: "Дата напоминания",
     type: "date",
     required: true,
-    depended: "remind",
+    depended: "reminder",
     dependedValue: true,
     dependedAction: "disabled"
   },
@@ -61,13 +62,23 @@ toArray(fields).forEach((item, index) => {
 });
 
 const defaultValues = {
-  theme: "",
+  subject: "",
   type: "",
   description: "",
   date: getTomorrowDate(),
-  remind: false,
+  reminder: false,
   remindInterval: getTomorrowDate()
 };
+
+export const formFields = (() => {
+  const form = {};
+  for (let key in fields) {
+    form[key] = true;
+  }
+  return form;
+})();
+
+console.log(formFields, "<<<");
 
 const values = {
   // default props for new instance
@@ -83,16 +94,24 @@ export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
   if (entityId === ENTITIES.reminder) {
     const newFormState = formData(state, { type, payload });
+    const newValidateData = validateData(state, { type, payload });
     if (newFormState) {
       return {
         ...state,
         ...newFormState
       };
     }
+
+    if (newValidateData) {
+      return {
+        ...state,
+        ...newValidateData
+      }
+    }
   }
 
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
-    const items = get(payload, "data", null);
+    const items = get(payload, "data", {});
     const values = {};
 
     if (items) {
