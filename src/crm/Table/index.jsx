@@ -7,8 +7,9 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import { Tooltip, Paper, Checkbox, ListItem, Avatar, ListItemText, Divider, List } from "material-ui";
+import { Tooltip, Paper, Checkbox, ListItem, Avatar, ListItemText, Divider, List, CardActions } from "material-ui";
 import { Pageview as PageviewIcon, AddAlert as AddAlertIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
+import Reminder from "./customCells/Reminder";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -110,39 +111,25 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
+      const showControls = e => {
+        console.log("errr");
+      };
       if (id === "reminders" && value instanceof Object) {
         if (get(row, "can.edit", false)) {
           if (Object.keys(value).length) {
             return (
               <List>
-                {Object.keys(value).map((key, index) => {
-                  const reminder = value[key];
+                {Object.keys(value).map((reminderId, index) => {
+                  const reminder = value[reminderId];
                   return (
-                    <Link onClick={(e) => {e.stopPropagation()}} to={`lead/${row.id}/reminder/${key}`} key={index}>
-                        <ListItem className={styles.reminderWrapper}>
-                          <Avatar>
-                            {
-                              reminder.type === "call" ?
-                                <CallIcon /> :
-                                <MeetIcon />
-                            }
-                          </Avatar>
-                          <ListItemText primary={reminder.subject} secondary={(dateToString(reminder.date))} />
-                        </ListItem>
-                        <Divider inset component="li" />
-                    </Link>
+                    <Reminder
+                      reminder={reminder}
+                      elementId={row.id}
+                      reminderId={reminderId}
+                      key={index}
+                    />
                   )})
                 }
-                <Link
-                  to={`lead/${row.id}/reminder/add`} // ?????
-                  onClick={e => {e.stopPropagation();}}>
-                  <ListItem className={styles.reminderWrapper}>
-                    <Avatar>
-                      <AddAlertIcon />
-                    </Avatar>
-                    <ListItemText primary="Создать напоминание" />
-                  </ListItem>
-                </Link>
               </List>
             )
           }

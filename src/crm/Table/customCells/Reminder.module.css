@@ -1,0 +1,23 @@
+.reminderWrapper:hover {
+    background-color: #cccccc;
+    cursor: pointer;
+}
+
+.reminderAvatar {
+    width: 30px;
+    height: 30px;
+}
+
+.reminderAvatarOutdated {
+    width: 30px;
+    height: 30px;
+    background-color: #f44336;
+}
+
+.reminderWrapper:hover .reminderActions {
+    visibility: visible;
+}
+
+.reminderActions {
+    visibility: hidden;
+}
