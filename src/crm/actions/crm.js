@@ -128,27 +128,14 @@ export const savePropToServer = props => async dispatch => {
     });
   }
 };
-/**
- *
- * @param props
- *  props = { entityId, elementId, formData } ||
- *          { parent: {entityId, elementId}, child: {entityId, elementId}, formData }
- * @return {function(*)}
- */
+
 export const saveFormToServer = props => async dispatch => {
-  const { formData } = props;
-  let entityId, elementId;
-  if (props.parent && props.child) {
-    [entityId, elementId] = [props.child.entityId, props.child.elementId];
-  } else {
-    [entityId, elementId] = [props.entityId, props.elementId]
-  }
+  const { entityId, elementId } = props;
   try {
     dispatch({
       type: FORM_SAVE_TO_SERVER_START,
-      payload: { entityId, elementId, formData }
+      payload: { ...props }
     });
-    debugger;
     const data = await saveFormToServerApi(props);
     dispatch({
       type: FORM_SAVE_TO_SERVER_SUCCESS,
@@ -157,7 +144,7 @@ export const saveFormToServer = props => async dispatch => {
   } catch (err) {
     dispatch({
       type: err.action || FORM_SAVE_TO_SERVER_ERROR,
-      payload: { entityId, elementId , ...err },
+      payload: err,
       error: true
     });
   }

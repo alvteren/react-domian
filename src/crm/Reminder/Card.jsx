@@ -8,8 +8,7 @@ import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import { setEditedProp } from "../actions/reminder";
-import { saveFormToServer} from "../actions/crm";
+import { setEditedProp, addNewReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -46,13 +45,20 @@ class Card extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    /* Set local init state for equal check */
     if (!this.state.initState && this.props.reminder) {
       this.setInitState(prevProps.reminder);
     }
+    /* Equal check for save button render */
     if (!isEqual(prevProps.reminder, this.props.reminder) && prevProps.reminder) {
       this.setState({
         isFormEdited: !isEqual(this.state.initState, this.props.reminder)
       });
+    }
+    /* Form submit */
+    const reminderId = this.props.reminderId;
+    if (this.props.validity && this.props.validity[reminderId].submit) {
+      this.props.close();
     }
   }
 
@@ -67,7 +73,7 @@ class Card extends React.PureComponent {
   }
 
   onSave = event => {
-    this.props.saveReminder(this.props.reminder);
+    this.props.addNewReminder(this.props.reminder);
     // this.props.close();
   };
 
@@ -114,14 +120,14 @@ class Card extends React.PureComponent {
 const mapStateToProps = (state, ownProps) => {
   const { close } = ownProps;
   let { reminderId } = ownProps.match.params;
-  const { fields } = state.crm.reminder;
+  const { fields, validity } = state.crm.reminder;
   reminderId === "add" ? (reminderId = 0) : reminderId;
   const reminder = get(
     state,
     `crm.${ENTITIES.reminder}.values.${reminderId}`,
     null
   );
-  return { reminder, close, fields, reminderId };
+  return { reminder, close, fields, reminderId, validity };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -133,8 +139,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    saveReminder(formData) {
-      dispatch(saveFormToServer({ parent: { entityId, elementId }, child: { entityId: ENTITIES.reminder, elementId: reminderId }, formData }));
+    addNewReminder(reminder) {
+      dispatch(addNewReminder({
+        parent: { entityId, elementId },
+        child: { entityId: ENTITIES.reminder, elementId: reminderId },
+        reminder
+      }));
     },
     setEditedProp() {
       dispatch(setEditedProp({ reminderId }));

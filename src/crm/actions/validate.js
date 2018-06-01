@@ -19,6 +19,3 @@ export const validateFormError = props => dispatch => {
     payload: { entityId, elementId, errors }
   });
 };
-
-
-

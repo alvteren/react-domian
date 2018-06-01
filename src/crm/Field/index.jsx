@@ -69,12 +69,12 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, gridType, validation, elementId, ...other } = this.props;
+    const { id, field, values, value, classes, can, gridType, validity, elementId, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
-    const validateError = get(validation, `${elementId}.validateErrors.${id}`, null);
+    const validateError = get(validity, `${elementId}.validateErrors.${id}`, null);
 
     if (field === false) {
       return <span />;
@@ -152,7 +152,7 @@ class Field extends React.PureComponent {
               <SwitchFieldEdit
                 formControl={formControl}
                 id={id}
-                value={value}
+                value={Boolean(value)}
                 onChange={this.onChange}
                 field={field}
               />
@@ -320,7 +320,7 @@ class Field extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId, elementId, gridType } = ownProps;
-  const { fields, values, validation } = state.crm[entityId];
+  const { fields, values, validity } = state.crm[entityId];
 
   const field = get(fields, id, false);
 
@@ -339,7 +339,7 @@ const mapStateToProps = (state, ownProps) => {
     value,
     can,
     gridType,
-    validation,
+    validity,
     elementId
   };
 };

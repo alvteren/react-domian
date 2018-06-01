@@ -2,6 +2,7 @@ import { get, toArray } from "lodash";
 import formData from "./formData";
 import validateData from "./validate";
 import { ENTITIES } from "../../constants";
+import * as reminderActions from "../actions/reminder";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
 export const fields = {
@@ -78,8 +79,6 @@ export const formFields = (() => {
   return form;
 })();
 
-console.log(formFields, "<<<");
-
 const values = {
   // default props for new instance
   0: defaultValues
@@ -140,7 +139,12 @@ export default function reducer(state = initialState, { type, payload }) {
     }
   }
 
-  if (type === "REMINDER_ADD_SUCCESS") {
+  if (type === reminderActions.REMINDER_ADD_START) {
+
+  }
+
+  if (type === reminderActions.REMINDER_ADD_SUCCESS) {
+    debugger;
     return {
       ...state,
       values: {
@@ -150,7 +154,7 @@ export default function reducer(state = initialState, { type, payload }) {
     }
   }
 
-  if (type === "REMINDER_NEW_SET_DEFAULT") {
+  if (type === reminderActions.REMINDER_NEW_SET_DEFAULT) {
     return {
       ...state,
       values: {
@@ -160,7 +164,7 @@ export default function reducer(state = initialState, { type, payload }) {
     }
   }
 
-  if (type === "REMINDER_SET_EDITED_PROP") {
+  if (type === reminderActions.REMINDER_SET_EDITED_PROP) {
     const { reminderId } = payload;
     return {
       ...state,

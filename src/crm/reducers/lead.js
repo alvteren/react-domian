@@ -147,7 +147,7 @@ export const initialState = {
     chips: false,
     data: true
   },
-  validation: {}
+  validity: {}
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -175,6 +175,7 @@ export default function reducer(state = initialState, { type, payload }) {
     if (type === "REMINDER_ADD_SUCCESS") {
       const { elementId, reminder, id } = payload;
       const fullID = `${ENTITIES.lead}_${elementId}`;
+      debugger;
       return {
         ...state,
         data: {

@@ -83,21 +83,7 @@ export const savePropToServer = async props => {
 };
 
 export const saveFormToServer = async props => {
-  let { formData } = props;
-  let parentEntityId, parentElementId, entityId, elementId;
-  if (props.parent && props.child) {
-    [parentEntityId, parentElementId] = [props.parent.entityId, props.parent.elementId];
-    [entityId, elementId] = [props.child.entityId, props.child.elementId];
-
-    formData = {
-      entityId: parentEntityId,
-      elementId: parentElementId,
-      [entityId]: formData
-    };
-
-  } else {
-    [entityId, elementId] = [props.entityId, props.elementId]
-  }
+  const { entityId, formData } = props;
   const version = get(props, "version", lastApiVersion);
 
   const params = {

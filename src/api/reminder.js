@@ -3,6 +3,7 @@ const lastApiVersion = process.env.REACT_APP_LAST_API_VERSION_CRM;
 
 export const addNewReminder = async props => {
   const { entityId, elementId, reminder } = props;
+  debugger;
   const response = await fetch(`${baseURL}/${lastApiVersion}/crm/reminder/`, {
     method: "POST",
     credentials: "include",

@@ -1,42 +1,40 @@
 import * as typeActions from "../actions/validate";
+import formValidate from "../../util/formValidate";
+import {get} from "lodash";
 
 export default (state, { type, payload }) => {
   let newState = null;
   if (state) {
 
-    if (type === "VALIDATE_FIELD_FAIL") {
-      const { elementId, error } = payload;
-      newState = {
-        ...state,
-        validate: {
-          ...state.validate,
-          [elementId]: error
-        }
-      };
-    }
-
-    if (type === "VALIDATE_CLEAR_FORM_FIELDS") {
-      const { elementId } = payload;
-      newState = {
-        ...state,
-        validate: {}
-      };
-    }
-
     if (type === typeActions.VALIDATE_FORM_SUBMIT) {
-      const { elementId } = payload;
+      debugger;
+      const { parent, child } = payload;
+      const { entityId, elementId } = child;
+      const form = get(state, `values.${elementId}`, null);
+      const fields = get(state, "fields");
+      const validateErrors = formValidate({ form, fields, entityId });
+      if (validateErrors) throw({ action: "VALIDATE_SET_FORM_ERRORS", validateErrors });
+      debugger;
       newState = {
         ...state,
-        submit: {
-          [elementId]: true
+        validity: {
+          [elementId]: {
+            submit: true
+          }
         }
       };
     }
 
     if (type === typeActions.VALIDATE_SUBMIT_CLEAR) {
+      const { elementId } = payload;
       newState = {
         ...state,
-        submit: {}
+        validity: {
+          ...state.validity,
+          [elementId]: {
+            submit: false
+          }
+        }
       };
     }
 
@@ -44,7 +42,7 @@ export default (state, { type, payload }) => {
       const { elementId, validateErrors } = payload;
       newState = {
         ...state,
-        validation: {
+        validity: {
           [elementId]: {
             validateErrors
           }
