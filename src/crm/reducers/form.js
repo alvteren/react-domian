@@ -1,32 +1,51 @@
+import {
+  FORM_SEARCH_OPENED,
+  FORM_SEARCH_FETCH_SUCCESS,
+  FORM_SEARCH_FETCH_START
+} from "../actions/form";
+
 const initialState = {
-  locationSearch: {
-    open: false,
-    result: {},
-    loading: false
+  search: {
+    location: {
+      open: false,
+      result: {},
+      loading: false
+    },
+    street: {
+      open: false,
+      result: {},
+      loading: false
+    }
   }
 };
 
 export default (state = initialState, action) => {
-  if (action.type === "FORM_LOCATION_SEARCH_OPENED") {
+  const { payload = {} } = action;
+  const { entitySearch = null } = payload;
+
+  if (action.type === FORM_SEARCH_OPENED) {
+    const { open } = payload;
     const newState = {
-      locationSearch: { ...state.locationSearch, open: action.payload }
+      [entitySearch]: { ...state[entitySearch], open }
     };
     return { ...state, ...newState };
   }
-  if (action.type === "FORM_LOCATION_SEARCH_FETCH_START") {
+  if (action.type === FORM_SEARCH_FETCH_START) {
     const newState = {
-      locationSearch: {
-        ...state.locationSearch,
+      [entitySearch]: {
+        ...state[entitySearch],
         loading: true
       }
     };
     return { ...state, ...newState };
   }
-  if (action.type === "FORM_LOCATION_SEARCH_FETCH_SUCCESS") {
+  if (action.type === FORM_SEARCH_FETCH_SUCCESS) {
+    const { data } = payload;
+
     const newState = {
-      locationSearch: {
-        ...state.locationSearch,
-        result: action.payload,
+      [entitySearch]: {
+        ...state[entitySearch],
+        result: data,
         loading: false
       }
     };

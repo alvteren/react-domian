@@ -6,7 +6,8 @@ import { size, map } from "lodash";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio from "material-ui/Radio";
 
-import { closeLocationSearch } from "../../../actions/form";
+import { closeSearch } from "../../../actions/form";
+import { entitySearch } from "../Location";
 
 class SearchResult extends React.Component {
   state = {
@@ -67,14 +68,14 @@ class SearchResult extends React.Component {
   }
 }
 const mapStateToProps = state => {
-  const { result } = state.crm.form.locationSearch;
+  const { result } = state.crm.form.search[entitySearch];
 
   return { result };
 };
 const mapDispatchToProps = dispatch => {
   return {
     closeLocationSearch: () => {
-      dispatch(closeLocationSearch());
+      dispatch(closeSearch({ entitySearch }));
     }
   };
 };

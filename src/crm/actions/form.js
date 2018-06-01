@@ -5,8 +5,14 @@ import {
 
 import { savePropToServer } from "./crm";
 
+export const FORM_SEARCH_OPENED = "FORM_SEARCH_OPENED";
+export const FORM_SEARCH_FETCH_START = "FORM_SEARCH_FETCH_START";
+export const FORM_SEARCH_FETCH_SUCCESS = "FORM_SEARCH_FETCH_SUCCESS";
+export const FORM_SEARCH_FETCH_ERROR = "FORM_SEARCH_FETCH_ERROR";
+
 export const setInitFormState = props => dispatch => {
   const { initState, entityId } = props;
+
   dispatch({
     type: "SET_INIT_FORM_STATE",
     payload: { initState, entityId }
@@ -14,6 +20,7 @@ export const setInitFormState = props => dispatch => {
 };
 export const saveToStore = props => async dispatch => {
   const { entityId, elementId, name, value } = props;
+
   dispatch({
     type: "FORM_SAVE_TO_STORE",
     payload: { entityId, elementId, name, value }
@@ -24,6 +31,7 @@ export const saveFile = props => async dispatch => {
   const result = await uploadFile(file);
   const { preview } = file;
   const value = preview ? { ...result, src: preview } : result;
+
   dispatch({
     type: "FORM_SAVE_FILE",
     payload: { entityId, elementId, name, value }
@@ -31,33 +39,39 @@ export const saveFile = props => async dispatch => {
   dispatch(savePropToServer({ entityId, elementId, name, value }));
 };
 
-export const openLocationSearch = props => async dispatch => {
-  dispatch(switchLocationSearch(true));
+export const openSearch = props => async dispatch => {
+  const { entitySearch } = props;
+
+  dispatch(switchSearch({ entitySearch, open: true }));
 };
-export const closeLocationSearch = props => async dispatch => {
-  dispatch(switchLocationSearch(false));
+export const closeSearch = props => async dispatch => {
+  const { entitySearch } = props;
+
+  dispatch(switchSearch({ entitySearch, open: false }));
 };
-export const switchLocationSearch = props => async dispatch => {
+export const switchSearch = props => async dispatch => {
   dispatch({
-    type: "FORM_LOCATION_SEARCH_OPENED",
+    type: FORM_SEARCH_OPENED,
     payload: props
   });
 };
 
-export const fetchSearchResult = query => async dispatch => {
+export const fetchSearchResult = props => async dispatch => {
+  const { query, entitySearch } = props;
+
   try {
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_START",
+      type: FORM_SEARCH_FETCH_START,
       payload: {}
     });
-    const data = await fetchSearchResultApi({ query });
+    const data = await fetchSearchResultApi({ query, entitySearch });
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_SUCCESS",
-      payload: { ...data }
+      type: FORM_SEARCH_FETCH_SUCCESS,
+      payload: { entitySearch, data }
     });
   } catch (err) {
     dispatch({
-      type: "FORM_LOCATION_SEARCH_FETCH_ERROR",
+      type: FORM_SEARCH_FETCH_ERROR,
       payload: err,
       error: true
     });

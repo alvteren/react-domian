@@ -134,6 +134,7 @@ class Field extends React.PureComponent {
         ...this.props,
         state: this.state,
         onChange: this.onChange,
+        onStartEdit: this.onStartEdit,
         onSave: this.onSave
       });
     }
@@ -410,16 +411,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   };
 };
-const stylesMUI = theme => ({
+export const stylesMUI = theme => ({
   formControl: {
     minWidth: 200,
     width: "100%",
     flexBasis: "auto"
   },
   valueWrapper: {
+    width: "100%",
     display: "flex",
     flexWrap: "nowrap",
     alignItems: "center",
+    justifyContent: "space-between",
     "&:hover $buttonEdit": {
       opacity: 1
     }

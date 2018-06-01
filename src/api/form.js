@@ -36,7 +36,7 @@ export const deleteFile = async fileId => {
 
 export const fetchSearchResult = async props => {
   const params = objectToQuery(props);
-  const response = await fetch(baseURL + "/v1/location/search/?" + params, {
+  const response = await fetch(baseURL + "/v1/search/?" + params, {
     credentials: "include"
   });
 

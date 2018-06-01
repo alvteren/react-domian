@@ -6,6 +6,7 @@ import formData from "./formData";
 import wishData from "./wishData";
 
 import { entities } from "../../constants";
+import Street from "../Field/Street";
 
 const chips = {
   chips: {},
@@ -416,11 +417,21 @@ export default (state = initialState, { type, payload }) => {
         values: { [values.id]: values }
       };
     }
+
     if (newTableState) {
       return { ...state, ...newTableState };
     } else if (newFilterState) {
       return { ...state, ...newFilterState };
     } else if (newFormState) {
+      if (type === "FORM_FIELDS_FETCH_SUCCESS") {
+        const { street_string: fieldStreet } = newFormState.fields;
+
+        newFormState.fields.street_string = {
+          ...fieldStreet,
+          type: "custom",
+          component: Street
+        };
+      }
       return { ...state, ...newFormState };
     } else if (newWishState) {
       return { ...state, wish: newWishState };

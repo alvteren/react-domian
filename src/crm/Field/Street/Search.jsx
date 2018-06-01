@@ -18,6 +18,9 @@ import { LinearProgress } from "material-ui";
 import SearchResult from "./SearchResult";
 import styles from "./Search.module.css";
 import delayedAction from "../../../util/delayedAction";
+import { openSearch, closeSearch, fetchSearchResult } from "../../actions/form";
+
+import { entitySearch } from "../Street";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -56,6 +59,7 @@ class Search extends React.PureComponent {
       loading,
       onChangeValue
     } = this.props;
+
     return (
       open && (
         <Dialog
@@ -103,20 +107,20 @@ class Search extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
-  const { open, result, loading } = state.crm.form.locationSearch;
+  const { open, result, loading } = state.crm.form.search[entitySearch];
 
   return { open, result, loading };
 };
 const mapDispatchToProps = dispatch => {
   return {
     openSearch: () => {
-      dispatch(openLocationSearch());
+      dispatch(openSearch({ entitySearch }));
     },
     closeSearch: () => {
-      dispatch(closeLocationSearch());
+      dispatch(closeSearch({ entitySearch }));
     },
     fetch: async query => {
-      dispatch(fetchSearchResult(query));
+      dispatch(fetchSearchResult({ entitySearch, query }));
     }
   };
 };

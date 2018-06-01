@@ -74,7 +74,7 @@ export const savePropToServer = async props => {
   };
 
   const result = await saveFormToServer({
-    id: entityId,
+    entityId,
     version,
     formData
   });
