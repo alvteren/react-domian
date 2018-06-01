@@ -13,7 +13,7 @@ export default (state, { type, payload }) => {
       const form = get(state, `values.${elementId}`, null);
       const fields = get(state, "fields");
       const validateErrors = formValidate({ form, fields, entityId });
-      if (validateErrors) throw({ action: "VALIDATE_SET_FORM_ERRORS", validateErrors });
+      if (validateErrors) throw({ action: typeActions.VALIDATE_SET_FORM_ERRORS, validateErrors });
       debugger;
       newState = {
         ...state,
