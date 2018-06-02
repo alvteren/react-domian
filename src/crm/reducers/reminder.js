@@ -91,6 +91,7 @@ const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
+
   if (entityId === ENTITIES.reminder) {
     const newFormState = formData(state, { type, payload });
     const newValidateData = validateData(state, { type, payload });
@@ -212,16 +213,16 @@ export const reminderData = (state, { type, payload }) => {
 
     if (type === reminderActions.REMINDER_REMOVE_SUCCESS) {
       const { elementId, reminderId } = payload;
-
+      const fullID = `${ENTITIES.lead}_${elementId}`;
+      debugger;
+      const reminders = omit(state.data[fullID].reminders, reminderId);
       newState = {
         ...state,
         data: {
           ...state.data,
-          [elementId]: {
-            ...state.data[elementId],
-            reminders: {
-              ...omit(state.data[elementId].reminders, reminderId)
-            }
+          [fullID]: {
+            ...state.data[fullID],
+            reminders
           }
         }
       }

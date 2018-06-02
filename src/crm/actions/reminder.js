@@ -37,6 +37,9 @@ export const addNewReminder = props => async dispatch => {
     });
     // const data = { success: true, id: 9999 }; //for test
     reminder.can = { edit: true };
+
+    dispatch({ type: validateActions.VALIDATE_SUBMIT_CLEAR, payload: { entityId, elementId }});
+
     dispatch({
       type: REMINDER_ADD_SUCCESS,
       payload: {

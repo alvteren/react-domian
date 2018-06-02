@@ -7,9 +7,9 @@ import Table, {
   TableFooter,
   TableRow
 } from "material-ui/Table";
-import { Tooltip, Paper, Checkbox, ListItem, Avatar, ListItemText, Divider, List, CardActions } from "material-ui";
-import { Pageview as PageviewIcon, AddAlert as AddAlertIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
-import Reminder from "./customCells/Reminder";
+import { Tooltip, Paper, Checkbox } from "material-ui";
+import { Pageview as PageviewIcon } from "material-ui-icons";
+import ReminderList from "./customCells/Reminder/index";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -111,35 +111,14 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
-      const showControls = e => {
-        console.log("errr");
-      };
       if (id === "reminders" && value instanceof Object) {
         if (get(row, "can.edit", false)) {
-          if (Object.keys(value).length) {
-            return (
-              <List>
-                {Object.keys(value).map((reminderId, index) => {
-                  const reminder = value[reminderId];
-                  return (
-                    <Reminder
-                      reminder={reminder}
-                      entityId={entityId}
-                      elementId={row.id}
-                      reminderId={reminderId}
-                      key={index}
-                    />
-                  )})
-                }
-              </List>
-            )
-          }
           return (
-            <Link
-              to={`lead/${row.id}/reminder/new`} // ?????
-              onClick={e => {e.stopPropagation();}}>
-              Создать напоминание
-            </Link>
+            <ReminderList
+              value={value}
+              entityId={entityId}
+              elementId={row.id}
+            />
           )
         }
         return " ";

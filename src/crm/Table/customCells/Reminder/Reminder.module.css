@@ -1,11 +1,25 @@
+.reminderWrapper:not(:last-of-type)::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: #cccccc;
+}
+
 .reminderWrapper:hover {
     background-color: #cccccc;
     cursor: pointer;
 }
 
+.reminderAvatarDefault {
+    width: 30px;
+    height: 30px;
+    background-color: #bdbdbd;
+}
+
 .reminderAvatar {
     width: 30px;
     height: 30px;
+    background-color: #1976d2;
 }
 
 .reminderAvatarOutdated {

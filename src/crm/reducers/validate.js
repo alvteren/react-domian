@@ -16,6 +16,7 @@ export default (state, { type, payload }) => {
       newState = {
         ...state,
         validity: {
+          ...state.validity,
           [elementId]: {
             submit: true
           }
@@ -25,6 +26,7 @@ export default (state, { type, payload }) => {
 
     if (type === typeActions.VALIDATE_SUBMIT_CLEAR) {
       const { elementId } = payload;
+
       newState = {
         ...state,
         validity: {

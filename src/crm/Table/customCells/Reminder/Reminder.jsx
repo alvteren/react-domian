@@ -2,12 +2,12 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 
 import { withRouter } from "react-router-dom";
-import { removeReminder } from "../../actions/reminder";
+import { removeReminder } from "../../../actions/reminder";
 
 import { Link } from "react-router-dom";
-import { Popover, Button, Typography, IconButton, Tooltip, ListItem, ListItemSecondaryAction, Avatar, ListItemText, Divider } from "material-ui";
+import { Popover, Button, Typography, IconButton, Tooltip, ListItem, ListItemSecondaryAction, Avatar, ListItemText } from "material-ui";
 import { AlarmOff as AlarmOffIcon , AlarmAdd as AddAlarmIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
-import {dateToString} from "../../../util/dateConverter";
+import {dateToString} from "../../../../util/dateConverter";
 
 import styles from "./Reminder.module.css";
 
@@ -26,7 +26,6 @@ class Reminder extends React.PureComponent {
       isOutdated
     }
   }
-
 
   reminderEdit = (e) => {
     const { entityId, elementId, reminderId } = this.props;
@@ -104,7 +103,6 @@ class Reminder extends React.PureComponent {
             </ListItemSecondaryAction>
           </ListItem>
         </div>
-        <Divider inset component="li" />
       </Fragment>
     )
   }
