@@ -18,6 +18,22 @@
     visibility: visible;
 }
 
+.hover {
+    background-color: #cccccc;
+}
+
+.reminderWrapper.hover .reminderActions {
+    visibility: visible;
+}
+
 .reminderActions {
     visibility: hidden;
+}
+
+.popoverTitle {
+    margin: 10px 0;
+}
+
+.popoverBtn {
+    margin: 5px 5px;
 }
