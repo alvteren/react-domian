@@ -18,7 +18,6 @@ import MobileStepper from "material-ui/MobileStepper";
 import { withStyles } from "material-ui/styles";
 
 import { toArray, isObject, get } from "lodash";
-import { dateToString } from "../../util/dateConverter";
 
 import {
   fetchTableHeaders,

@@ -7,13 +7,9 @@ import { removeReminder } from "../../../actions/reminder";
 import { Link } from "react-router-dom";
 import { Popover, Button, Typography, IconButton, Tooltip, ListItem, ListItemSecondaryAction, Avatar, ListItemText } from "material-ui";
 import { AlarmOff as AlarmOffIcon , AlarmAdd as AddAlarmIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
-import {dateToString} from "../../../../util/dateConverter";
+import { dateToString } from "../../../../util/dateConverter";
 
 import styles from "./Reminder.module.css";
-
-const MuiStyles = (theme) => ({
-
-});
 
 class Reminder extends React.PureComponent {
   constructor(props) {

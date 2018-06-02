@@ -214,7 +214,6 @@ export const reminderData = (state, { type, payload }) => {
     if (type === reminderActions.REMINDER_REMOVE_SUCCESS) {
       const { elementId, reminderId } = payload;
       const fullID = `${ENTITIES.lead}_${elementId}`;
-      debugger;
       const reminders = omit(state.data[fullID].reminders, reminderId);
       newState = {
         ...state,
