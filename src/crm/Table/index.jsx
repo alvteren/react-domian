@@ -124,6 +124,7 @@ class EnhancedTable extends React.Component {
                   return (
                     <Reminder
                       reminder={reminder}
+                      entityId={entityId}
                       elementId={row.id}
                       reminderId={reminderId}
                       key={index}

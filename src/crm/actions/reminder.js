@@ -1,5 +1,6 @@
 import { addNewReminder as addNewReminderApi } from "../../api/reminder";
 import { updateReminder as updateReminderApi } from "../../api/reminder";
+import { removeReminder as removeReminderApi } from "../../api/reminder";
 import { omit } from "lodash";
 import * as validateActions from "../actions/validate";
 
@@ -66,6 +67,15 @@ export const updateReminder = props => async dispatch => {
   } catch (err) {
     console.warn("ERR", err);
     dispatch({ type: "REMINDER_UPDATE_ERROR", payload: err, error: true });
+  }
+};
+
+export const removeReminder = props => async dispatch => {
+  const { entityId, elementId, reminderId } = props;
+  try {
+    const data = await removeReminderApi({ entityId, elementId, reminderId });
+  } catch (err) {
+    console.warn("REMOVE_ERR", err);
   }
 };
 

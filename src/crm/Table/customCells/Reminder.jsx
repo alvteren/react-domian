@@ -1,11 +1,15 @@
 import React, { Fragment } from "react";
+import { connect } from "react-redux";
+
+import { withRouter } from "react-router-dom";
+import { removeReminder } from "../../actions/reminder";
+
 import { Link } from "react-router-dom";
-import { Popover, Button, Typography, IconButton, Tooltip, ListItem, ListItemAvatar, ListItemSecondaryAction, Avatar, ListItemText, Divider, List, CardActions } from "material-ui";
+import { Popover, Button, Typography, IconButton, Tooltip, ListItem, ListItemSecondaryAction, Avatar, ListItemText, Divider } from "material-ui";
 import { AlarmOff as AlarmOffIcon , AlarmAdd as AddAlarmIcon, PhoneForwarded as CallIcon, Person as MeetIcon } from "material-ui-icons";
 import {dateToString} from "../../../util/dateConverter";
+
 import styles from "./Reminder.module.css";
-import {withRouter} from "react-router-dom";
-import { withStyles } from "material-ui/styles";
 
 const MuiStyles = (theme) => ({
 
@@ -25,9 +29,9 @@ class Reminder extends React.PureComponent {
 
 
   reminderEdit = (e) => {
-  const { elementId, reminderId } = this.props;
+  const { entityId, elementId, reminderId } = this.props;
     e.preventDefault();
-    this.props.history.push(`lead/${elementId}/reminder/${reminderId}`);
+    this.props.history.push(`${entityId}/${elementId}/reminder/${reminderId}`);
   };
 
   onRemove = (e) => {
@@ -35,10 +39,11 @@ class Reminder extends React.PureComponent {
     this.setState({ anchorEl: e.currentTarget })
   };
 
-  handleRemove(e) {
+  handleRemove = (e) => {
     e.stopPropagation();
-    this.setState({ anchorEl: null })
-  }
+    this.setState({ anchorEl: null });
+    this.props.removeReminder();
+  };
 
   handleClose = (e) => {
     e.stopPropagation();
@@ -104,4 +109,13 @@ class Reminder extends React.PureComponent {
   }
 }
 
-export default withRouter(Reminder);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { entityId, elementId, reminderId } = ownProps;
+  return {
+    removeReminder() {
+      dispatch(removeReminder({ entityId, elementId, reminderId }));
+    }
+  };
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(Reminder));

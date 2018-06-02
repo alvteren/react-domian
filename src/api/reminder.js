@@ -23,3 +23,14 @@ export const updateReminder = async props => {
   });
   return response.json();
 };
+
+export const removeReminder = async props => {
+  const { entityId, elementId, reminderId } = props;
+  const response = await fetch(`${baseURL}/${lastApiVersion}/crm/reminder`, {
+    method: "DELETE",
+    credentials: "include",
+    mode: "cors",
+    body: JSON.stringify({ entityId, elementId, reminderId })
+  });
+  return response.json();
+};
