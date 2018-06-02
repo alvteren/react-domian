@@ -29,7 +29,8 @@ class Reminder extends React.PureComponent {
 
 
   reminderEdit = (e) => {
-  const { entityId, elementId, reminderId } = this.props;
+    const { entityId, elementId, reminderId } = this.props;
+    e.stopPropagation();
     e.preventDefault();
     this.props.history.push(`${entityId}/${elementId}/reminder/${reminderId}`);
   };

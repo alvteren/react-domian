@@ -57,7 +57,7 @@ class Card extends React.PureComponent {
     }
     /* Form submit */
     const reminderId = this.props.reminderId;
-    if (this.props.validity && this.props.validity[reminderId].submit) {
+    if (get(this.props, `validity.${reminderId}.submit`, null)) {
       this.props.close();
     }
   }

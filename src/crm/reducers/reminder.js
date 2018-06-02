@@ -1,4 +1,4 @@
-import { get, toArray } from "lodash";
+import {get, toArray, omit, orderBy, without, size} from "lodash";
 import formData from "./formData";
 import validateData from "./validate";
 import { ENTITIES } from "../../constants";
@@ -143,8 +143,15 @@ export default function reducer(state = initialState, { type, payload }) {
 
   }
 
+  if (type === reminderActions.REMINDER_REMOVE_SUCCESS) {
+    const { reminderId } = payload;
+    return {
+      ...state,
+      values: omit(state.values, reminderId)
+    }
+  }
+
   if (type === reminderActions.REMINDER_ADD_SUCCESS) {
-    debugger;
     return {
       ...state,
       values: {
@@ -180,3 +187,50 @@ export default function reducer(state = initialState, { type, payload }) {
 
   return state;
 }
+
+export const reminderData = (state, { type, payload }) => {
+  let newState = null;
+  if (state) {
+    if (type === reminderActions.REMINDER_ADD_SUCCESS) {
+      const { elementId, reminder, id } = payload;
+      const fullID = `${ENTITIES.lead}_${elementId}`;
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [fullID]: {
+            ...state.data[fullID],
+            reminders: {
+              ...state.data[fullID].reminders,
+              [id]: reminder
+            }
+          }
+        }
+      }
+    }
+
+    if (type === reminderActions.REMINDER_REMOVE_SUCCESS) {
+      const { elementId, reminderId } = payload;
+
+      newState = {
+        ...state,
+        data: {
+          ...state.data,
+          [elementId]: {
+            ...state.data[elementId],
+            reminders: {
+              ...omit(state.data[elementId].reminders, reminderId)
+            }
+          }
+        }
+      }
+    }
+
+    if (newState) {
+      return { ...state, ...newState };
+    }
+  }
+
+  return null;
+};
