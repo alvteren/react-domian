@@ -45,10 +45,16 @@ const forms = {
   [ENTITIES.reminder]: reminderFields
 };
 
+const excludeValidationProps = {
+  [ENTITIES.lead]: leadRules.excludeValidationProps,
+  [ENTITIES.sale]: saleRules.excludeValidationProps,
+  [ENTITIES.reminder]: reminderRules.excludeValidationProps
+};
+
 const idRules = {
-  [ENTITIES.lead]: leadRules,
-  [ENTITIES.sale]: saleRules,
-  [ENTITIES.reminder]: reminderRules
+  [ENTITIES.lead]: leadRules.rules,
+  [ENTITIES.sale]: saleRules.rules,
+  [ENTITIES.reminder]: reminderRules.rules
 };
 
 /**
@@ -62,8 +68,9 @@ const idRules = {
 
 export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
+  const customRules = idRules[entityId];
+  const excludeProps  = excludeValidationProps[entityId];
   let checked = false;
-  const { exludeValidationProps } = idRules[entityId];
 
   if (propId) {
     /*
@@ -76,29 +83,31 @@ export default function formValidate({ form, fields, entityId, propId }) {
     const isFilled = isEmpty(form[propId]);
 
     /* Check for required props */
-    if (fields[propId].required && !checked) {
-      const isPropValid = Boolean(form[propId] || form[propId].length);
-      if (isPropValid) return true;
-      validateErrors[propId] = {
-        message: "Это поле обязательно для заполнения"
-      };
-      checked = true;
+    if (fields[propId].required) {
+      if (!isFilled) {
+        validateErrors[propId] = {
+          message: "Это поле обязательно для заполнения"
+        };
+        checked = true;
+      }
     }
 
     /* Check for rules follow by type */
     if (isFilled && typeRules.hasOwnProperty(fields[propId].type) && !checked) {
       const isValid = typeRules[fields[propId].type](form[propId]);
-      if (isValid === true) return true;
-      validateErrors[propId] = isValid;
-      checked = true;
+      if (isValid !== true) {
+        validateErrors[propId] = isValid;
+        checked = true;
+      }
     }
 
     /* Check for rules follow by id */
-    if (isFilled && typeRules[propId] && !checked) {
-      const isValid = typeRules[propId](form[propId]);
-      if (isValid === true) return true;
-      validateErrors[propId] = isValid;
-      checked = true;
+    if (isFilled && customRules[propId] && !checked) {
+      const isValid = customRules[propId](form[propId], form);
+      if (isValid !== true) {
+        validateErrors[propId] = isValid;
+        checked = true;
+      }
     }
   } else {
     /*
@@ -113,13 +122,12 @@ export default function formValidate({ form, fields, entityId, propId }) {
 
       const isFilled = isEmpty(form[propId]);
       /* Service props exclude */
-      if (exludeValidationProps && exludeValidationProps.includes(propId))
+      if (excludeProps && excludeProps.includes(propId))
         return;
 
       /* Check for required props */
       if (fields[propId].required) {
-        const isPropValid = Boolean(form[propId] || form[propId].length);
-        if (!isPropValid) {
+        if (!isFilled) {
           validateErrors[propId] = {
             message: "Это поле обязательно для заполнения"
           };
@@ -130,17 +138,19 @@ export default function formValidate({ form, fields, entityId, propId }) {
       /* Check for rules follow by type */
       if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
         const isValid = typeRules[fields[propId].type](form[propId]);
-        if (isValid === true) return;
-        validateErrors[propId] = isValid;
-        return;
+        if (isValid !== true) {
+          validateErrors[propId] = isValid;
+          return;
+        }
       }
 
       /* Check for rules follow by id */
-      if (isFilled && typeRules[propId]) {
-        const isValid = typeRules[propId](form[propId]);
-        if (isValid === true) return;
-        validateErrors[propId] = isValid;
-        return;
+      if (isFilled && customRules[propId]) {
+        const isValid = customRules[propId](form[propId], form);
+        if (isValid !== true) {
+          validateErrors[propId] = isValid;
+          return;
+        }
       }
     });
   }
@@ -156,6 +166,8 @@ function isEmpty(prop) {
     case "object":
       if (Array.isArray(prop)) return Boolean(prop.length);
       return true;
+    case "number":
+      return prop.toString().length;
     default:
       return false;
   }
