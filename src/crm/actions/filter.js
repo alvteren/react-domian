@@ -1,27 +1,26 @@
 import { clearData } from "./table";
-import { fetchObjects } from "./objects";
-import { fetchLeads } from "./lead";
+import { fetchList } from "./crm";
 import { fetchChips as fetchChipsApi } from "../../api/chips";
 
 export const deleteChip = props => dispatch => {
-  const { id, chipId } = props;
+  const { entityId, chipId } = props;
 
-  dispatch({ type: "CHIPS_DELETED_SUCCESS", payload: { id, chipId } });
-  dispatch(applyFilter({ id }));
+  dispatch({ type: "CHIPS_DELETED_SUCCESS", payload: { entityId, chipId } });
+  dispatch(applyFilter({ entityId }));
 };
 
 export const fetchChips = props => async dispatch => {
-  const { id, query } = props;
+  const { entityId, query } = props;
   try {
-    dispatch({ type: "CHIPS_FETCH_STARTED", payload: { id } });
+    dispatch({ type: "CHIPS_FETCH_STARTED", payload: { entityId } });
 
     const data = await fetchChipsApi({
-      id,
+      entityId,
       query
     });
     dispatch({
       type: "CHIPS_FETCH_SUCCESS",
-      payload: { id: id, data: data }
+      payload: { entityId, data: data }
     });
   } catch (err) {
     dispatch({ type: "CHIPS_FETCH_ERROR", payload: err, error: true });
@@ -29,24 +28,22 @@ export const fetchChips = props => async dispatch => {
 };
 
 export const selectChip = props => dispatch => {
-  const { id, chip } = props;
-  dispatch({ type: "CHIPS_ADDED_SUCCESS", payload: { id, chip } });
-  dispatch(applyFilter({ id }));
+  const { entityId, chip } = props;
+  dispatch({ type: "CHIPS_ADDED_SUCCESS", payload: { entityId, chip } });
+  dispatch(applyFilter({ entityId }));
 };
 
 export const applyFilter = props => async (dispatch, getState) => {
-  const { id } = props;
+  const { entityId } = props;
 
-  const { filter, rowsPerPage, order, orderBy, page } = getState().crm[id];
+  const { filter, rowsPerPage, order, orderBy, page } = getState().crm[
+    entityId
+  ];
 
-  dispatch(clearData({ id }));
+  dispatch(clearData({ entityId }));
   if (page === 0) {
-    switch (id) {
-      case "objects": dispatch(fetchObjects({ filter, page, rowsPerPage, orderBy, order }));
-      break;
-      case "leads": dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
-      break;
-      default: break;
-    }
+    dispatch(
+      fetchList({ entityId, filter, page, rowsPerPage, orderBy, order })
+    );
   }
 };

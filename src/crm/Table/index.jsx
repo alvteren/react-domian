@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import keycode from "keycode";
 import Table, {
@@ -9,12 +9,15 @@ import Table, {
 } from "material-ui/Table";
 import { Tooltip, Paper, Checkbox } from "material-ui";
 import { Pageview as PageviewIcon } from "material-ui-icons";
+import ReminderList from "./customCells/Reminder/index";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
 import Pagination from "./Pagination";
+import MobileStepper from "material-ui/MobileStepper";
+import { withStyles } from "material-ui/styles";
 
-import { toArray, isObject } from "lodash";
+import { toArray, isObject, get } from "lodash";
 
 import {
   fetchTableHeaders,
@@ -27,14 +30,19 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import styles from "./Table.module.css";
+const style = {
+  progress: {
+    width: `100%`
+  }
+};
 
 /**
  * EnhancedTable API:
  * available props:
- *   selected [Object] - array of selected objects
- *   controlComponents React.Component - enable components for additional control buttons
- *   filterComponent React.Component - enable filter component
- *   groupActionsComponents React.Component - enable component for buttons of group actions
+ *   @selected [Object] - array of selected objects
+ *   @controlComponents React.Component - enable components for additional control buttons
+ *   @filterComponent React.Component - enable filter component
+ *   @groupActionsComponents React.Component - enable component for buttons of group actions
  */
 
 class EnhancedTable extends React.Component {
@@ -68,7 +76,7 @@ class EnhancedTable extends React.Component {
 
   render() {
     const {
-      id,
+      entityId,
       data,
       selected,
       rowsPerPage,
@@ -77,12 +85,15 @@ class EnhancedTable extends React.Component {
       headerData,
       fields,
       filterComponent,
-      groupActionsComponents,
+      groupActionsComponent,
       controlComponents,
-      onChangePage
+      onChangePage,
+      classes
     } = this.props;
 
     const arData = toArray(data);
+    const arHeaderData = toArray(headerData);
+
     const emptyRows = () => {
       if (loading.data && arData.length > 0) {
         return (
@@ -95,11 +106,22 @@ class EnhancedTable extends React.Component {
         rowsPerPage - Math.min(rowsPerPage, arData.length - page * rowsPerPage)
       );
     };
-
-    const arHeaderData = toArray(headerData);
+    const countEmptyRows = emptyRows();
 
     const formatValue = params => {
       const { id, value, row } = params;
+      if (id === "reminders" && value instanceof Object) {
+        if (get(row, "can.edit", false)) {
+          return (
+            <ReminderList
+              value={value}
+              entityId={entityId}
+              elementId={row.id}
+            />
+          )
+        }
+        return " ";
+      }
       if (value != null) {
         if (id === "price") {
           const currency = row.currency || "RUB";
@@ -117,16 +139,13 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (
-          fields &&
-          fields.hasOwnProperty(id) &&
-          fields[id].type === "select"
-        ) {
+        if (get(fields, `${id}.type`, null) === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
         }
         if (Array.isArray(value)) {
+          // wishes list case: [String]
           return (
             <div>
               {value.map((item, index) => {
@@ -137,18 +156,31 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (
-            fields &&
-            fields.status_id &&
-            fields.status_id.items &&
-            fields.status_id.items[val] &&
-            fields.status_id.items[val].label
-          ) {
-            return fields.status_id.items[val].label;
+          if (get(fields, `status_id.items.${val}.label`, null)) {
+            const statusToStep = {
+              NEW: 1,
+              ASSIGNED: 2,
+              DETAILS: 3,
+              CONVERTED: 4,
+              JUNK: 0
+            };
+            const step = statusToStep[fields.status_id.items[val].value];
+            return (
+              <div>
+                <MobileStepper
+                  variant="progress"
+                  steps={5}
+                  position="static"
+                  activeStep={step}
+                  classes={{ progress: classes.progress }}
+                />
+                <span>{fields.status_id.items[val].label}</span>
+              </div>
+            );
           }
         }
 
-        return value;
+        return String(value);
       }
 
       return " ";
@@ -158,9 +190,9 @@ class EnhancedTable extends React.Component {
       <Paper className={styles.root}>
         <EnhancedToolbar
           numSelected={selected.length}
-          id={id}
+          entityId={entityId}
           filterComponent={filterComponent}
-          groupActionsComponents={groupActionsComponents}
+          groupActionsComponent={groupActionsComponent}
         />
         <div className={styles.tableWrapper}>
           <Table className={styles.table}>
@@ -170,7 +202,7 @@ class EnhancedTable extends React.Component {
               rowCount={arData.length}
               headerData={headerData}
               numSelected={selected.length}
-              id={id}
+              entityId={entityId}
             />
             <TableBody>
               {arData
@@ -195,7 +227,7 @@ class EnhancedTable extends React.Component {
                         <div className={styles.controlsWrapper}>
                           <Tooltip title="Подробнее" enterDelay={300}>
                             <Link
-                              to={row.url || `show/${id}/${row.id}`}
+                              to={row.url || `show/${row.id}`}
                               onClick={e => {
                                 e.stopPropagation();
                               }}
@@ -206,7 +238,7 @@ class EnhancedTable extends React.Component {
                           {controlComponents &&
                             React.createElement(controlComponents, {
                               id: row.id,
-                              entityId: id
+                              entityId
                             })}
                         </div>
                       </TableCell>
@@ -235,15 +267,15 @@ class EnhancedTable extends React.Component {
                   </TableCell>
                 </TableRow>
               )}
-              {emptyRows() > 0 && (
-                <TableRow style={{ height: 49 * emptyRows() }}>
+              {countEmptyRows > 0 && (
+                <TableRow style={{ height: 49 * countEmptyRows }}>
                   <TableCell colSpan={arHeaderData.length} />
                 </TableRow>
               )}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <Pagination id={id} onChangePage={onChangePage} />
+                <Pagination entityId={entityId} onChangePage={onChangePage} />
               </TableRow>
             </TableFooter>
           </Table>
@@ -254,10 +286,10 @@ class EnhancedTable extends React.Component {
 }
 
 EnhancedTable.propTypes = {
-  id: PropTypes.string.isRequired
+  entityId: PropTypes.string.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
-  const table = state.crm[ownProps.id];
+  const table = state.crm[ownProps.entityId];
   const {
     headers,
     fields,
@@ -282,21 +314,23 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const tableId = ownProps.id;
+  const { entityId } = ownProps;
   return {
     init: () => {
-      dispatch(fetchTableHeaders(tableId));
+      dispatch(fetchTableHeaders(entityId));
     },
     onToggleRow: id => {
-      dispatch(toggleRow({ id: tableId, rowId: id }));
+      dispatch(toggleRow({ entityId, rowId: id }));
     },
     onToggleAllRow: checked => {
-      dispatch(toggleAllRow({ id: tableId, checked }));
+      dispatch(toggleAllRow({ entityId, checked }));
     },
     onRequestSort: property => {
-      dispatch(requestSort({ id: tableId, orderBy: property }));
+      dispatch(requestSort({ entityId, orderBy: property }));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(style)(EnhancedTable)
+);

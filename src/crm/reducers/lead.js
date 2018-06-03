@@ -3,8 +3,14 @@ import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+import { reminderData } from "./reminder";
+import validate from "./validate";
+import convert from "../../util/leadDataConverter";
 
 import DistrictInput from "../Field/District";
+import TypeRealtyInput from "../Field/TypeRealty";
+
+import { ENTITIES } from "../../constants";
 
 const chips = {
   chips: {},
@@ -32,6 +38,10 @@ const chips = {
     rejections: {
       id: "rejections",
       label: "Мои отказы"
+    },
+    favorites: {
+      id: "wishes",
+      label: "Избранное"
     }
   }
 };
@@ -85,7 +95,8 @@ const form = {
         status_id: true,
         opportunity: true,
         opened: true,
-        email: true
+        email: true,
+        phone: true
       }
     },
     more: {
@@ -98,7 +109,8 @@ const form = {
         district: true,
         uf_crm_s_area: true,
         uf_type_object_2: true,
-        uf_source: true
+        uf_source: true,
+        uf_currency: true
       }
     }
   },
@@ -114,6 +126,13 @@ const form = {
     subdistrict: null
   }
 };
+// validateErrorArr prop will be contain info about invalid fields before save to server
+
+export const formFields = {
+  ...form.fieldsSections.main.fields,
+  ...form.fieldsSections.more.fields
+};
+// validateErrorArr prop will be contain info about invalid fields before save to server
 
 const fields = {}; // will be fetched from API
 
@@ -128,16 +147,19 @@ export const initialState = {
     form: false,
     chips: false,
     data: true
-  }
+  },
+  validity: {}
 };
 
 export default function reducer(state = initialState, { type, payload }) {
-  const id = get(payload, "id", null);
-  if (id === "leads") {
+  const entityId = get(payload, "entityId", null);
+  if (entityId === ENTITIES.lead) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
+    const newValidateState = validate(state, { type, payload });
+    const newReminderState = reminderData(state, { type, payload });
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
@@ -153,6 +175,9 @@ export default function reducer(state = initialState, { type, payload }) {
     }
 
     if (newTableState) {
+      if (type === "TABLE_FETCH_DATA_SUCCESS") {
+        convert(newTableState.data);
+      }
       return { ...state, ...newTableState };
     } else if (newFilterState) {
       return { ...state, ...newFilterState };
@@ -166,6 +191,16 @@ export default function reducer(state = initialState, { type, payload }) {
           depended: "uf_crm_district_all",
           link: [false]
         };
+        newFormState.fields["uf_crm_type_realty"] = {
+          ...newFormState.fields["uf_crm_type_realty"],
+          ...{
+            id: "uf_crm_type_realty",
+            type: "custom",
+            component: TypeRealtyInput,
+            label: "Тип недвижимости",
+            depended: null
+          }
+        };
       }
       return {
         ...state,
@@ -173,6 +208,10 @@ export default function reducer(state = initialState, { type, payload }) {
       };
     } else if (newWishState) {
       return { ...state, wish: newWishState };
+    } else if (newValidateState) {
+      return { ...newValidateState }
+    } else if (newReminderState) {
+      return { ...newReminderState }
     }
   }
   return state;

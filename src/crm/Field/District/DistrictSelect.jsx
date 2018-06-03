@@ -30,7 +30,7 @@ const DistrictSelect = props => {
       fullScreen={fullScreen}
       open={true}
       onClose={onCloseDialog}
-      transition={Transition}
+      TransitionComponent={Transition}
     >
       <AppBar color="inherit" className={styles.appBar}>
         <Toolbar>

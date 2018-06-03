@@ -13,7 +13,24 @@ export const uploadFile = async file => {
     body: formData
   };
 
-  const response = await fetch(baseURL + "/v1/file/upload/", params);
+  const response = await fetch(baseURL + "/v1/file/", params);
+  return response.json();
+};
+
+export const downloadFile = async fileId => {
+  const response = await fetch(baseURL + `/v1/file/?fileId=${fileId}`);
+  return response.json();
+};
+
+export const deleteFile = async fileId => {
+  const params = {
+    method: "POST",
+    credentials: "include",
+    mode: "cors",
+    body: { fileId }
+  };
+
+  const response = await fetch(baseURL + "/v1/file/", params);
   return response.json();
 };
 
@@ -23,21 +40,5 @@ export const fetchSearchResult = async props => {
     credentials: "include"
   });
 
-  return response.json();
-};
-
-export const saveToServer = async props => {
-  const formData = {
-    id: props.elementId,
-    fields: { [props.name]: props.value }
-  };
-  const params = {
-    method: "POST",
-    credentials: "include",
-    mode: "cors",
-    body: JSON.stringify(formData)
-  };
-
-  const response = await fetch(baseURL + "/v1/object/", params);
   return response.json();
 };

@@ -39,7 +39,7 @@ const Add = props => {
       fullScreen={fullScreen}
       open={true}
       onClose={handleClose}
-      transition={Transition}
+      TransitionComponent={Transition}
     >
       <form onSubmit={handleSave}>
         <AppBar className={styles.appBar}>

@@ -20,7 +20,7 @@ const Location = props => {
   const locationName =
     value && value.hasOwnProperty("name") && value.name ? value.name : "";
   const locationId =
-    value && value.hasOwnProperty("value") && value.value ? value.value : "";
+    value && value.hasOwnProperty("value") && value.value ? String(value.value) : "";
 
   return (
     <Fragment>

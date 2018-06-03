@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { map } from "lodash";
+import { map, get } from "lodash";
 
 import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
@@ -11,6 +11,9 @@ import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
+import { ENTITIES } from "../../../constants";
+
+const entityId = ENTITIES.lead;
 
 const styles = theme => ({
   root: {},
@@ -94,14 +97,25 @@ class Form extends React.Component {
             scrollButtons="auto"
           >
             {map(fieldsSections, (section, code) => (
-              <Tab label={section.name} value={code} key={code} />
+              <Tab
+                disabled={this.props.loadFields}
+                label={section.name}
+                value={code}
+                key={code}
+              />
             ))}
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
-          <Grid container className={classes.container}>
+          <Grid container spacing={24} className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
-              <Field id={id} key={id} edit={true} match={this.props.match} entityId="leads"/>
+              <Field
+                id={id}
+                key={id}
+                edit={true}
+                elementId={get(this.props, "match.params.elementId", 0)}
+                entityId={entityId}
+              />
             ))}
           </Grid>
         </TabContainer>
@@ -110,8 +124,9 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { fieldsSections } = state.crm.leads;
-  return { fieldsSections };
+  const { fieldsSections } = state.crm[entityId];
+  const { loadFields } = ownProps;
+  return { fieldsSections, loadFields };
 };
 
 Form.propTypes = {

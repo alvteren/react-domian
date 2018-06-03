@@ -2,28 +2,34 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { get, size, forEach } from "lodash";
+import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
+import fieldValidate from "../../util/formValidate";
 
-import { saveToStore, saveFile, saveToServer } from "../actions/form";
+import { saveToStore, saveFile } from "../actions/form";
+import { validateFormError } from "../actions/validate";
+import { savePropToServer } from "../actions/crm";
 
 import FieldViewImage from "./view/Image";
 import FieldEditImage from "./edit/Image";
 import FieldEditSelect from "./edit/SelectField";
 import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
-// import DistrictFieldEdit from "./edit/District";
+import Date from "./edit/DateField";
+import Tel from "./edit/Tel";
+import Text from "./edit/Text"
+import TextArea from "./edit/TextArea";
 
 import styles from "./Field.module.css";
 
 import { withStyles } from "material-ui/styles";
-import { TextField, Grid, IconButton } from "material-ui";
+import { Grid, IconButton } from "material-ui";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
 
-class Field extends React.Component {
+class Field extends React.PureComponent {
   state = {
     edit: get(this.props, "edit", false),
     needSave: false
@@ -32,8 +38,14 @@ class Field extends React.Component {
   onStartEdit = () => {
     this.setState({ edit: true, needSave: true });
   };
-  onSave = id => e => {
-    this.props.saveToServer(id);
+  onSave = propId => e => {
+    const { fields, values, entityId } = this.props;
+    const error = fieldValidate({ form: values, fields, entityId, propId });
+    if (error instanceof Object) {
+      this.props.formValidateError(error);
+      return;
+    }
+    this.props.saveToServer(propId);
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
@@ -57,11 +69,12 @@ class Field extends React.Component {
   };
 
   render() {
-    const { id, field, values, value, classes, can } = this.props;
-
+    const { id, field, values, value, classes, can, gridType, validity, elementId, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
+    const col = gridType ? gridType : 6;
+    const validateError = get(validity, `${elementId}.validateErrors.${id}`, null);
 
     if (field === false) {
       return <span />;
@@ -105,7 +118,7 @@ class Field extends React.Component {
         if (field.type === "select") {
           if (size(visibleValues) > 0) {
             return (
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={col}>
                 <div className={classes.valueWrapper}>
                   <FieldEditSelect
                     id={id}
@@ -114,6 +127,8 @@ class Field extends React.Component {
                     visibleValues={visibleValues}
                     onChange={this.onChange}
                     formControl={formControl}
+                    validateError={validateError}
+                    error={get(values, `validateErrors.${field.id}`, false)}
                   />
                   {needSave && (
                     <IconButton
@@ -137,7 +152,7 @@ class Field extends React.Component {
               <SwitchFieldEdit
                 formControl={formControl}
                 id={id}
-                value={value}
+                value={Boolean(value)}
                 onChange={this.onChange}
                 field={field}
               />
@@ -163,6 +178,7 @@ class Field extends React.Component {
                 value={value}
                 onChange={this.onChange}
                 field={field}
+                validateError={validateError}
               />
 
               {needSave && (
@@ -180,18 +196,12 @@ class Field extends React.Component {
         if (field.type === "textarea") {
           return (
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
-              <TextField
-                type="text"
+              <TextArea
                 className={formControl}
-                fullWidth
-                required={field.required}
-                name={id}
-                label={field.label}
                 onChange={this.onChange}
-                value={value || ""}
-                multiline
-                rowsMax="4"
-                helperText={get(field, "hint", "")}
+                field={field}
+                value={value}
+                validateError={validateError}
               />
               {needSave && (
                 <IconButton
@@ -205,18 +215,42 @@ class Field extends React.Component {
             </Grid>
           );
         }
+        if (field.type === "date") {
+          return (
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Date
+                field={field}
+                value={value}
+                onChange={this.onChange}
+                visibleValues={visibleValues}
+                validateError={validateError}
+              />
+            </Grid>
+          );
+        }
+        if (field.type === "tel") {
+          return (
+            <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+              <Tel
+                className={formControl}
+                field={field}
+                value={value || ""}
+                values={values}
+                onChange={this.onChange}
+                validateError={validateError}
+              />
+            </Grid>
+          )
+        }
         return (
-          <Grid item xs={12} sm={6} className={classes.valueWrapper}>
-            <TextField
-              type={field.type}
+          <Grid item xs={12} sm={col} className={classes.valueWrapper}>
+            <Text
               className={formControl}
-              fullWidth
-              required={field.required}
-              name={id}
-              label={field.label}
+              field={field}
+              value={value}
+              values={values}
               onChange={this.onChange}
-              value={value || ""}
-              helperText={get(field, "hint", "")}
+              validateError={validateError}
             />
             {needSave && (
               <IconButton
@@ -285,33 +319,34 @@ class Field extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, match, entityId } = ownProps;
-  const { fields, values } = state.crm[entityId];
+  const { id, entityId, elementId, gridType } = ownProps;
+  const { fields, values, validity } = state.crm[entityId];
 
-  const params = get(match, "params", false);
   const field = get(fields, id, false);
-  const objectId = get(params, "id", 0);
-  const objectValues = get(values, objectId, null);
-  const value = objectValues != null ? get(objectValues, id, null) : null;
-  const can = objectValues != null ? get(objectValues, "can", {}) : {};
 
-  if (objectId === 0) {
+  const elementValues = get(values, elementId, null);
+  const value = elementValues != null ? get(elementValues, id, null) : null;
+  const can = elementValues != null ? get(elementValues, "can", {}) : {};
+
+  if (elementId === 0) {
     can.edit = true;
   }
 
   return {
-    objectId,
+    fields,
     field,
-    values: objectValues,
+    values: elementValues,
     value,
     can,
-    entityId
+    gridType,
+    validity,
+    elementId
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { objectId: elementId, field } = stateProps;
-  const { entityId } = ownProps;
+  const { field } = stateProps;
+  const { entityId, elementId } = ownProps;
   const name = field.id;
 
   return {
@@ -319,17 +354,20 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: e => {
       const { value } = e.target;
-      dispatch(saveToStore({ id: entityId, elementId, name, value }));
+      dispatch(saveToStore({ entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
-      dispatch(saveToStore({ id: entityId, elementId, name, value: checked }));
+      dispatch(saveToStore({ entityId, elementId, name, value: checked }));
     },
     saveFile: file => {
-      dispatch(saveFile({ id: entityId, elementId, name: "photo", file }));
+      dispatch(saveFile({ entityId, elementId, name: "photo", file }));
     },
     saveToServer: () => {
       const { value } = stateProps;
-      dispatch(saveToServer({ id: entityId, elementId, name, value }));
+      dispatch(savePropToServer({ entityId, elementId, name, value }));
+    },
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId, errors }));
     }
   };
 };
@@ -373,7 +411,9 @@ const stylesMUI = theme => ({
 });
 Field.propTypes = {
   classes: PropTypes.object.isRequired,
-  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  entityId: PropTypes.string.isRequired,
+  elementId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 export default connect(mapStateToProps, null, mergeProps)(
   withStyles(stylesMUI)(Field)

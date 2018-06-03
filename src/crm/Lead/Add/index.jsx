@@ -14,6 +14,14 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
+import { setInitFormState } from "../../actions/form";
+import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
+import { formSubmit, validateFormError } from "../../actions/validate";
+import { find } from "lodash";
+import formValidate from "../../../util/formValidate";
+import { ENTITIES } from "../../../constants";
+
+const entityId = ENTITIES.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -34,7 +42,8 @@ const styles = theme => ({
 
 class Add extends React.Component {
   state = {
-    open: true
+    open: true,
+    loading: !Object.keys(this.props.fields).length // UI blocked while fields is loading
   };
 
   handleClose = () => {
@@ -43,9 +52,36 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    this.props.onSave();
-    this.handleClose();
+    this.props.saveFormToServer(this.props.values["0"]);
   };
+
+  componentDidMount() {
+    if (!this.state.loading) {
+      this.setInitFormData(this.props.fields);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { fields } = nextProps;
+    if (JSON.stringify(this.props.fields) === JSON.stringify(fields)) return;
+    this.setInitFormData(fields);
+    this.setState({ loading: false });
+  }
+
+  setInitFormData(fields) {
+    if (!fields || !Object.keys(fields).length) return;
+    const initState = {};
+    Object.keys(fields).forEach(key => {
+      if (String(key) === "undefined") return;
+      initState[key] = fields[key].hasOwnProperty("default")
+        ? fields[key].default
+        : "";
+      if (key === "uf_crm_type_realty") initState[key] = [];
+    });
+    initState.can = { edit: true };
+    this.props.setInitFormState(initState);
+    return true;
+  }
 
   render() {
     const { fullScreen, classes } = this.props;
@@ -54,7 +90,7 @@ class Add extends React.Component {
         fullScreen={fullScreen}
         open={this.state.open}
         onClose={this.handleClose}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -88,7 +124,7 @@ class Add extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Form />
+          <Form loadFields={this.state.loading} />
         </DialogContent>
       </Dialog>
     );
@@ -96,12 +132,29 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+  const { fields, values } = state.crm[entityId];
+  return { fields, values };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    onSave: () => {
-      // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
+    dispatch,
+    getLeadFields() {
+      dispatch(fetchFields({ entityId }));
+    }
+  };
+};
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { fields } = stateProps;
+  const { dispatch } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...ownProps,
+    setInitFormState(initState) {
+      dispatch(setInitFormState({ initState, entityId }));
+    },
+    saveFormToServer(formData) {
+      dispatch(saveFormToServer({ entityId, elementId: 0 }));
     }
   };
 };
@@ -112,5 +165,7 @@ Add.propTypes = {
 };
 
 export default withMobileDialog()(
-  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Add))
+  withStyles(styles)(
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(Add)
+  )
 );

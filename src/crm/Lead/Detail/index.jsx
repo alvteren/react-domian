@@ -16,7 +16,10 @@ import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
 
-import { fetchLead, onInitLead } from "../../actions/lead";
+import { fetchDetail, onInitDetail } from "../../actions/crm";
+import { ENTITIES } from "../../../constants";
+
+const entityId = ENTITIES.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -60,7 +63,7 @@ class LeadDetail extends React.Component {
         fullScreen={fullScreen}
         open={this.state.open}
         onClose={this.handleClose}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -90,17 +93,17 @@ class LeadDetail extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  const { values } = state.crm.leads;
-  return { id, values };
+  const { elementId } = ownProps.match.params;
+  const { values } = state.crm[entityId];
+  return { elementId, values };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { id, values } = stateProps;
+  const { elementId, values } = stateProps;
   const { dispatch } = dispatchProps;
-  const objectValues = get(values, id, null);
+  const objectValues = get(values, elementId, null);
 
   if (objectValues == null || size(objectValues) === 0) {
-    dispatch(fetchLead(id));
+    dispatch(fetchDetail({ entityId, elementId }));
   }
   return {
     ...stateProps,
@@ -109,7 +112,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
     },
     onInit: () => {
-      dispatch(onInitLead({ id }));
+      dispatch(onInitDetail({ entityId, elementId }));
     }
   };
 };

@@ -1,6 +1,12 @@
 import { get, reduce, size, isObject } from "lodash";
 import { noStrictIncludes, noStrictExcludes } from "../../util/collection";
 
+/**
+ *
+ * @param field - field from fields schema
+ * @param values - form values
+ * @return {*}
+ */
 const getVisibleValues = (field, values) => {
   const isDepended = get(field, "depended", null) !== null;
 
@@ -13,10 +19,10 @@ const getVisibleValues = (field, values) => {
       linkedValue = linkedValue.id;
     }
     if (field["link"]) {
-      return noStrictIncludes(field.link, linkedValue) ? true : null;
+      return noStrictIncludes(field.link, linkedValue) ? field.items || { show: true } : null;
     }
     if (field["exclude_link"]) {
-      return noStrictExcludes(field.exclude_link, linkedValue) ? true : null;
+      return noStrictExcludes(field.exclude_link, linkedValue) ? field.items || { show: true } : null;
     }
     if (get(field, "items", false)) {
       const items = reduce(
@@ -38,8 +44,12 @@ const getVisibleValues = (field, values) => {
       );
       return size(items) > 0 ? items : null;
     }
+    if (field.dependedValue) {
+      const hidden = field.dependedValue !== linkedValue;
+      return { show: !hidden, [field.dependedAction]: hidden };
+    }
   }
 
-  return get(field, "items", true);
+  return get(field, "items", { show: true });
 };
 export default getVisibleValues;

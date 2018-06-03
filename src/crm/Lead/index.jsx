@@ -1,12 +1,13 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { fetchLeads, fetchLeadFields } from "../actions/lead";
+import { fetchList, fetchFields } from "../actions/crm";
 import EnhancedTable from "../Table";
 import Add from "./Add";
 import Detail from "./Detail";
 import Filter from "../Filter";
-// import GroupActions from "./GroupActions";
-// import Controls from "./Controls";
+import Reminder from "../Reminder"
+import GroupActions from "../SaleList/GroupActions";
+import Controls from "../SaleList/Controls";
 
 import { withStyles } from "material-ui/styles";
 import { Button } from "material-ui";
@@ -15,6 +16,10 @@ import { Route } from "react-router-dom";
 import MenuAdd from "../../Menu/Add";
 
 import size from "lodash/size";
+
+import { ENTITIES } from "../../constants";
+
+const entityId = ENTITIES.lead;
 
 const styles = theme => ({
   buttonAdd: {
@@ -33,25 +38,25 @@ class Lead extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
+    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    document.removeEventListener("click", this.handleClose, false);
   };
 
   render() {
     const { classes } = this.props;
     const open = Boolean(this.state.anchorEl);
-
     return (
       <Fragment>
         <EnhancedTable
-          id="leads"
-          controls={["favorite"]}
+          entityId={entityId}
           onChangePage={this.props.onChangePage}
-          filterComponent={<Filter id="leads" />}
-          // groupActionsComponents={GroupActions}
-          // controlComponents={Controls}
+          filterComponent={<Filter entityId={entityId} />}
+          groupActionsComponent={GroupActions}
+          controlComponents={Controls}
         />
         <Button
           variant="fab"
@@ -67,15 +72,17 @@ class Lead extends React.Component {
           open={open}
           onClose={this.handleClose}
         />
-        <Route path="/crm/lead/add" component={Add} />
-        <Route path="/crm/lead/show/:id" component={Detail} />
+        <Route path={`/crm/${entityId}/add`} component={Add} />
+        <Route path={`/crm/${entityId}/show/:elementId`} component={Detail} />
       </Fragment>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm.objects;
+  const { filter, page, rowsPerPage, orderBy, order, data } = state.crm[
+    entityId
+  ];
   return {
     filter,
     page,
@@ -93,13 +100,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     onInit: () => {
-      dispatch(fetchLeadFields());
-      dispatch(fetchLeads({ filter, page, rowsPerPage, orderBy, order }));
+      dispatch(fetchFields({ entityId }));
+      dispatch(
+        fetchList({ entityId, filter, page, rowsPerPage, orderBy, order })
+      );
     },
     onChangePage: newPage => {
       if (rowsPerPage * newPage >= size(data))
         dispatch(
-          fetchLeads({ filter, page: newPage, rowsPerPage, orderBy, order })
+          fetchList({
+            entityId,
+            filter,
+            page: newPage,
+            rowsPerPage,
+            orderBy,
+            order
+          })
         );
     }
   };

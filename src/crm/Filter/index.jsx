@@ -88,7 +88,7 @@ class Filter extends React.Component {
 
   render() {
     const {
-      id,
+      entityId,
       classes,
       value,
       selectedChips,
@@ -115,14 +115,17 @@ class Filter extends React.Component {
                 onBlur={this.onFocusOut}
               />
               <SearchResult
-                id={id}
+                entityId={entityId}
                 open={open}
                 onClose={this.onCloseSearchResult}
               />
             </div>
           </Hidden>
           <Hidden mdUp>
-            <SearchResultMobile onFilterChange={onFilterChange} id={id} />
+            <SearchResultMobile
+              onFilterChange={onFilterChange}
+              entityId={entityId}
+            />
           </Hidden>
           <div className={classes.chipsWrapper}>
             {map(selectedChips, chip => {
@@ -185,11 +188,11 @@ class Filter extends React.Component {
   }
 }
 Filter.propTypes = {
-  id: PropTypes.string.isRequired,
+  entityId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
-  const table = state.crm[ownProps.id];
+  const table = state.crm[ownProps.entityId];
   const {
     headers,
     selected,
@@ -216,17 +219,17 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const tableId = ownProps.id;
+  const { entityId } = ownProps;
   return {
     init: () => {},
     onDeleteChip: id => {
-      dispatch(deleteChip({ id: tableId, chipId: id }));
+      dispatch(deleteChip({ entityId, chipId: id }));
     },
     onFilterChange: query => {
-      dispatch(fetchChips({ id: tableId, query }));
+      dispatch(fetchChips({ entityId, query }));
     },
     onApplyChips: chip => {
-      dispatch(selectChip({ id: tableId, chip }));
+      dispatch(selectChip({ entityId, chip }));
     }
   };
 };

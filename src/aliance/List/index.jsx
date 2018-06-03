@@ -21,7 +21,7 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
-import constants from "../../constants";
+import { ENTITIES } from "../../constants";
 
 import { Route } from "react-router-dom";
 
@@ -53,6 +53,7 @@ class AlianceList extends React.Component {
   };
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
+    document.addEventListener("click", this.handleClose, false);
   };
 
   handleClickByJoin = alianceId => {
@@ -67,6 +68,7 @@ class AlianceList extends React.Component {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    document.removeEventListener("click", this.handleClose, false);
   };
   handleCloseDialog = id => {
     this.setState({ dialogs: { ...this.state.dialogs, [id]: false } });
@@ -114,7 +116,7 @@ class AlianceList extends React.Component {
                 <Grid className={styles.flex} container>
                   <Grid className={styles.flex} item xs={6} md={2}>
                     {aliance.img ? (
-                      <Avatar src={constants.imgBaseUrl + aliance.img} />
+                      <Avatar src={aliance.img} />
                     ) : (
                       <Avatar>
                         <GroupIcon />
@@ -191,7 +193,7 @@ class AlianceList extends React.Component {
         />
         <Dialog
           open={this.state.dialogs.linkingTelegram}
-          transition={Transition}
+          TransitionComponent={Transition}
           keepMounted
           onClose={() => {
             this.handleCloseDialog("linkingTelegram");
@@ -243,7 +245,7 @@ class AlianceList extends React.Component {
         </Dialog>
         <Dialog
           open={this.state.dialogs.joined}
-          transition={Transition}
+          TransitionComponent={Transition}
           keepMounted
           onClose={() => {
             this.handleCloseDialog("joined");

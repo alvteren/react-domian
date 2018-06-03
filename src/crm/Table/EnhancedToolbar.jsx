@@ -36,7 +36,8 @@ const EnhancedToolbar = props => {
     numSelected,
     classes,
     filterComponent,
-    groupActionsComponent
+    groupActionsComponent,
+    entityId
   } = props;
 
   return (
@@ -50,7 +51,9 @@ const EnhancedToolbar = props => {
           <Typography style={{ marginRight: "auto" }} type="subheading">
             {numSelected} выбрано
           </Typography>
-          {groupActionsComponent}
+          {React.createElement(groupActionsComponent, {
+            entityId: entityId
+          })}
         </div>
       ) : (
         <div>{filterComponent}</div>
@@ -59,7 +62,7 @@ const EnhancedToolbar = props => {
   );
 };
 const mapStateToProps = (state, ownProps) => {
-  const { tooltipTitle } = state.crm[ownProps.id];
+  const { tooltipTitle } = state.crm[ownProps.entityId];
   return { tooltipTitle };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
