@@ -40,6 +40,7 @@ class Card extends React.PureComponent {
     this.state = {
       isFormEdited: false,
       initState: null,
+      save: false,
       isNewReminder,
     };
   }
@@ -58,7 +59,7 @@ class Card extends React.PureComponent {
     /* Equal check for save button render */
     if (!isEqual(prevProps.reminder, this.props.reminder) && prevProps.reminder) {
       const showSave = !isEqual(this.state.initState, this.props.reminder);
-        this.props.showSaveBtn(showSave);
+      this.setState({ isFormEdited: showSave }, this.props.showSaveBtn(showSave));
     }
     /* Form submit */
     const reminderId = this.props.reminderId;
@@ -66,7 +67,9 @@ class Card extends React.PureComponent {
       this.props.close();
     }
     /* On saving */
-    if (!prevProps.save && this.props.save) this.onSave();
+    if (!prevProps.save && this.props.save) {
+      this.onSave();
+    }
   }
 
   setInitState(initState) {

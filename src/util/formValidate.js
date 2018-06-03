@@ -1,4 +1,6 @@
 import { ENTITIES } from "../constants";
+import { get } from "lodash";
+import getVisibleValues from "../crm/Field/getVisibleValues";
 
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
@@ -62,11 +64,16 @@ export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
   let checked = false;
   const { exludeValidationProps } = idRules[entityId];
+
   if (propId) {
-    const isFilled = isEmpty(form[propId]);
     /*
       Branch for check only one prop (on edit)
      */
+
+    const visibleValues = getVisibleValues(fields[propId], form);
+    if (!visibleValues) return;
+    if (visibleValues instanceof Object && !get(visibleValues, "show", true)) return;
+    const isFilled = isEmpty(form[propId]);
 
     /* Check for required props */
     if (fields[propId].required && !checked) {
@@ -97,7 +104,13 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /*
       Branch for iterate over whole form (on new instance create)
      */
+
     Object.keys(forms[entityId]).forEach(propId => {
+      const visibleValues = getVisibleValues(fields[propId], form);
+
+      if (!visibleValues) return;
+      if (visibleValues instanceof Object && !get(visibleValues, "show", true)) return;
+
       const isFilled = isEmpty(form[propId]);
       /* Service props exclude */
       if (exludeValidationProps && exludeValidationProps.includes(propId))
@@ -119,6 +132,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
         const isValid = typeRules[fields[propId].type](form[propId]);
         if (isValid === true) return;
         validateErrors[propId] = isValid;
+        return;
       }
 
       /* Check for rules follow by id */
@@ -126,13 +140,11 @@ export default function formValidate({ form, fields, entityId, propId }) {
         const isValid = typeRules[propId](form[propId]);
         if (isValid === true) return;
         validateErrors[propId] = isValid;
+        return;
       }
     });
-    //return validateErrors;
   }
   return Object.keys(validateErrors).length ? validateErrors : null;
-  // if tested prop neither filled or required
-  // return true;
 }
 
 function isEmpty(prop) {

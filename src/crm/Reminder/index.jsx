@@ -51,8 +51,12 @@ class Reminder extends React.Component {
   };
 
   handleClickSave = () => {
-    this.setState({ save: true });
+    this.setState({ save: true }, this.restore);
   };
+
+  restore() {
+    this.setState({ save: false });
+  }
 
   showSaveBtn = (bool) => {
     this.setState({ showSaveBtn: bool });
