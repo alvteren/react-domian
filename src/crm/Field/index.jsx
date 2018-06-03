@@ -118,7 +118,7 @@ class Field extends React.PureComponent {
         if (field.type === "select") {
           if (size(visibleValues) > 0) {
             return (
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={col}>
                 <div className={classes.valueWrapper}>
                   <FieldEditSelect
                     id={id}

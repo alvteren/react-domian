@@ -39,9 +39,15 @@ class Card extends React.PureComponent {
 
     this.state = {
       isFormEdited: false,
+      initState: null,
       isNewReminder,
-      initState: null
     };
+  }
+
+  componentWillMount() {
+    if (get(this.props, "reminder.edited", null)) {
+      this.props.showSaveBtn(true);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -51,15 +57,16 @@ class Card extends React.PureComponent {
     }
     /* Equal check for save button render */
     if (!isEqual(prevProps.reminder, this.props.reminder) && prevProps.reminder) {
-      this.setState({
-        isFormEdited: !isEqual(this.state.initState, this.props.reminder)
-      });
+      const showSave = !isEqual(this.state.initState, this.props.reminder);
+        this.props.showSaveBtn(showSave);
     }
     /* Form submit */
     const reminderId = this.props.reminderId;
     if (get(this.props, `validity.${reminderId}.submit`, null)) {
       this.props.close();
     }
+    /* On saving */
+    if (!prevProps.save && this.props.save) this.onSave();
   }
 
   setInitState(initState) {
@@ -96,29 +103,13 @@ class Card extends React.PureComponent {
             />
           </div>
         ))}
-        {(this.state.isFormEdited || this.props.reminder.edited) && (
-          <div className={styles.submitWrapper}>
-            <Button
-              className={classes.button}
-              onClick={this.onSave}
-              color="primary"
-              variant="raised"
-              size="small"
-            >
-              <SaveIcon
-                className={`${classes.leftIcon} ${classes.iconSmall}`}
-              />
-              Сохранить
-            </Button>
-          </div>
-        )}
       </form>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { close } = ownProps;
+  const { close, save, showSaveBtn } = ownProps;
   let { reminderId } = ownProps.match.params;
   const { fields, validity } = state.crm.reminder;
   reminderId === "add" ? (reminderId = 0) : reminderId;
@@ -127,7 +118,7 @@ const mapStateToProps = (state, ownProps) => {
     `crm.${ENTITIES.reminder}.values.${reminderId}`,
     null
   );
-  return { reminder, close, fields, reminderId, validity };
+  return { reminder, close, save, showSaveBtn, fields, reminderId, validity };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

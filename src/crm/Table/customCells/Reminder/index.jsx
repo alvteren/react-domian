@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { List, ListItem, Avatar, ListItemText } from "material-ui";
+import { List, ListItem, Avatar, ListItemText, Typography } from "material-ui";
 import { AlarmAdd as AddAlarmIcon } from "material-ui-icons";
 
 import Reminder from "./Reminder"
@@ -36,7 +36,7 @@ const RemindeList = (props) => {
             <AddAlarmIcon />
           </Avatar>
           <ListItemText>
-            Создать напоминание
+            <Typography type="Subheading">Создать напоминание</Typography>
           </ListItemText>
         </ListItem>
       </Link>
