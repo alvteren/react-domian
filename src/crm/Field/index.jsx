@@ -99,8 +99,7 @@ class Field extends React.PureComponent {
     }
 
     const visibleValues = getVisibleValues(field, values);
-
-    if (field.type === "custom" && field["component"] && visibleValues) {
+    if (field.type === "custom" && field["component"] && visibleValues.show) {
       return React.createElement(field["component"], {
         ...this.props,
         state: this.state,
@@ -114,9 +113,9 @@ class Field extends React.PureComponent {
         ? classes.formControlWithButton
         : classes.formControl;
 
-      if (visibleValues) {
+      if (visibleValues.show || visibleValues.disabled) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0) {
+          if (visibleValues.items && size(visibleValues.items) > 0) {
             return (
               <Grid item xs={12} sm={col}>
                 <div className={classes.valueWrapper}>
@@ -124,7 +123,7 @@ class Field extends React.PureComponent {
                     id={id}
                     value={value || ""}
                     field={field}
-                    visibleValues={visibleValues}
+                    visibleValues={visibleValues.items}
                     onChange={this.onChange}
                     formControl={formControl}
                     validateError={validateError}

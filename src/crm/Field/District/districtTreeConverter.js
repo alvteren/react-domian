@@ -24,7 +24,7 @@ export function districtTreeConverter(lead, fields) {
   } = fields;
 
   const visibleDistricts = getVisibleValues(districtField, lead);
-  return map(visibleDistricts, district => {
+  return map(visibleDistricts.items, district => {
     const checked =
       prefers.district.indexOf(parseInt(district.value, 10)) !== -1;
     const children = reduce(

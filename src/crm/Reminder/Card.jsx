@@ -1,14 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, CircularProgress } from "material-ui";
-import SaveIcon from "material-ui-icons/Save";
+import { LinearProgress } from "material-ui";
 import { withStyles } from "material-ui/styles";
 import Field from "../Field";
 import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import { setEditedProp, addNewReminder } from "../actions/reminder";
+import { setEditedProp, upsertReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -24,10 +23,6 @@ const MuiStyles = theme => ({
   fullWidth: {
     width: "100%",
     marginBottom: "10px"
-  },
-  progress: {
-    display: "block",
-    margin: "30px auto"
   }
 });
 
@@ -83,18 +78,21 @@ class Card extends React.PureComponent {
   }
 
   onSave = event => {
-    this.props.addNewReminder(this.props.reminder);
-    // this.props.close();
+    this.props.saveReminder(this.props.reminder);
   };
 
   render() {
     const { classes, reminder } = this.props;
     if (!reminder) {
-      return <CircularProgress className={classes.progress}/>
+      return (
+        <div className={styles.emptyFormWrapper}>
+          <LinearProgress className={styles.progressBar} variant="query" thickness={1} />
+        </div>
+      )
     }
 
     return (
-      <form className={styles.reminderCardForm} action="">
+      <form className={styles.reminderForm} action="">
         {map(this.props.fields, (val, id) => (
           <div key={id} className={styles.inputWrapper}>
             <Field
@@ -133,8 +131,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    addNewReminder(reminder) {
-      dispatch(addNewReminder({
+    saveReminder(reminder) {
+      dispatch(upsertReminder({
         parent: { entityId, elementId },
         child: { entityId: ENTITIES.reminder, elementId: reminderId },
         reminder
