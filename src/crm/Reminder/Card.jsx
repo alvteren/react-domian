@@ -7,7 +7,7 @@ import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import { setEditedProp, upsertReminder } from "../actions/reminder";
+import { setEditedProp, saveReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -132,7 +132,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...ownProps,
     saveReminder(reminder) {
-      dispatch(upsertReminder({
+      dispatch(saveReminder({
         parent: { entityId, elementId },
         child: { entityId: ENTITIES.reminder, elementId: reminderId },
         reminder

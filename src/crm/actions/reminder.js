@@ -1,4 +1,4 @@
-import { upsertReminder as addNewReminderApi } from "../../api/reminder";
+import { saveReminder as addNewReminderApi } from "../../api/reminder";
 import { updateReminder as updateReminderApi } from "../../api/reminder";
 import { removeReminder as removeReminderApi } from "../../api/reminder";
 import { omit } from "lodash";
@@ -13,7 +13,7 @@ export const REMINDER_SET_EDITED_PROP = "REMINDER_SET_EDITED_PROP";
 
 export const REMINDER_REMOVE_SUCCESS = "REMINDER_REMOVE_SUCCESS";
 
-export const upsertReminder = props => async dispatch => {
+export const saveReminder = props => async dispatch => {
   const { parent, child, reminder } = props;
   const [ parentEntityId, parentElementId ] = [ parent.entityId, parent.elementId ];
   const { entityId, elementId } = child;
