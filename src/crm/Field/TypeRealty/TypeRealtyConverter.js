@@ -37,7 +37,7 @@ export function typeRealtyConverter(lead, fields) {
   } = fields;
 
   const visibleDistricts = getVisibleValues(section, lead);
-  return map(visibleDistricts, sectionItem => {
+  return map(visibleDistricts.items, sectionItem => {
     const checked = prefers.section.indexOf(parseInt(sectionItem.value, 10)) !== -1;
     const children = reduce(
       typeRealty.items,

@@ -1,18 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, CircularProgress } from "material-ui";
-import SaveIcon from "material-ui-icons/Save";
+import { LinearProgress } from "material-ui";
 import { withStyles } from "material-ui/styles";
 import Field from "../Field";
 import { ENTITIES, GRID } from "../../constants";
 
 import { isEqual, get, map } from "lodash";
 
-import {
-  addNewReminder,
-  updateReminder,
-  setEditedProp
-} from "../actions/reminder";
+import { setEditedProp, saveReminder } from "../actions/reminder";
 import styles from "./Card.module.css";
 
 const MuiStyles = theme => ({
@@ -28,10 +23,6 @@ const MuiStyles = theme => ({
   fullWidth: {
     width: "100%",
     marginBottom: "10px"
-  },
-  progress: {
-    display: "block",
-    margin: "30px auto"
   }
 });
 
@@ -43,19 +34,36 @@ class Card extends React.PureComponent {
 
     this.state = {
       isFormEdited: false,
+      initState: null,
+      save: false,
       isNewReminder,
-      initState: null
     };
   }
 
+  componentWillMount() {
+    if (get(this.props, "reminder.edited", null)) {
+      this.props.showSaveBtn(true);
+    }
+  }
+
   componentDidUpdate(prevProps) {
-    if (!this.state.initState) {
+    /* Set local init state for equal check */
+    if (!this.state.initState && this.props.reminder) {
       this.setInitState(prevProps.reminder);
     }
-    if (!isEqual(prevProps.reminder, this.props.reminder)) {
-      this.setState({
-        isFormEdited: !isEqual(this.state.initState, this.props.reminder)
-      });
+    /* Equal check for save button render */
+    if (!isEqual(prevProps.reminder, this.props.reminder) && prevProps.reminder) {
+      const showSave = !isEqual(this.state.initState, this.props.reminder);
+      this.setState({ isFormEdited: showSave }, this.props.showSaveBtn(showSave));
+    }
+    /* Form submit */
+    const reminderId = this.props.reminderId;
+    if (get(this.props, `validity.${reminderId}.submit`, null)) {
+      this.props.close();
+    }
+    /* On saving */
+    if (!prevProps.save && this.props.save) {
+      this.onSave();
     }
   }
 
@@ -70,22 +78,21 @@ class Card extends React.PureComponent {
   }
 
   onSave = event => {
-    if (this.state.isNewReminder) {
-      this.props.addNewReminder(this.props.reminder);
-    } else {
-      this.props.updateReminder(this.props.reminder);
-    }
-    this.props.close();
+    this.props.saveReminder(this.props.reminder);
   };
 
   render() {
     const { classes, reminder } = this.props;
     if (!reminder) {
-      return <CircularProgress className={classes.progress}/>
+      return (
+        <div className={styles.emptyFormWrapper}>
+          <LinearProgress className={styles.progressBar} variant="query" thickness={1} />
+        </div>
+      )
     }
-    debugger;
+
     return (
-      <form className={styles.reminderCardForm} action="">
+      <form className={styles.reminderForm} action="">
         {map(this.props.fields, (val, id) => (
           <div key={id} className={styles.inputWrapper}>
             <Field
@@ -97,38 +104,22 @@ class Card extends React.PureComponent {
             />
           </div>
         ))}
-        {(this.state.isFormEdited || this.props.reminder.edited) && (
-          <div className={styles.submitWrapper}>
-            <Button
-              className={classes.button}
-              onClick={this.onSave}
-              color="primary"
-              variant="raised"
-              size="small"
-            >
-              <SaveIcon
-                className={`${classes.leftIcon} ${classes.iconSmall}`}
-              />
-              Сохранить
-            </Button>
-          </div>
-        )}
       </form>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { close } = ownProps;
+  const { close, save, showSaveBtn } = ownProps;
   let { reminderId } = ownProps.match.params;
-  const { fields } = state.crm.reminder;
+  const { fields, validity } = state.crm.reminder;
   reminderId === "add" ? (reminderId = 0) : reminderId;
   const reminder = get(
     state,
     `crm.${ENTITIES.reminder}.values.${reminderId}`,
     null
   );
-  return { reminder, close, fields, reminderId };
+  return { reminder, close, save, showSaveBtn, fields, reminderId, validity };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -140,11 +131,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
-    addNewReminder(reminder) {
-      dispatch(addNewReminder({ entityId, elementId, reminder }));
-    },
-    updateReminder(reminder) {
-      dispatch(updateReminder({ entityId, elementId, reminderId, reminder }));
+    saveReminder(reminder) {
+      dispatch(saveReminder({
+        parent: { entityId, elementId },
+        child: { entityId: ENTITIES.reminder, elementId: reminderId },
+        reminder
+      }));
     },
     setEditedProp() {
       dispatch(setEditedProp({ reminderId }));

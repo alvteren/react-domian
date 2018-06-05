@@ -1,4 +1,4 @@
-const exludeValidationProps = ["can", "validateErrorArr"];
+const exludeValidationProps = ["can"];
 
 export const rules = {
   exludeValidationProps,

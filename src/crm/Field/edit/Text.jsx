@@ -3,7 +3,7 @@ import { TextField } from "material-ui";
 import {get} from "lodash";
 
 const Text = (props) => {
-  const { field, values, value, onChange } = props;
+  const { field, value, onChange, validateError } = props;
 
   return (
     <TextField
@@ -13,11 +13,11 @@ const Text = (props) => {
       name={field.id}
       label={field.label}
       value={value || ""}
-      error={get(values, "validateErrors", {}).hasOwnProperty(field.id)}
-      helperText={get(
-        values,
-        `validateErrors.${field.id}.message`,
-        get(field, "hint", "")
+      error={Boolean(validateError)}
+      helperText={
+        get(validateError,
+          "message",
+          get(field, "hint", "")
       )}
       onChange={onChange}
     />
