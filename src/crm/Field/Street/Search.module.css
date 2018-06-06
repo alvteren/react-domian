@@ -1,0 +1,9 @@
+.appBar {
+  position: relative;
+}
+.progressWrapper {
+  height: 5px;
+}
+.dialogContent {
+  padding: 0;
+}

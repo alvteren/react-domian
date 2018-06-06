@@ -16,13 +16,15 @@ import { Hidden } from "material-ui";
 import { LinearProgress } from "material-ui";
 
 import {
-  openLocationSearch,
-  closeLocationSearch,
+  openSearch,
+  closeSearch,
   fetchSearchResult
 } from "../../../actions/form";
 import SearchResult from "./SearchResult";
 import styles from "./Search.module.css";
 import delayedAction from "../../../../util/delayedAction";
+
+import { entitySearch } from "../Location";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -108,20 +110,20 @@ class LocationSearch extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { open, result, loading } = state.crm.form.locationSearch;
+  const { open, result, loading } = state.crm.form.search[entitySearch];
 
   return { open, result, loading };
 };
 const mapDispatchToProps = dispatch => {
   return {
     openSearch: () => {
-      dispatch(openLocationSearch());
+      dispatch(openSearch({ entitySearch }));
     },
     closeSearch: () => {
-      dispatch(closeLocationSearch());
+      dispatch(closeSearch({ entitySearch }));
     },
     fetch: async query => {
-      dispatch(fetchSearchResult(query));
+      dispatch(fetchSearchResult({ entitySearch, query }));
     }
   };
 };
