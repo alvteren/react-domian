@@ -12,15 +12,17 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import Slide from "material-ui/transitions/Slide";
+import Button from  "material-ui/Button";
 import { Hidden } from "material-ui";
 
 import { get, size } from "lodash";
+import styles from "./index.module.css";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const styles = theme => ({
+const MuiStyles = theme => ({
   appBar: {
     position: "relative"
   },
@@ -36,14 +38,28 @@ const styles = theme => ({
 class Reminder extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: true,
+      save: false,
+      showSaveBtn: false
+    };
   }
-  state = {
-    open: true
-  };
 
   handleClose = () => {
     this.setState({ open: false });
     this.props.history.push("/crm/lead");
+  };
+
+  handleClickSave = () => {
+    this.setState({ save: true }, this.restore);
+  };
+
+  restore() {
+    this.setState({ save: false });
+  }
+
+  showSaveBtn = (bool) => {
+    this.setState({ showSaveBtn: bool });
   };
 
   render() {
@@ -74,10 +90,23 @@ class Reminder extends React.Component {
                 ? "Новое напоминание"
                 : "Редактирование"}
             </Typography>
+              <Button
+                variant="raised"
+                color="secondary"
+                onClick={this.handleClickSave}
+                className={this.state.showSaveBtn ? styles.saveBtnVisible : styles.saveBtnHidden}
+              >
+                Сохранить
+              </Button>
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Card close={this.handleClose} match={this.props.match} />
+          <Card
+            save={this.state.save}
+            showSaveBtn={this.showSaveBtn}
+            close={this.handleClose}
+            match={this.props.match}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -89,4 +118,4 @@ Reminder.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withMobileDialog()(Reminder));
+export default withStyles(MuiStyles)(withMobileDialog()(Reminder));

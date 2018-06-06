@@ -1,14 +1,18 @@
+import * as crmActions from "../actions/crm";
+import * as formActions from "../actions/form";
 import { keyBy, omit, toArray, get } from "lodash";
+import formValidate from "../../util/formValidate";
+
 export default (state, { type, payload }) => {
   let newstate = null;
   if (state) {
-    if (type === "FORM_FIELDS_FETCH_STARTED") {
+    if (type === crmActions.FORM_FIELDS_FETCH_START) {
       newstate = {
         ...state,
         loading: { ...state.loading, form: true }
       };
     }
-    if (type === "FORM_FIELDS_FETCH_SUCCESS") {
+    if (type === crmActions.FORM_FIELDS_FETCH_SUCCESS) {
       const { data } = payload;
       newstate = {
         ...state,
@@ -16,7 +20,7 @@ export default (state, { type, payload }) => {
         loading: { ...state.loading, form: false }
       };
     }
-    if (type === "SET_INIT_FORM_STATE") {
+    if (type === formActions.SET_INIT_FORM_STATE) {
       const { initState } = payload;
       newstate = {
         ...state,
@@ -28,7 +32,7 @@ export default (state, { type, payload }) => {
         }
       }
     }
-    if (type === "FORM_SAVE_TO_STORE") {
+    if (type === formActions.FORM_SAVE_TO_STORE) {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});
       if (Array.isArray(name)) {
@@ -60,20 +64,30 @@ export default (state, { type, payload }) => {
         };
       }
     }
-    if (type === "FORM_VALIDATION_ERROR") {
-      const { elementId, errorObj } = payload;
+
+    if (type === crmActions.FORM_SAVE_TO_SERVER_START) {
+      const { entityId, elementId } = payload;
+      const form = get(state, `values.${elementId}`, null);
+      const fields = get(state, "fields");
+      const validateErrors = formValidate({ form, fields, entityId });
+      if (validateErrors) throw({ action: "VALIDATE_SET_FORM_ERRORS", validateErrors, entityId, elementId });
+    }
+
+    if (type === crmActions.FORM_SAVE_TO_SERVER_ERROR) {
+      const { elementId, key, data } = payload;
       newstate = {
         ...state,
         values: {
           ...state.values,
           [elementId]: {
             ...state.values[elementId],
-            "validateErrors": errorObj
+            [key]: data
           }
         }
-      };
+      }
     }
-    if (type === "FORM_SAVE_FILE") {
+
+    if (type === formActions.FORM_SAVE_FILE) {
       const { name, value, elementId } = payload;
       const oldValues = get(state.values, elementId, {});
       const oldFiles = get(oldValues, name, {});
@@ -88,7 +102,7 @@ export default (state, { type, payload }) => {
         }
       };
     }
-    if (type === "DETAIL_INIT") {
+    if (type === crmActions.DETAIL_INIT) {
       const { current } = payload;
       newstate = {
         ...state,

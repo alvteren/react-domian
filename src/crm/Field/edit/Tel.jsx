@@ -44,7 +44,7 @@ class Tel extends React.PureComponent {
   };
 
   render() {
-    const { field, values, value } = this.props;
+    const { field, value, validateError } = this.props;
 
     return (
       <TextField
@@ -54,12 +54,12 @@ class Tel extends React.PureComponent {
         name={field.id}
         label={field.label}
         value={value || this.state.tel}
-        error={get(values, "validateErrors", {}).hasOwnProperty(field.id)}
-        helperText={get(
-          values,
-          `validateErrors.${field.id}.message`,
-          get(field, "hint", "")
-        )}
+        error={Boolean(validateError)}
+        helperText={
+          get(validateError,
+            "message",
+            get(field, "hint", "")
+          )}
         onFocus={this.onTelInputFocus}
         onBlur={this.onTelInputBlur}
         onChange={this.handleTelInputChange("tel")}

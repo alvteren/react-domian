@@ -3,6 +3,8 @@ import wishData from "./wishData";
 import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
+import { reminderData } from "./reminder";
+import validate from "./validate";
 import convert from "../../util/leadDataConverter";
 
 import DistrictInput from "../Field/District";
@@ -145,7 +147,8 @@ export const initialState = {
     form: false,
     chips: false,
     data: true
-  }
+  },
+  validity: {}
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -155,6 +158,8 @@ export default function reducer(state = initialState, { type, payload }) {
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
+    const newValidateState = validate(state, { type, payload });
+    const newReminderState = reminderData(state, { type, payload });
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
@@ -167,42 +172,6 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === "FORM_SAVE_TO_STORE") {
       // const { name, value, elementId } = payload;
-    }
-
-    if (type === "REMINDER_ADD_SUCCESS") {
-      const { elementId, reminder, id } = payload;
-      const fullID = `${ENTITIES.lead}_${elementId}`;
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [fullID]: {
-            ...state.data[fullID],
-            reminders: {
-              ...state.data[fullID].reminders,
-              [id]: reminder
-            }
-          }
-        }
-      }
-    }
-
-    if (type === "REMINDER_UPDATE_SUCCESS") {
-      const { elementId, reminderId, reminder } = payload;
-      const fullID = `${ENTITIES.lead}_${elementId}`;
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [fullID]: {
-            ...state.data[fullID],
-            reminders: {
-              ...state.data[fullID].reminders,
-              [reminderId]: reminder
-            }
-          }
-        }
-      }
     }
 
     if (newTableState) {
@@ -239,6 +208,10 @@ export default function reducer(state = initialState, { type, payload }) {
       };
     } else if (newWishState) {
       return { ...state, wish: newWishState };
+    } else if (newValidateState) {
+      return { ...newValidateState }
+    } else if (newReminderState) {
+      return { ...newReminderState }
     }
   }
   return state;

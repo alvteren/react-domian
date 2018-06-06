@@ -5,7 +5,7 @@ import { get } from "lodash";
 const Date = props => {
   return (
     <TextField
-      id={props.id}
+      id={props.field.id}
       label={props.label}
       type={props.dateType || "datetime-local"}
       defaultValue={props.value}
@@ -14,6 +14,12 @@ const Date = props => {
       InputLabelProps={{
         shrink: true,
       }}
+      error={Boolean(props.validateError)}
+      helperText={
+        get(props.validateError,
+          "message",
+          get(props.field, "hint", "")
+        )}
     />
   )
 };

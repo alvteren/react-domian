@@ -6,7 +6,8 @@ import { get, size, forEach, toArray } from "lodash";
 import getVisibleValues from "./getVisibleValues";
 import fieldValidate from "../../util/formValidate";
 
-import { saveToStore, saveFile, validateFormError } from "../actions/form";
+import { saveToStore, saveFile } from "../actions/form";
+import { validateFormError } from "../actions/validate";
 import { savePropToServer } from "../actions/crm";
 
 import FieldViewImage from "./view/Image";
@@ -68,11 +69,12 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, gridType, ...other } = this.props;
+    const { id, field, values, value, classes, can, gridType, validity, elementId, ...other } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
+    const validateError = get(validity, `${elementId}.validateErrors.${id}`, null);
 
     if (field === false) {
       return <span />;
@@ -97,8 +99,7 @@ class Field extends React.PureComponent {
     }
 
     const visibleValues = getVisibleValues(field, values);
-
-    if (field.type === "custom" && field["component"] && visibleValues) {
+    if (field.type === "custom" && field["component"] && visibleValues.show) {
       return React.createElement(field["component"], {
         ...this.props,
         state: this.state,
@@ -112,19 +113,20 @@ class Field extends React.PureComponent {
         ? classes.formControlWithButton
         : classes.formControl;
 
-      if (visibleValues) {
+      if (visibleValues.show || visibleValues.disabled) {
         if (field.type === "select") {
-          if (size(visibleValues) > 0) {
+          if (visibleValues.items && size(visibleValues.items) > 0) {
             return (
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={col}>
                 <div className={classes.valueWrapper}>
                   <FieldEditSelect
                     id={id}
                     value={value || ""}
                     field={field}
-                    visibleValues={visibleValues}
+                    visibleValues={visibleValues.items}
                     onChange={this.onChange}
                     formControl={formControl}
+                    validateError={validateError}
                     error={get(values, `validateErrors.${field.id}`, false)}
                   />
                   {needSave && (
@@ -149,7 +151,7 @@ class Field extends React.PureComponent {
               <SwitchFieldEdit
                 formControl={formControl}
                 id={id}
-                value={value}
+                value={Boolean(value)}
                 onChange={this.onChange}
                 field={field}
               />
@@ -175,6 +177,7 @@ class Field extends React.PureComponent {
                 value={value}
                 onChange={this.onChange}
                 field={field}
+                validateError={validateError}
               />
 
               {needSave && (
@@ -194,8 +197,10 @@ class Field extends React.PureComponent {
             <Grid item xs={12} sm={12} className={classes.valueWrapper}>
               <TextArea
                 className={formControl}
+                onChange={this.onChange}
                 field={field}
                 value={value}
+                validateError={validateError}
               />
               {needSave && (
                 <IconButton
@@ -213,10 +218,11 @@ class Field extends React.PureComponent {
           return (
             <Grid item xs={12} sm={col} className={classes.valueWrapper}>
               <Date
-                id={id}
+                field={field}
                 value={value}
                 onChange={this.onChange}
                 visibleValues={visibleValues}
+                validateError={validateError}
               />
             </Grid>
           );
@@ -230,6 +236,7 @@ class Field extends React.PureComponent {
                 value={value || ""}
                 values={values}
                 onChange={this.onChange}
+                validateError={validateError}
               />
             </Grid>
           )
@@ -242,6 +249,7 @@ class Field extends React.PureComponent {
               value={value}
               values={values}
               onChange={this.onChange}
+              validateError={validateError}
             />
             {needSave && (
               <IconButton
@@ -311,14 +319,13 @@ class Field extends React.PureComponent {
 }
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId, elementId, gridType } = ownProps;
-  const { fields, values } = state.crm[entityId];
+  const { fields, values, validity } = state.crm[entityId];
 
   const field = get(fields, id, false);
 
   const elementValues = get(values, elementId, null);
   const value = elementValues != null ? get(elementValues, id, null) : null;
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
-  debugger;
 
   if (elementId === 0) {
     can.edit = true;
@@ -330,7 +337,9 @@ const mapStateToProps = (state, ownProps) => {
     values: elementValues,
     value,
     can,
-    gridType
+    gridType,
+    validity,
+    elementId
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -356,8 +365,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       const { value } = stateProps;
       dispatch(savePropToServer({ entityId, elementId, name, value }));
     },
-    formValidateError(errorObj) {
-      dispatch(validateFormError({ entityId, elementId, errorObj }));
+    formValidateError(errors) {
+      dispatch(validateFormError({ entityId, elementId, errors }));
     }
   };
 };
