@@ -1,6 +1,7 @@
 import {
   uploadFile,
-  fetchSearchResult as fetchSearchResultApi
+  fetchSearchResult as fetchSearchResultApi,
+  saveSelectedValue as saveSelectedValueApi
 } from "../../api/form";
 
 import { savePropToServer } from "./crm";
@@ -9,6 +10,10 @@ export const FORM_SEARCH_OPENED = "FORM_SEARCH_OPENED";
 export const FORM_SEARCH_FETCH_START = "FORM_SEARCH_FETCH_START";
 export const FORM_SEARCH_FETCH_SUCCESS = "FORM_SEARCH_FETCH_SUCCESS";
 export const FORM_SEARCH_FETCH_ERROR = "FORM_SEARCH_FETCH_ERROR";
+export const FORM_SEARCH_SAVE_PHRASE_START = "FORM_SEARCH_SAVE_PHRASE_START";
+//prettier-ignore
+export const FORM_SEARCH_SAVE_PHRASE_SUCCESS = "FORM_SEARCH_SAVE_PHRASE_SUCCESS";
+export const FORM_SEARCH_SAVE_PHRASE_ERROR = "FORM_SEARCH_SAVE_PHRASE_ERROR";
 
 export const setInitFormState = props => dispatch => {
   const { initState, entityId } = props;
@@ -57,14 +62,14 @@ export const switchSearch = props => async dispatch => {
 };
 
 export const fetchSearchResult = props => async dispatch => {
-  const { query, entitySearch } = props;
+  const { query, entitySearch, ...other } = props;
 
   try {
     dispatch({
       type: FORM_SEARCH_FETCH_START,
       payload: {}
     });
-    const data = await fetchSearchResultApi({ query, entitySearch });
+    const data = await fetchSearchResultApi({ query, entitySearch, ...other });
     dispatch({
       type: FORM_SEARCH_FETCH_SUCCESS,
       payload: { entitySearch, data }
@@ -72,6 +77,27 @@ export const fetchSearchResult = props => async dispatch => {
   } catch (err) {
     dispatch({
       type: FORM_SEARCH_FETCH_ERROR,
+      payload: err,
+      error: true
+    });
+  }
+};
+export const saveSelectedValue = props => async dispatch => {
+  const { value, entitySearch, ...other } = props;
+
+  try {
+    dispatch({
+      type: FORM_SEARCH_SAVE_PHRASE_START,
+      payload: {}
+    });
+    const data = await saveSelectedValueApi({ value, entitySearch, ...other });
+    dispatch({
+      type: FORM_SEARCH_SAVE_PHRASE_SUCCESS,
+      payload: { entitySearch, data }
+    });
+  } catch (err) {
+    dispatch({
+      type: FORM_SEARCH_SAVE_PHRASE_ERROR,
       payload: err,
       error: true
     });

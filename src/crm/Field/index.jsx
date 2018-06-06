@@ -80,7 +80,8 @@ class Field extends React.PureComponent {
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
-    this.props.handleChange(e);
+    const arValue = e.target ? e.target : e;
+    this.props.handleChange(arValue);
   };
 
   handleFiles = files => {
@@ -392,8 +393,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...ownProps,
     ...stateProps,
-    handleChange: e => {
-      const { value } = e.target;
+    handleChange: arValue => {
+      const { value } = arValue;
       dispatch(saveToStore({ entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
@@ -455,6 +456,8 @@ Field.propTypes = {
   classes: PropTypes.object.isRequired,
   field: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
-export default connect(mapStateToProps, null, mergeProps)(
-  withStyles(stylesMUI)(Field)
-);
+export default connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(withStyles(stylesMUI)(Field));

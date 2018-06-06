@@ -6,10 +6,10 @@ import { size, map } from "lodash";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio from "material-ui/Radio";
 
-import { closeSearch } from "../../actions/form";
+import { closeSearch, saveSelectedValue } from "../../actions/form";
 import { entitySearch } from "../Street";
 
-class SearchResult extends React.Component {
+class SearchResult extends React.PureComponent {
   state = {
     value: this.props.value
   };
@@ -23,41 +23,38 @@ class SearchResult extends React.Component {
     this.handleChangeValue(value);
   };
 
-  handleChangeValue = value => {
-    this.setState({ value: value });
-    this.props.closeLocationSearch();
-    const { onChange, result } = this.props;
-    const { name } = result[value];
+  handleChangeValue = id => {
+    const { id: name } = this.props.field;
+    const arValue = this.props.result[id];
+    const { value } = arValue;
+
+    this.setState({ value });
+    this.props.closeSearch();
+    this.props.saveSelectedValue(arValue);
+    const { onChange } = this.props;
     if (onChange) {
       onChange({ value, name });
     }
   };
 
   render() {
-    const { result } = this.props;
-
+    const { result, field } = this.props;
     return (
       size(result) > 0 && (
         <List>
-          {map(result, arLocation => {
+          {map(result, (arItem, id) => {
             return (
-              <ListItem
-                key={arLocation.id}
-                role={undefined}
-                dense
-                button
-                onClick={this.handleToggle(arLocation.id)}
-              >
+              <ListItem key={id} dense button onClick={this.handleToggle(id)}>
                 <Radio
-                  checked={this.state.value === arLocation.id}
+                  checked={this.state.value === arItem.value}
                   onChange={this.handleChange}
-                  value={arLocation.id}
-                  name="location"
+                  value={id}
+                  name={field.id}
                   disableRipple
                 />
                 <ListItemText
-                  primary={arLocation.name}
-                  secondary={arLocation.parent_name}
+                  primary={arItem.value}
+                  secondary={arItem.parent ? arItem.parent : ""}
                 />
               </ListItem>
             );
@@ -74,9 +71,15 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    closeLocationSearch: () => {
+    closeSearch: () => {
       dispatch(closeSearch({ entitySearch }));
+    },
+    saveSelectedValue: value => {
+      dispatch(saveSelectedValue({ entitySearch, value }));
     }
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(SearchResult);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchResult);

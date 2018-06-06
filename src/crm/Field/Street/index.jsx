@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 
-import Search from "./Search";
+import ModalSearch from "./ModalSearch";
 
 import { Grid, IconButton } from "material-ui";
 import Input, { InputLabel } from "material-ui/Input";
@@ -14,15 +14,13 @@ import Done from "material-ui-icons/Done";
 import { withStyles } from "material-ui/styles";
 import { stylesMUI } from "../../Field";
 
+import { openSearch } from "../../actions/form";
+
 export const entitySearch = "street";
 
 class Street extends React.PureComponent {
-  state = {
-    open: false
-  };
-
   onFocus = () => {
-    this.setState({ open: true });
+    this.props.openSearch();
   };
   render() {
     const {
@@ -33,14 +31,15 @@ class Street extends React.PureComponent {
       onStartEdit,
       onSave,
       classes,
-      can
+      can,
+      open
     } = this.props;
 
     const { needSave, edit } = this.props.state;
     const { edit: canEdit = false } = can;
 
     const onChangeValue = value => {
-      onChange({ target: { name: id, value: value } });
+      onChange({ target: { name: id, value } });
     };
     const onClick = () => {
       canEdit && onStartEdit();
@@ -80,7 +79,9 @@ class Street extends React.PureComponent {
                 <Done />
               </IconButton>
             )}
-            <Search value={value} onChangeValue={this.onChangeValue} />
+            {open && (
+              <ModalSearch onChangeValue={onChangeValue} {...this.props} />
+            )}
           </Fragment>
         )}
       </Grid>
@@ -88,4 +89,20 @@ class Street extends React.PureComponent {
   }
 }
 
-export default connect(null)(withStyles(stylesMUI)(Street));
+const mapStateToProps = (state, ownProps) => {
+  const { open } = state.crm.form.search[entitySearch];
+
+  return { open };
+};
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    openSearch: () => {
+      dispatch(openSearch({ entitySearch }));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(stylesMUI)(Street));

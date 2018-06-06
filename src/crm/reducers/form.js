@@ -23,33 +23,36 @@ export default (state = initialState, action) => {
   const { payload = {} } = action;
   const { entitySearch = null } = payload;
 
-  if (action.type === FORM_SEARCH_OPENED) {
-    const { open } = payload;
-    const newState = {
-      [entitySearch]: { ...state[entitySearch], open }
-    };
-    return { ...state, ...newState };
-  }
-  if (action.type === FORM_SEARCH_FETCH_START) {
-    const newState = {
-      [entitySearch]: {
-        ...state[entitySearch],
-        loading: true
-      }
-    };
-    return { ...state, ...newState };
-  }
-  if (action.type === FORM_SEARCH_FETCH_SUCCESS) {
-    const { data } = payload;
+  if (entitySearch) {
+    if (action.type === FORM_SEARCH_OPENED) {
+      const { open } = payload;
+      const newState = {
+        [entitySearch]: { ...state.search[entitySearch], open }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
+    if (action.type === FORM_SEARCH_FETCH_START) {
+      const newState = {
+        [entitySearch]: {
+          ...state.search[entitySearch],
+          loading: true
+        }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
+    if (action.type === FORM_SEARCH_FETCH_SUCCESS) {
+      const { data } = payload;
 
-    const newState = {
-      [entitySearch]: {
-        ...state[entitySearch],
-        result: data,
-        loading: false
-      }
-    };
-    return { ...state, ...newState };
+      const newState = {
+        [entitySearch]: {
+          ...state.search[entitySearch],
+          result: data,
+          loading: false
+        }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
   }
+
   return state;
 };
