@@ -112,6 +112,7 @@ class EnhancedTable extends React.Component {
       const { id, value, row } = params;
       if (id === "reminders" && value instanceof Object) {
         if (get(row, "can.edit", false)) {
+          // comment
           return (
             <ReminderList
               value={value}
