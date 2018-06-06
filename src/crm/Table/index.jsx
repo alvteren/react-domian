@@ -111,6 +111,7 @@ class EnhancedTable extends React.Component {
     const formatValue = params => {
       const { id, value, row } = params;
       // first change
+      // second change
       if (id === "reminders" && value instanceof Object) {
         if (get(row, "can.edit", false)) {
           return (
