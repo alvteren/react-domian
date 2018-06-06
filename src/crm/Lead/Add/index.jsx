@@ -14,13 +14,14 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import { validateFormError, setInitFormState } from "../../actions/form";
+import { setInitFormState } from "../../actions/form";
 import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
+import { formSubmit, validateFormError } from "../../actions/validate";
 import { find } from "lodash";
 import formValidate from "../../../util/formValidate";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -51,17 +52,7 @@ class Add extends React.Component {
     this.props.history.push("/crm/sale");
   };
   handleClickSave = () => {
-    const validateErrors = formValidate({
-      form: this.props.values["0"],
-      fields: this.props.fields,
-      entityId
-    });
-    if (Boolean(Object.keys(validateErrors).length)) {
-      this.props.formValidateError(validateErrors);
-    } else {
-      this.props.saveFormToServer(this.props.values["0"]);
-      this.handleClose();
-    }
+    this.props.saveFormToServer(this.props.values["0"]);
   };
 
   componentDidMount() {
@@ -163,10 +154,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       dispatch(setInitFormState({ initState, entityId }));
     },
     saveFormToServer(formData) {
-      dispatch(saveFormToServer({ entityId, elementId: 0, formData }));
-    },
-    formValidateError(errors) {
-      dispatch(validateFormError({ entityId, elementId: 0, errorArr: errors }));
+      dispatch(saveFormToServer({ entityId, elementId: 0 }));
     }
   };
 };

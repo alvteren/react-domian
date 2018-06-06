@@ -1,0 +1,9 @@
+.saveBtnHidden {
+    margin-left: 16px;
+    visibility: hidden;
+}
+
+.saveBtnVisible {
+    margin-left: 16px;
+    visibility: visible;
+}

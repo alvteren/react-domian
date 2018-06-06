@@ -9,14 +9,14 @@ import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 
 const SelectField = props => {
-  const { id, value, field, visibleValues, onChange, formControl, error } = props;
+  const { id, value, field, visibleValues, onChange, formControl, validateError } = props;
   const bNativeSelect = size(visibleValues) > 4;
   const helperText = () => {
-    if (error) return <FormHelperText>{error.message}</FormHelperText>;
+    if (validateError) return <FormHelperText>{validateError.message}</FormHelperText>;
     if (field.hint) return <FormHelperText>{field.hint}</FormHelperText>;
   };
   return (
-    <FormControl fullWidth className={formControl} key={id} error={error instanceof Object}>
+    <FormControl fullWidth className={formControl} key={id} error={validateError instanceof Object}>
       <InputLabel htmlFor={id} required={field.required}>
         {field.label}
       </InputLabel>

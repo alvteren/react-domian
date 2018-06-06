@@ -21,7 +21,7 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
-import constants from "../../constants";
+import { ENTITIES } from "../../constants";
 
 import { Route } from "react-router-dom";
 

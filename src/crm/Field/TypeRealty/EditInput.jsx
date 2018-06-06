@@ -11,8 +11,8 @@ import { cloneDeep } from "lodash";
 import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
 import styles from "./EditInput.module.css";
-import { entities } from "../../../constants";
-const entityId = entities.lead;
+import { ENTITIES } from "../../../constants";
+const entityId = ENTITIES.lead;
 
 class EditInput extends React.PureComponent {
   state = {

@@ -388,7 +388,7 @@ export const initialState = {
 export default (state = initialState, { type, payload }) => {
   const entityId = get(payload, "entityId", null);
 
-  if (entityId === entities.sale) {
+  if (entityId === ENTITIES.sale) {
     const newTableState = tableData(state, { type, payload });
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });

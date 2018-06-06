@@ -17,9 +17,9 @@ import { Hidden } from "material-ui";
 import { get, size } from "lodash";
 
 import { fetchDetail, onInitDetail } from "../../actions/crm";
-import { entities } from "../../../constants";
+import { ENTITIES } from "../../../constants";
 
-const entityId = entities.lead;
+const entityId = ENTITIES.lead;
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;

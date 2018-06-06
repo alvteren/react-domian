@@ -87,7 +87,7 @@ export const saveFormToServer = async props => {
   const version = get(props, "version", lastApiVersion);
 
   const params = {
-    method: "PUT",
+    method: "POST",
     credentials: "include",
     mode: "cors",
     body: JSON.stringify(formData)

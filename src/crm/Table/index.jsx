@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import keycode from "keycode";
 import Table, {
@@ -9,6 +9,7 @@ import Table, {
 } from "material-ui/Table";
 import { Tooltip, Paper, Checkbox } from "material-ui";
 import { Pageview as PageviewIcon } from "material-ui-icons";
+import ReminderList from "./customCells/Reminder/index";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -16,7 +17,7 @@ import Pagination from "./Pagination";
 import MobileStepper from "material-ui/MobileStepper";
 import { withStyles } from "material-ui/styles";
 
-import { toArray, isObject } from "lodash";
+import { toArray, isObject, get } from "lodash";
 
 import {
   fetchTableHeaders,
@@ -109,6 +110,18 @@ class EnhancedTable extends React.Component {
 
     const formatValue = params => {
       const { id, value, row } = params;
+      if (id === "reminders" && value instanceof Object) {
+        if (get(row, "can.edit", false)) {
+          return (
+            <ReminderList
+              value={value}
+              entityId={entityId}
+              elementId={row.id}
+            />
+          )
+        }
+        return " ";
+      }
       if (value != null) {
         if (id === "price") {
           const currency = row.currency || "RUB";
@@ -126,16 +139,13 @@ class EnhancedTable extends React.Component {
         if (isObject(value) && value.hasOwnProperty("label")) {
           return value.label;
         }
-        if (
-          fields &&
-          fields.hasOwnProperty(id) &&
-          fields[id].type === "select"
-        ) {
+        if (get(fields, `${id}.type`, null) === "select") {
           if (fields[id].items && fields[id].items.hasOwnProperty(value)) {
             return fields[id].items[value].label;
           }
         }
         if (Array.isArray(value)) {
+          // wishes list case: [String]
           return (
             <div>
               {value.map((item, index) => {
@@ -146,13 +156,7 @@ class EnhancedTable extends React.Component {
         }
         if (id === "status_id") {
           const val = value.toLowerCase();
-          if (
-            fields &&
-            fields.status_id &&
-            fields.status_id.items &&
-            fields.status_id.items[val] &&
-            fields.status_id.items[val].label
-          ) {
+          if (get(fields, `status_id.items.${val}.label`, null)) {
             const statusToStep = {
               NEW: 1,
               ASSIGNED: 2,

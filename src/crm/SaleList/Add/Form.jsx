@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { map } from "lodash";
+import { map, get } from "lodash";
 
 import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
@@ -11,8 +11,8 @@ import { withStyles } from "material-ui/styles";
 import { Grid } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
-import { entities } from "../../../constants";
-const entityId = entities.sale;
+import { ENTITIES } from "../../../constants";
+const entityId = ENTITIES.sale;
 
 const styles = theme => ({
   root: {},
@@ -101,13 +101,13 @@ class Form extends React.Component {
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
-          <Grid container className={classes.container}>
+          <Grid container spacing={24} className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
               <Field
                 id={id}
                 key={id}
                 edit={true}
-                match={this.props.match}
+                elementId={get(this.props, "match.params.elementId", 0)}
                 entityId={entityId}
               />
             ))}

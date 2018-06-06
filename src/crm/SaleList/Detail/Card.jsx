@@ -12,8 +12,8 @@ import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
 
 import { map, get, reduce, findIndex } from "lodash";
-import { entities } from "../../../constants";
-const entityId = entities.sale;
+import { ENTITIES } from "../../../constants";
+const entityId = ENTITIES.sale;
 
 const styles = theme => ({
   root: {},
@@ -122,13 +122,13 @@ class Card extends React.Component {
           </Tabs>
         </AppBar>
         <TabContainer onSwipedLeft={this.nexTab} onSwipedRight={this.prevTab}>
-          <Grid container className={classes.container}>
+          <Grid container spacing={24} className={classes.container}>
             {map(fieldsSections[openedSection].fields, (val, id) => (
               <Field
                 id={id}
                 key={id}
                 edit={currentEdit === id}
-                match={this.props.match}
+                elementId={get(this.props, "match.params.elementId", 0)}
                 entityId={entityId}
               />
             ))}

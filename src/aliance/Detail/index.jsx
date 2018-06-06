@@ -22,7 +22,7 @@ import Slide from "material-ui/transitions/Slide";
 import styles from "./Detail.module.css";
 
 import { getMembers } from "../actions/aliance";
-import constants from "../../constants";
+import { ENTITIES } from "../../constants";
 import { map } from "lodash";
 
 const Transition = props => {
