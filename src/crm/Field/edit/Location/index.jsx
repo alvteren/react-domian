@@ -6,7 +6,9 @@ import LocationSearch from "./Search";
 import Input, { InputLabel } from "material-ui/Input";
 import { FormControl, FormHelperText } from "material-ui/Form";
 
-import { openLocationSearch } from "../../../actions/form";
+import { openSearch } from "../../../actions/form";
+
+export const entitySearch = "location";
 
 const Location = props => {
   const onFocus = () => {
@@ -20,7 +22,9 @@ const Location = props => {
   const locationName =
     value && value.hasOwnProperty("name") && value.name ? value.name : "";
   const locationId =
-    value && value.hasOwnProperty("value") && value.value ? String(value.value) : "";
+    value && value.hasOwnProperty("value") && value.value
+      ? String(value.value)
+      : "";
 
   return (
     <Fragment>
@@ -38,7 +42,7 @@ const Location = props => {
 const mapDispatchToProps = dispatch => {
   return {
     openSearch: () => {
-      dispatch(openLocationSearch());
+      dispatch(openSearch({ entitySearch }));
     }
   };
 };

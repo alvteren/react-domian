@@ -49,7 +49,8 @@ class Field extends React.PureComponent {
     if (this.state.needSave) this.setState({ edit: false, needSave: false });
   };
   onChange = e => {
-    this.props.handleChange(e);
+    const arValue = e.target ? e.target : e;
+    this.props.handleChange(arValue);
   };
 
   handleFiles = files => {
@@ -104,6 +105,7 @@ class Field extends React.PureComponent {
         ...this.props,
         state: this.state,
         onChange: this.onChange,
+        onStartEdit: this.onStartEdit,
         onSave: this.onSave
       });
     }
@@ -351,8 +353,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...ownProps,
     ...stateProps,
-    handleChange: e => {
-      const { value } = e.target;
+    handleChange: arValue => {
+      const { value } = arValue;
       dispatch(saveToStore({ entityId, elementId, name, value }));
     },
     handleChangeSwitch: (e, checked) => {
@@ -370,16 +372,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   };
 };
-const stylesMUI = theme => ({
+export const stylesMUI = theme => ({
   formControl: {
     minWidth: 200,
     width: "100%",
     flexBasis: "auto"
   },
   valueWrapper: {
+    width: "100%",
     display: "flex",
     flexWrap: "nowrap",
     alignItems: "center",
+    justifyContent: "space-between",
     "&:hover $buttonEdit": {
       opacity: 1
     }
@@ -414,6 +418,8 @@ Field.propTypes = {
   entityId: PropTypes.string.isRequired,
   elementId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
-export default connect(mapStateToProps, null, mergeProps)(
-  withStyles(stylesMUI)(Field)
-);
+export default connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(withStyles(stylesMUI)(Field));
