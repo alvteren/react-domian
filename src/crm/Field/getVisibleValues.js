@@ -9,7 +9,6 @@ import { noStrictIncludes, noStrictExcludes } from "../../util/collection";
  */
 const getVisibleValues = (field, values) => {
   const isDepended = get(field, "depended", null) !== null;
-
   if (isDepended) {
     if (values == null) return { show: false };
     let linkedValue = get(values, field.depended, null);

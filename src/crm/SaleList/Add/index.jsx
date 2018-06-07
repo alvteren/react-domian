@@ -14,7 +14,12 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
+
+import { setInitFormState } from "../../actions/form";
+import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
+
 import { ENTITIES } from "../../../constants";
+
 const entityId = ENTITIES.sale;
 
 const Transition = props => {
@@ -48,6 +53,24 @@ class Add extends React.Component {
     this.props.onSave();
     this.handleClose();
   };
+
+  componentDidMount() {
+    if (!this.state.loading) {
+      this.setInitFormData();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { fields } = nextProps;
+    if (JSON.stringify(this.props.fields) === JSON.stringify(fields)) return;
+    this.setInitFormData();
+    this.setState({ loading: false });
+  }
+
+  setInitFormData() {
+    this.props.setInitFormState();
+    return true;
+  }
 
   render() {
     const { fullScreen, classes } = this.props;
@@ -100,10 +123,18 @@ class Add extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {};
 };
-const mapDispatchToProps = (dispatch, props) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { fields } = stateProps;
+  const { dispatch } = dispatchProps;
+
   return {
-    onSave: () => {
-      // dispatch(addToWish({ objectsId: [params.id], wishId: 0 }));
+    ...stateProps,
+    ...ownProps,
+    setInitFormState() {
+      dispatch(setInitFormState({ entityId }));
+    },
+    onSave() {
+      dispatch(saveFormToServer({ entityId, elementId: 0 }));
     }
   };
 };
@@ -114,5 +145,11 @@ Add.propTypes = {
 };
 
 export default withMobileDialog()(
-  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Add))
+  withStyles(styles)(
+    connect(
+      mapStateToProps,
+      null,
+      mergeProps
+    )(Add)
+  )
 );

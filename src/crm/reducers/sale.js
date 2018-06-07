@@ -5,7 +5,7 @@ import filterData from "./filterData";
 import formData from "./formData";
 import wishData from "./wishData";
 
-import { entities } from "../../constants";
+import { ENTITIES } from "../../constants";
 import Street from "../Field/Street";
 
 const chips = {
