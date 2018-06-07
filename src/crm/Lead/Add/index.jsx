@@ -52,34 +52,24 @@ class Add extends React.Component {
     this.props.history.push("/crm/lead");
   };
   handleClickSave = () => {
-    this.props.saveFormToServer(this.props.values["0"]);
+    this.props.saveFormToServer();
   };
 
   componentDidMount() {
     if (!this.state.loading) {
-      this.setInitFormData(this.props.fields);
+      this.setInitFormData();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { fields } = nextProps;
     if (JSON.stringify(this.props.fields) === JSON.stringify(fields)) return;
-    this.setInitFormData(fields);
+    this.setInitFormData();
     this.setState({ loading: false });
   }
 
-  setInitFormData(fields) {
-    if (!fields || !Object.keys(fields).length) return;
-    const initState = {};
-    Object.keys(fields).forEach(key => {
-      if (String(key) === "undefined") return;
-      initState[key] = fields[key].hasOwnProperty("default")
-        ? fields[key].default
-        : "";
-      if (key === "uf_crm_type_realty") initState[key] = [];
-    });
-    initState.can = { edit: true };
-    this.props.setInitFormState(initState);
+  setInitFormData() {
+    this.props.setInitFormState();
     return true;
   }
 
@@ -137,23 +127,13 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    dispatch,
     getLeadFields() {
       dispatch(fetchFields({ entityId }));
-    }
-  };
-};
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { fields } = stateProps;
-  const { dispatch } = dispatchProps;
-
-  return {
-    ...stateProps,
-    ...ownProps,
-    setInitFormState(initState) {
-      dispatch(setInitFormState({ initState, entityId }));
     },
-    saveFormToServer(formData) {
+    setInitFormState() {
+      dispatch(setInitFormState({ entityId }));
+    },
+    saveFormToServer() {
       dispatch(saveFormToServer({ entityId, elementId: 0 }));
     }
   };
@@ -168,8 +148,7 @@ export default withMobileDialog()(
   withStyles(styles)(
     connect(
       mapStateToProps,
-      mapDispatchToProps,
-      mergeProps
+      mapDispatchToProps
     )(Add)
   )
 );
