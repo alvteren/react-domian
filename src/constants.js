@@ -4,6 +4,8 @@ export const ENTITIES = {
   reminder: "reminder"
 };
 
+// comment
+
 export const GRID = {
   singleColumn: 12,
   doubleColumn: 6
