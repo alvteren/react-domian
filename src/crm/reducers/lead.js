@@ -58,6 +58,10 @@ const list = {
       type: "status_id",
       value: "NEW"
     },
+    shows: {
+      id: "shows",
+      label: "Показы"
+    },
     reminders: {
       id: "reminders",
       label: "Напоминания"

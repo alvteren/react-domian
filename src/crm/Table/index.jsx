@@ -10,6 +10,7 @@ import Table, {
 import { Tooltip, Paper, Checkbox } from "material-ui";
 import { Pageview as PageviewIcon } from "material-ui-icons";
 import ReminderList from "./customCells/Reminder/index";
+import ShowList from "./customCells/Show/index";
 
 import EnhancedToolbar from "./EnhancedToolbar";
 import Head from "./Head";
@@ -114,6 +115,19 @@ class EnhancedTable extends React.Component {
         if (get(row, "can.edit", false)) {
           return (
             <ReminderList
+              value={value}
+              entityId={entityId}
+              elementId={row.id}
+            />
+          )
+        }
+        return " ";
+      }
+      // if (id === "show" && value instanceof Object) {
+      if (id === "shows") {
+        if (get(row, "can.edit", false)) {
+          return (
+            <ShowList
               value={value}
               entityId={entityId}
               elementId={row.id}
