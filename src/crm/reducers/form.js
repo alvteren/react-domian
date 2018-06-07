@@ -1,36 +1,58 @@
+import {
+  FORM_SEARCH_OPENED,
+  FORM_SEARCH_FETCH_SUCCESS,
+  FORM_SEARCH_FETCH_START
+} from "../actions/form";
+
 const initialState = {
-  locationSearch: {
-    open: false,
-    result: {},
-    loading: false
+  search: {
+    location: {
+      open: false,
+      result: {},
+      loading: false
+    },
+    street: {
+      open: false,
+      result: {},
+      loading: false
+    }
   }
 };
 
 export default (state = initialState, action) => {
-  if (action.type === "FORM_LOCATION_SEARCH_OPENED") {
-    const newState = {
-      locationSearch: { ...state.locationSearch, open: action.payload }
-    };
-    return { ...state, ...newState };
+  const { payload = {} } = action;
+  const { entitySearch = null } = payload;
+
+  if (entitySearch) {
+    if (action.type === FORM_SEARCH_OPENED) {
+      const { open } = payload;
+      const newState = {
+        [entitySearch]: { ...state.search[entitySearch], open }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
+    if (action.type === FORM_SEARCH_FETCH_START) {
+      const newState = {
+        [entitySearch]: {
+          ...state.search[entitySearch],
+          loading: true
+        }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
+    if (action.type === FORM_SEARCH_FETCH_SUCCESS) {
+      const { data } = payload;
+
+      const newState = {
+        [entitySearch]: {
+          ...state.search[entitySearch],
+          result: data,
+          loading: false
+        }
+      };
+      return { ...state, search: { ...state.search, ...newState } };
+    }
   }
-  if (action.type === "FORM_LOCATION_SEARCH_FETCH_START") {
-    const newState = {
-      locationSearch: {
-        ...state.locationSearch,
-        loading: true
-      }
-    };
-    return { ...state, ...newState };
-  }
-  if (action.type === "FORM_LOCATION_SEARCH_FETCH_SUCCESS") {
-    const newState = {
-      locationSearch: {
-        ...state.locationSearch,
-        result: action.payload,
-        loading: false
-      }
-    };
-    return { ...state, ...newState };
-  }
+
   return state;
 };

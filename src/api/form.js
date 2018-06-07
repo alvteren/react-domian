@@ -27,7 +27,7 @@ export const deleteFile = async fileId => {
     method: "POST",
     credentials: "include",
     mode: "cors",
-    body: { fileId }
+    body: JSON.stringify({ fileId })
   };
 
   const response = await fetch(baseURL + "/v1/file/", params);
@@ -36,9 +36,20 @@ export const deleteFile = async fileId => {
 
 export const fetchSearchResult = async props => {
   const params = objectToQuery(props);
-  const response = await fetch(baseURL + "/v1/location/search/?" + params, {
+  const response = await fetch(baseURL + "/v1/search/?" + params, {
     credentials: "include"
   });
+
+  return response.json();
+};
+export const saveSelectedValue = async props => {
+  const params = {
+    method: "POST",
+    credentials: "include",
+    mode: "cors",
+    body: JSON.stringify(props)
+  };
+  const response = await fetch(baseURL + "/v1/search/", params);
 
   return response.json();
 };
