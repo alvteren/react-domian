@@ -2,6 +2,8 @@ import * as crmActions from "../actions/crm";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 import { keyBy, omit, toArray, get } from "lodash";
 import {ENTITIES} from "../../constants";
+import typeRealtyItems from "../../util/typeRealtyData";
+import section from "../../util/section";
 
 export const fields = {
   date: {
@@ -14,8 +16,9 @@ export const fields = {
     id: "uf_crm_type_realty",
     label: "Тип недвижимости",
     type: "custom",
-    items: []
+    items: typeRealtyItems
   },
+  section: section,
   street_string: {
     id: "street_string",
     label: "Улица",
@@ -100,34 +103,7 @@ export default function reducer (state = initialState, { type, payload }) {
     }
   }
 
-  if (entityId === ENTITIES.lead && type === crmActions.FORM_FIELDS_FETCH_SUCCESS) {
-    /* update fields with server data */
-    let newState = null;
-    const uf_crm_type_realty = get(payload, "data", null);
-    const street_string = get (payload, "data", null);
-
-    if (uf_crm_type_realty) {
-      newState = {
-        ...state,
-        fields: {
-          ...state.fields,
-          uf_crm_type_realty
-        }
-      }
-    }
-
-    if (street_string) {
-      newState = {
-        ...state,
-        fields: {
-          ...state.fields,
-          street_string
-        }
-      }
-    }
-
-    if (newState) return newState;
-  }
+  return state;
 };
 
 

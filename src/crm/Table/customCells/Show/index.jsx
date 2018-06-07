@@ -42,7 +42,10 @@ class ShowList extends React.PureComponent {
                 {Object.keys(values).map((showId, index) => {
                   const show = values[showId];
                   return (
-                    <ListItem className={styles.showListItem} onClick={this.showDialog}>
+                    <ListItem
+                      key={index}
+                      className={styles.showListItem}
+                      onClick={this.showDialog}>
                       <ListItemText
                         onClick={this.showDialog}
                         disableTypography
