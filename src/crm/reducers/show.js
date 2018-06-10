@@ -1,9 +1,8 @@
 import * as crmActions from "../actions/crm";
+import * as showActions from "../actions/show";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 import { keyBy, omit, toArray, get } from "lodash";
 import {ENTITIES} from "../../constants";
-import typeRealtyItems from "../../util/typeRealtyData";
-import section from "../../util/section";
 
 export const fields = {
   date: {
@@ -16,11 +15,11 @@ export const fields = {
     id: "uf_crm_type_realty",
     label: "Тип недвижимости",
     type: "custom",
-    items: typeRealtyItems
+    items: []
   },
-  section: section,
-  street_string: {
-    id: "street_string",
+  section: {},
+  street: {
+    id: "street",
     label: "Улица",
     type: "custom"
   },
@@ -42,6 +41,19 @@ export const fields = {
   }
 };
 
+const form = {
+  date: true,
+  objects: [
+    {
+      uf_crm_type_realty: true,
+      street: true,
+      address: true,
+      price: true,
+      comment: true
+    }
+  ],
+};
+
 const dateFields = [];
 toArray(fields).forEach((item, index) => {
   if (item.type === "date") dateFields.push(item.id);
@@ -49,8 +61,12 @@ toArray(fields).forEach((item, index) => {
 
 const defaultValues = {
   date: getTomorrowDate(),
+  objects: []
+};
+
+export const object = {
   uf_crm_type_realty: "",
-  street_string: "",
+  street: "",
   address: "",
   price: "",
   comment: ""
@@ -63,14 +79,28 @@ const values = {
 
 const initialState = {
   fields,
-  values
+  values,
+  form
 };
 
 export default function reducer (state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
 
   if (entityId === ENTITIES.show) {
+    if (type === showActions.SHOW_ADD_NEW_OBJECT) {
+      const { showId } = payload;
 
+      return {
+        ...state,
+        values: {
+          ...values,
+          [showId]: {
+            ...state.values[showId],
+            objects: [...state.values[showId], object]
+          }
+        }
+      }
+    }
   }
 
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
@@ -102,6 +132,35 @@ export default function reducer (state = initialState, { type, payload }) {
       }
     }
   }
+
+  if (entityId === ENTITIES.lead && type === crmActions.FORM_FIELDS_FETCH_SUCCESS) {
+    /* update fields with server data */
+      let newState = null;
+    const uf_crm_type_realty = get(payload, "data.uf_crm_type_realty", null);
+    const section = get (payload, "data.section", null);
+
+      if (uf_crm_type_realty) {
+        newState = {
+            ...state,
+            fields: {
+              ...state.fields,
+              uf_crm_type_realty
+            }
+        }
+      }
+
+      if (section) {
+        newState = {
+            ...state,
+            fields: {
+              ...state.fields,
+              section
+            }
+        }
+      }
+
+      if (newState) return newState;
+    }
 
   return state;
 };

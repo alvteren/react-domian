@@ -16,18 +16,19 @@ const values = {
 
 class ShowList extends React.PureComponent {
   state = {
-    dialogOpen: false
+    dialogOpen: false,
+    currentShow: null
   };
 
-  showDialog = (e) => {
+  showDialog = (showId) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ dialogOpen: true });
+    this.setState({ dialogOpen: true, currentShow: showId });
   };
 
   handleDialogClose = (e) => {
     e.stopPropagation();
-    this.setState({ dialogOpen: false });
+    this.setState({ dialogOpen: false, currentShow: null });
   };
 
   render() {
@@ -45,9 +46,9 @@ class ShowList extends React.PureComponent {
                     <ListItem
                       key={index}
                       className={styles.showListItem}
-                      onClick={this.showDialog}>
+                      onClick={this.showDialog(showId)}>
                       <ListItemText
-                        onClick={this.showDialog}
+                        onClick={this.showDialog(showId)}
                         disableTypography
                         primary={<Typography type="Subheading">{show.date}</Typography>}
                       />
@@ -58,7 +59,7 @@ class ShowList extends React.PureComponent {
             </Grid>
             <Grid item xs={12} sm={2}>
               <Tooltip title="Добавить показ" enterDelay={300}>
-                <Avatar onClick={this.showDialog} className={styles.showAddIcon}>
+                <Avatar onClick={this.showDialog(0)} className={styles.showAddIcon}>
                   <AddIcon />
                 </Avatar>
               </Tooltip>
@@ -67,6 +68,7 @@ class ShowList extends React.PureComponent {
           <ShowDialog
             open={this.state.dialogOpen}
             handleClose={this.handleDialogClose}
+            showId={this.state.currentShow}
           />
         </Fragment>
       )
@@ -78,7 +80,7 @@ class ShowList extends React.PureComponent {
             <AddIcon />
           </Avatar>
           <ListItemText>
-            <Button onClick={this.showDialog} color="primary">
+            <Button onClick={this.showDialog(0)} color="primary">
               Добавить показ
             </Button>
           </ListItemText>
@@ -86,6 +88,7 @@ class ShowList extends React.PureComponent {
         <ShowDialog
           open={this.state.dialogOpen}
           handleClose={this.handleDialogClose}
+          showId={this.state.currentShow}
         />
       </Fragment>
     )

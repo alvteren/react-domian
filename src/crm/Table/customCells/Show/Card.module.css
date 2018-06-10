@@ -1,0 +1,17 @@
+.emptyFormWrapper {
+    min-height: 100px;
+}
+
+.progressBar {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.showForm {
+    padding: 30px 0 15px;
+}
+
+.inputWrapper {
+
+}

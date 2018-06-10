@@ -4,6 +4,7 @@ import { Dialog, DialogContent } from "material-ui";
 import CloseIcon from "material-ui-icons/Close";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import Slide from "material-ui/transitions/Slide";
+import Card from "./Card";
 
 import { withStyles } from "material-ui/styles";
 import styles from "./Show.module.css";
@@ -28,10 +29,15 @@ const MuiStyles = theme => ({
 class ShowDialog extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      save: false,
+      showSaveBtn: false
+    };
   }
 
   render() {
-    const { classes, open, fullScreen, handleClose } = this.props;
+    const { classes, open, fullScreen, handleClose, showId } = this.props;
+
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -62,19 +68,19 @@ class ShowDialog extends React.PureComponent {
               variant="raised"
               color="secondary"
               onClick={this.handleClickSave}
-              // className={this.state.showSaveBtn ? styles.saveBtnVisible : styles.saveBtnHidden}
+              className={this.state.showSaveBtn ? styles.saveBtnVisible : styles.saveBtnHidden}
             >
               Сохранить
             </Button>
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          {/*<Card*/}
-          {/*save={this.state.save}*/}
-          {/*showSaveBtn={this.showSaveBtn}*/}
-          {/*close={this.handleClose}*/}
-          {/*match={this.props.match}*/}
-          {/*/>*/}
+          <Card
+            save={this.state.save}
+            showSaveBtn={this.showSaveBtn}
+            close={this.handleClose}
+            showId={showId}
+          />
         </DialogContent>
       </Dialog>
     )
