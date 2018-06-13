@@ -5,7 +5,7 @@ import { keyBy, omit, toArray, get } from "lodash";
 import TypeRealtyInput from "../Field/TypeRealty";
 import Street from "../Field/Street";
 import formData from "./formData";
-import {ENTITIES} from "../../constants";
+import { ENTITIES } from "../../constants";
 
 export const fields = {
   date: {
@@ -31,7 +31,7 @@ export const fields = {
   address: {
     id: "address",
     label: "Номер дома/участка",
-    type: "text",
+    type: "text"
     // required: true // ?
   },
   price: {
@@ -56,7 +56,7 @@ const form = {
       price: true,
       comment: true
     }
-  ],
+  ]
 };
 
 const dateFields = [];
@@ -89,7 +89,7 @@ const initialState = {
   current: null
 };
 
-export default function reducer (state = initialState, { type, payload }) {
+export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
   const newFormState = formData(state, { type, payload });
 
@@ -106,34 +106,39 @@ export default function reducer (state = initialState, { type, payload }) {
             objects: [...state.values[showId].objects, object]
           }
         }
-      }
+      };
     }
 
     if (type === showActions.SHOW_SET_CURRENT) {
-      const { showId } = payload;
+      const { showId, location } = payload;
       return {
         ...state,
+        values: {
+          ...state.values,
+          [showId]: { ...state.values[showId], location }
+        },
         current: showId
-      }
+      };
     }
   }
 
-  if (type === "TABLE_FETCH_DATA_SUCCESS") {
+  if (entityId === ENTITIES.lead && type === "TABLE_FETCH_DATA_SUCCESS") {
     const items = get(payload, "data", {});
     const values = {};
 
     if (items) {
-      Object.keys(items).forEach((key) => {
+      Object.keys(items).forEach(key => {
         if (items[key].shows) {
           for (let showId in items[key].shows) {
             values[showId] = items[key].shows[showId];
             values[showId].can = { edit: true };
+            values[showId].location = items[key].location;
 
             /* Date fields convert for Mui */
-            dateFields.forEach((field) => {
-              values[showId][field] = items[key].shows[showId][field] ?
-                convertDateForMui(items[key].shows[showId][field]) :
-                getTomorrowDate();
+            dateFields.forEach(field => {
+              values[showId][field] = items[key].shows[showId][field]
+                ? convertDateForMui(items[key].shows[showId][field])
+                : getTomorrowDate();
             });
           }
         }
@@ -145,27 +150,30 @@ export default function reducer (state = initialState, { type, payload }) {
         ...state.values,
         ...values
       }
-    }
+    };
   }
 
-  if (entityId === ENTITIES.lead && type === crmActions.FORM_FIELDS_FETCH_SUCCESS) {
+  if (
+    entityId === ENTITIES.lead &&
+    type === crmActions.FORM_FIELDS_FETCH_SUCCESS
+  ) {
     /* update fields with server data */
-      let newState = null;
+    let newState = null;
     const uf_crm_type_realty = get(payload, "data.uf_crm_type_realty", null);
-    const section = get (payload, "data.section", null);
+    const section = get(payload, "data.section", null);
 
     if (uf_crm_type_realty && section) {
       newState = {
-          ...state,
-          fields: {
-            ...state.fields,
-            uf_crm_type_realty: {
-              ...state.fields.uf_crm_type_realty,
-              items: uf_crm_type_realty.items
-            },
-            section
-          }
-      }
+        ...state,
+        fields: {
+          ...state.fields,
+          uf_crm_type_realty: {
+            ...state.fields.uf_crm_type_realty,
+            items: uf_crm_type_realty.items
+          },
+          section
+        }
+      };
     }
     if (newState) return newState;
   }
@@ -173,8 +181,7 @@ export default function reducer (state = initialState, { type, payload }) {
   if (newFormState) return { ...newFormState };
 
   return state;
-};
-
+}
 
 /* exported state to another reducers */
 export const showData = (state, { type, payload }) => {

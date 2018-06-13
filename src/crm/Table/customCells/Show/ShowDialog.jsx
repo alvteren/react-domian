@@ -1,5 +1,12 @@
 import React, { Fragment } from "react";
-import { Toolbar, Hidden, AppBar, Button, Typography, IconButton } from "material-ui";
+import {
+  Toolbar,
+  Hidden,
+  AppBar,
+  Button,
+  Typography,
+  IconButton
+} from "material-ui";
 import { Dialog, DialogContent } from "material-ui";
 import CloseIcon from "material-ui-icons/Close";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
@@ -36,7 +43,14 @@ class ShowDialog extends React.PureComponent {
   }
 
   render() {
-    const { classes, open, fullScreen, handleClose, showId } = this.props;
+    const {
+      classes,
+      open,
+      fullScreen,
+      handleClose,
+      showId,
+      elementId
+    } = this.props;
 
     return (
       <Dialog
@@ -60,15 +74,17 @@ class ShowDialog extends React.PureComponent {
               </Hidden>
             </IconButton>
             <Typography type="title" color="inherit" className={classes.flex}>
-              {this.props.reminderId === 0
-                ? "Новый показ"
-                : "Редактирование"}
+              {this.props.reminderId === 0 ? "Новый показ" : "Редактирование"}
             </Typography>
             <Button
               variant="raised"
               color="secondary"
               onClick={this.handleClickSave}
-              className={this.state.showSaveBtn ? styles.saveBtnVisible : styles.saveBtnHidden}
+              className={
+                this.state.showSaveBtn
+                  ? styles.saveBtnVisible
+                  : styles.saveBtnHidden
+              }
             >
               Сохранить
             </Button>
@@ -80,10 +96,11 @@ class ShowDialog extends React.PureComponent {
             showSaveBtn={this.showSaveBtn}
             close={this.handleClose}
             showId={showId}
+            elementId={elementId}
           />
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 }
 

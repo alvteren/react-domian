@@ -17,7 +17,7 @@ import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
 import Date from "./edit/DateField";
 import Tel from "./edit/Tel";
-import Text from "./edit/Text"
+import Text from "./edit/Text";
 import TextArea from "./edit/TextArea";
 
 import styles from "./Field.module.css";
@@ -70,12 +70,27 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, gridType, validity, elementId, ...other } = this.props;
+    const {
+      id,
+      field,
+      values,
+      value,
+      classes,
+      can,
+      gridType,
+      validity,
+      elementId,
+      ...other
+    } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
-    const validateError = get(validity, `${elementId}.validateErrors.${id}`, null);
+    const validateError = get(
+      validity,
+      `${elementId}.validateErrors.${id}`,
+      null
+    );
 
     if (field === false) {
       return <span />;
@@ -242,7 +257,7 @@ class Field extends React.PureComponent {
                 validateError={validateError}
               />
             </Grid>
-          )
+          );
         }
         return (
           <Grid item xs={12} sm={col} className={classes.valueWrapper}>

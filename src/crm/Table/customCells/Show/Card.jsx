@@ -1,15 +1,24 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { LinearProgress, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography, Button } from "material-ui";
+import {
+  LinearProgress,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Typography,
+  Button
+} from "material-ui";
 import { ExpandMore as ExpandMoreIcon } from "material-ui-icons";
 import { withStyles } from "material-ui/styles";
 import Field from "../../../Field";
 import { ENTITIES, GRID } from "../../../../constants";
-import * as showActions from "../../../actions/show";
+import { addObject } from "../../../actions/show";
 
 import { isEqual, get, map } from "lodash";
 
 import styles from "./Card.module.css";
+
+const entityId = ENTITIES.show;
 
 const MuiStyles = theme => ({
   button: {
@@ -27,7 +36,7 @@ const MuiStyles = theme => ({
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary
   },
   columnDirection: {
     flexDirection: "column"
@@ -41,7 +50,7 @@ class Card extends React.PureComponent {
     this.state = {
       isFormEdited: false,
       initState: null,
-      save: false,
+      save: false
     };
   }
 
@@ -95,9 +104,13 @@ class Card extends React.PureComponent {
     if (!show) {
       return (
         <div className={styles.emptyFormWrapper}>
-          <LinearProgress className={styles.progressBar} variant="query" thickness={1} />
+          <LinearProgress
+            className={styles.progressBar}
+            variant="query"
+            thickness={1}
+          />
         </div>
-      )
+      );
     }
 
     return (
@@ -106,90 +119,72 @@ class Card extends React.PureComponent {
           id="date"
           edit={true}
           elementId={get(this.props, "showId", 0)}
-          entityId={ENTITIES.show}
+          entityId={entityId}
           gridType={GRID.singleColumn}
         />
         {show.objects.map((object, index) => {
           return (
             <ExpansionPanel key={index}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography  className={classes.secondaryHeading}>
-                  {`${index+1}. ${fields[object.uf_crm_type_realty]} ${object.address}`}
+                <Typography className={classes.secondaryHeading}>
+                  {`${index + 1}. ${fields[object.uf_crm_type_realty]} ${
+                    object.address
+                  }`}
                 </Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails className={classes.columnDirection}>
-              {Object.keys(object).map((key, index) => {
-                return (
-                  <div key={index}>
-                    <Field
-                      id={fields[key].id}
-                      edit={true}
-                      elementId={get(this.props, "showId", 0)}
-                      entityId={ENTITIES.show}
-                      gridType={GRID.singleColumn}
-                    />
-                  </div>
-                )
-              })}
+                {Object.keys(object).map((key, index) => {
+                  return (
+                    <div key={index}>
+                      <Field
+                        id={fields[key].id}
+                        edit={true}
+                        elementId={get(this.props, "showId", 0)}
+                        entityId={entityId}
+                        gridType={GRID.singleColumn}
+                      />
+                    </div>
+                  );
+                })}
               </ExpansionPanelDetails>
             </ExpansionPanel>
-          )
+          );
         })}
-        <Button variant="raised" onClick={this.addObject}>Добавить объект</Button>
+        <Button variant="raised" onClick={this.addObject}>
+          Добавить объект
+        </Button>
       </form>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { close, save, showSaveBtn, showId } = ownProps;
+  const { close, save, showSaveBtn, showId, elementId } = ownProps;
+  const { form, fields, validity } = state.crm[entityId];
+  const { uf_location: location } = state.crm[ENTITIES.lead].data[elementId];
 
-  const { form, fields, validity } = state.crm.show;
+  const show = get(state, `crm.${entityId}.values.${showId}`, null);
 
-  const show = get(
-    state,
-    `crm.${ENTITIES.show}.values.${showId}`,
-    null
-  );
-
-  return { show, close, save, showSaveBtn, form, fields, showId, validity };
+  return { show, close, save, showSaveBtn, form, fields, validity, location };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { showId } = stateProps;
+  const { location } = stateProps;
+  const { showId } = ownProps;
   const { dispatch } = dispatchProps;
+
   return {
     ...stateProps,
+    ...dispatchProps,
     ...ownProps,
     addObject(object) {
-      dispatch({ type: showActions.SHOW_ADD_NEW_OBJECT, payload: { entityId: ENTITIES.show, showId }})
+      dispatch(addObject({ showId, entityId }));
     }
-  }
+  };
 };
 
-//
-// const mergeProps = (stateProps, dispatchProps, ownProps) => {
-//   const { reminderId } = stateProps;
-//   const { dispatch } = dispatchProps;
-//   const { match } = ownProps;
-//   const { entityId, elementId } = match.params;
-//
-//   return {
-//     ...stateProps,
-//     ...ownProps,
-//     saveReminder(reminder) {
-//       dispatch(saveReminder({
-//         parent: { entityId, elementId },
-//         child: { entityId: ENTITIES.reminder, elementId: reminderId },
-//         reminder
-//       }));
-//     },
-//     setEditedProp() {
-//       dispatch(setEditedProp({ reminderId }));
-//     }
-//   };
-// };
-
-export default connect(mapStateToProps, null, mergeProps)(
-  withStyles(MuiStyles)(Card)
-);
+export default connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(withStyles(MuiStyles)(Card));

@@ -54,7 +54,6 @@ export default (state, { type, payload }) => {
         }
         const oldValues = get(state.values, `${elementId}.objects`, {});
         console.log(oldValues, "OLD");
-        debugger;
         const newValues = oldValues.splice(0); // copy of objects Array
         newValues[index][name] = value;
         newstate = {
