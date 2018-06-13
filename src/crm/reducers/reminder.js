@@ -112,25 +112,25 @@ export default function reducer(state = initialState, { type, payload }) {
 
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
     const items = get(payload, "data", {});
-    const values = {};
+    let values;
 
     if (items) {
-      Object.keys(items).forEach((key) => {
-        if (items[key].reminders) {
-          for (let reminderId in items[key].reminders) {
-            values[reminderId] = items[key].reminders[reminderId];
-            values[reminderId].can = { edit: true };
+      values = Object.keys(items).reduce((accumulator, key, currentIndex, array) => {
+        for (let reminderId in items[key].reminders) {
+          accumulator[reminderId] = items[key].reminders[reminderId];
+          accumulator[reminderId].can = { edit: true };
 
-            /* Date fields convert for Mui */
-            dateFields.forEach((field) => {
-              values[reminderId][field] = items[key].reminders[reminderId][field] ?
-                convertDateForMui(items[key].reminders[reminderId][field]) :
-                getTomorrowDate();
-            });
-          }
+          /* Date fields convert for Mui */
+          dateFields.forEach((field) => {
+            accumulator[reminderId][field] = items[key].reminders[reminderId][field] ?
+              convertDateForMui(items[key].reminders[reminderId][field]) :
+              getTomorrowDate();
+          });
         }
-      });
+        return accumulator;
+      }, {});
     }
+
     return {
       ...state,
       values: {

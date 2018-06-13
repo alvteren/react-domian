@@ -136,7 +136,7 @@ class EditInput extends React.PureComponent {
                       className={styles.nested}
                     >
                       {
-                        this.state.mode === ENTITIES.show &&
+                        !this.props.multipleSelect &&
                         typeItem.children.map((realtyType, realtyTypeIndex) => {
                           return (
                             <ListItem
@@ -156,26 +156,28 @@ class EditInput extends React.PureComponent {
                           );
                         })
                       }
-                      {this.state.mode === ENTITIES.lead && typeItem.children.map((realtyType, realtyTypeIndex) => {
-                        return (
-                          <ListItem
-                            key={realtyTypeIndex}
-                            button
-                            onClick={this.onChangeValue(
-                              TYPE_REALTY,
-                              index,
-                              realtyTypeIndex
-                            )}
-                          >
-                            <Checkbox
-                              checked={realtyType.checked || false}
-                              tabIndex={-1}
-                              disableRipple
-                            />
-                            <ListItemText inset primary={realtyType.label} />
-                          </ListItem>
-                        );
-                      })}
+                      {
+                        this.props.multipleSelect &&
+                        typeItem.children.map((realtyType, realtyTypeIndex) => {
+                          return (
+                            <ListItem
+                              key={realtyTypeIndex}
+                              button
+                              onClick={this.onChangeValue(
+                                TYPE_REALTY,
+                                index,
+                                realtyTypeIndex
+                              )}
+                            >
+                              <Checkbox
+                                checked={realtyType.checked || false}
+                                tabIndex={-1}
+                                disableRipple
+                              />
+                              <ListItemText inset primary={realtyType.label} />
+                            </ListItem>
+                          );
+                        })}
                     </List>
                   </Collapse>
                 </Fragment>

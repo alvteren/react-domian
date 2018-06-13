@@ -77,7 +77,8 @@ class TypeRealty extends React.PureComponent {
       // formControl,
       canEdit
     } = this.props;
-    const typeRealty = this.props.uf_crm_type_realty || [];
+    let typeRealty = this.props.uf_crm_type_realty || [];
+    if (typeof typeRealty === "string") typeRealty = [typeRealty];
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -140,7 +141,7 @@ class TypeRealty extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { entityId, elementId, can, fields } = ownProps;
+  const { entityId, elementId, can, fields, index } = ownProps;
   const {
     section: sectionFields,
     uf_crm_type_realty: typeRealtyFields
@@ -148,12 +149,12 @@ const mapStateToProps = (state, ownProps) => {
 
   let section, uf_crm_type_realty;
   const { edit: canEdit = false } = can;
-
+  console.log(index);
   if (entityId === ENTITIES.show) {
     /* SHOW branch */
     const { values, current } = state.crm[entityId];
     section = values[elementId].objects.section;
-    uf_crm_type_realty = values[elementId].objects.uf_crm_type_realty;
+    uf_crm_type_realty = values[elementId].objects[index].uf_crm_type_realty;
 
     return {
       current,

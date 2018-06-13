@@ -4,7 +4,7 @@ import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 import { keyBy, omit, toArray, get } from "lodash";
 import TypeRealtyInput from "../Field/TypeRealty";
 import Street from "../Field/Street";
-import formData from "./formData";
+import { FORM_SAVE_TO_STORE } from "../actions/form";
 import { ENTITIES } from "../../constants";
 
 export const fields = {
@@ -19,7 +19,10 @@ export const fields = {
     label: "Тип недвижимости",
     type: "custom",
     items: [],
-    component: TypeRealtyInput
+    component: TypeRealtyInput,
+    props: {
+      multipleSelect: false
+    }
   },
   section: {},
   street: {
@@ -91,7 +94,6 @@ const initialState = {
 
 export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
-  const newFormState = formData(state, { type, payload });
 
   if (entityId === ENTITIES.show) {
     if (type === showActions.SHOW_ADD_NEW_OBJECT) {
@@ -120,37 +122,72 @@ export default function reducer(state = initialState, { type, payload }) {
         current: showId
       };
     }
+
+    if (type === FORM_SAVE_TO_STORE) {
+      const { name, value, elementId, entityId } = payload;
+      if (entityId === ENTITIES.show) {
+        // For show if we want to save some objects prop we pass index of object we want to modify
+        // else it should be a common show's date
+        const { index } = payload;
+        if (!index && name === "date") {
+          const oldValues = get(state.values, elementId, {});
+          return {
+            ...state,
+            values: {
+              ...state.values,
+              [elementId]: {
+                ...oldValues,
+                date: value
+              }
+            }
+          };
+        }
+
+        const oldValues = get(state.values, `${elementId}.objects`, {});
+        const newValues = oldValues.splice(0); // copy of objects Array
+        newValues[index][name] = value;
+        return {
+          ...state,
+          values: {
+            ...state.values,
+            [elementId]: {
+              ...state.values[elementId],
+              objects: newValues
+            }
+          }
+        };
+      }
+    }
   }
 
   if (entityId === ENTITIES.lead && type === "TABLE_FETCH_DATA_SUCCESS") {
     const items = get(payload, "data", {});
-    const values = {};
+    let values;
 
     if (items) {
-      Object.keys(items).forEach(key => {
-        if (items[key].shows) {
-          for (let showId in items[key].shows) {
-            values[showId] = items[key].shows[showId];
-            values[showId].can = { edit: true };
-            values[showId].location = items[key].location;
+      values = Object.keys(items).reduce((accumulator, key, currentIndex, array) => {
+        for (let showId in items[key].shows) {
+          accumulator[showId] = items[key].shows[showId];
+          accumulator[showId].can = { edit: true };
 
-            /* Date fields convert for Mui */
-            dateFields.forEach(field => {
-              values[showId][field] = items[key].shows[showId][field]
-                ? convertDateForMui(items[key].shows[showId][field])
-                : getTomorrowDate();
-            });
-          }
+          /* Date fields convert for Mui */
+          dateFields.forEach((field) => {
+            accumulator[showId][field] = items[key].shows[showId][field] ?
+              convertDateForMui(items[key].shows[showId][field]) :
+              getTomorrowDate();
+          });
         }
-      });
+        return accumulator;
+      }, {});
     }
+
     return {
       ...state,
       values: {
         ...state.values,
         ...values
       }
-    };
+    }
   }
 
   if (
@@ -177,8 +214,6 @@ export default function reducer(state = initialState, { type, payload }) {
     }
     if (newState) return newState;
   }
-
-  if (newFormState) return { ...newFormState };
 
   return state;
 }

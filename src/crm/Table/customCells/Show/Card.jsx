@@ -122,12 +122,12 @@ class Card extends React.PureComponent {
           entityId={entityId}
           gridType={GRID.singleColumn}
         />
-        {show.objects.map((object, index) => {
+        {show.objects.map((object, objectIndex) => {
           return (
-            <ExpansionPanel key={index}>
+            <ExpansionPanel key={objectIndex}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.secondaryHeading}>
-                  {`${index + 1}. ${fields[object.uf_crm_type_realty]} ${
+                  {`${objectIndex + 1}. ${fields[object.uf_crm_type_realty]} ${
                     object.address
                   }`}
                 </Typography>
@@ -137,6 +137,7 @@ class Card extends React.PureComponent {
                   return (
                     <div key={index}>
                       <Field
+                        index={objectIndex}
                         id={fields[key].id}
                         edit={true}
                         elementId={get(this.props, "showId", 0)}

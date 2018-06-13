@@ -117,12 +117,14 @@ class Field extends React.PureComponent {
     const visibleValues = getVisibleValues(field, values);
 
     if (field.type === "custom" && field["component"] && visibleValues.show) {
+      debugger;
       return React.createElement(field["component"], {
         ...this.props,
         state: this.state,
         onChange: this.onChange,
         onStartEdit: this.onStartEdit,
-        onSave: this.onSave
+        onSave: this.onSave,
+        ...field.props
       });
     }
 
@@ -336,7 +338,7 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, entityId, elementId, gridType } = ownProps;
+  const { id, entityId, elementId, gridType, index } = ownProps;
   const { fields, values, validity } = state.crm[entityId];
 
   const field = get(fields, id, false);
@@ -357,7 +359,8 @@ const mapStateToProps = (state, ownProps) => {
     can,
     gridType,
     validity,
-    elementId
+    elementId,
+    index // item index for array data
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

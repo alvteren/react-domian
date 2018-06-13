@@ -202,6 +202,9 @@ export default function reducer(state = initialState, { type, payload }) {
             type: "custom",
             component: TypeRealtyInput,
             label: "Тип недвижимости",
+            props: {
+              multipleSelect: true
+            },
             depended: null
           }
         };

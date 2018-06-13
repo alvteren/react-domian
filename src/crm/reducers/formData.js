@@ -34,69 +34,35 @@ export default (state, { type, payload }) => {
       }
     }
     if (type === formActions.FORM_SAVE_TO_STORE) {
-      const { name, value, elementId, entityId } = payload;
-      if (entityId === ENTITIES.show) {
-        // For show if we want to save some objects prop we pass index of object we want to modify
-        // else it should be a common show's date
-        const { index } = payload;
-        if (!index && name === "date") {
-          const oldValues = get(state.values, elementId, {});
-          newstate = {
-            ...state,
-            values: {
-              ...state.values,
-              [elementId]: {
-                ...oldValues,
-                date: value
-              }
-            }
-          };
-        }
-        const oldValues = get(state.values, `${elementId}.objects`, {});
-        console.log(oldValues, "OLD");
-        const newValues = oldValues.splice(0); // copy of objects Array
-        newValues[index][name] = value;
+      const { name, value, elementId } = payload;
+      const oldValues = get(state.values, elementId, {});
+      if (Array.isArray(name)) {
+        let update = {};
+        name.forEach(item => {
+          const key = item.name;
+          update[key] = item.value;
+        });
         newstate = {
           ...state,
           values: {
             ...state.values,
             [elementId]: {
-              ...state.values[elementId],
-              objects: newValues
+              ...oldValues,
+              ...update
             }
           }
         };
       } else {
-        // NOT SHOW, save as usual
-        const oldValues = get(state.values, elementId, {});
-        if (Array.isArray(name)) {
-          let update = {};
-          name.forEach(item => {
-            const key = item.name;
-            update[key] = item.value;
-          });
-          newstate = {
-            ...state,
-            values: {
-              ...state.values,
-              [elementId]: {
-                ...oldValues,
-                ...update
-              }
+        newstate = {
+          ...state,
+          values: {
+            ...state.values,
+            [elementId]: {
+              ...oldValues,
+              [name]: value
             }
-          };
-        } else {
-          newstate = {
-            ...state,
-            values: {
-              ...state.values,
-              [elementId]: {
-                ...oldValues,
-                [name]: value
-              }
-            }
-          };
-        }
+          }
+        };
       }
     }
 
