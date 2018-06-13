@@ -39,7 +39,7 @@ const styles = theme => ({
   dialogContent: {}
 });
 
-class Add extends React.Component {
+class Add extends React.PureComponent {
   state = {
     open: true
   };
@@ -51,7 +51,6 @@ class Add extends React.Component {
   };
   handleClickSave = () => {
     this.props.onSave();
-    this.handleClose();
   };
 
   componentDidMount() {
@@ -120,21 +119,17 @@ class Add extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return {};
+const mapStateToProps = state => {
+  const { fields } = state.crm[entityId];
+  return { fields };
 };
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { fields } = stateProps;
-  const { dispatch } = dispatchProps;
-
+const mapDispatchToProps = dispatch => {
   return {
-    ...stateProps,
-    ...ownProps,
     setInitFormState() {
       dispatch(setInitFormState({ entityId }));
     },
     onSave() {
-      dispatch(saveFormToServer({ entityId, elementId: 0 }));
+      dispatch(saveFormToServer({ entityId, elementId: "0" }));
     }
   };
 };
@@ -148,8 +143,7 @@ export default withMobileDialog()(
   withStyles(styles)(
     connect(
       mapStateToProps,
-      null,
-      mergeProps
+      mapDispatchToProps
     )(Add)
   )
 );

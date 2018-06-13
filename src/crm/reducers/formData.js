@@ -81,7 +81,7 @@ export default (state, { type, payload }) => {
     if (type === crmActions.FORM_SAVE_TO_SERVER_START) {
       const { entityId, elementId } = payload;
       const form = get(state, `values.${elementId}`, null);
-      const fields = get(state, "fields");
+      const { fields } = state;
       const validateErrors = formValidate({ form, fields, entityId });
       if (validateErrors)
         throw {
