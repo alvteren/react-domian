@@ -2,6 +2,9 @@ import * as crmActions from "../actions/crm";
 import * as showActions from "../actions/show";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 import { keyBy, omit, toArray, get } from "lodash";
+import TypeRealtyInput from "../Field/TypeRealty";
+import Street from "../Field/Street";
+import formData from "./formData";
 import {ENTITIES} from "../../constants";
 
 export const fields = {
@@ -15,13 +18,15 @@ export const fields = {
     id: "uf_crm_type_realty",
     label: "Тип недвижимости",
     type: "custom",
-    items: []
+    items: [],
+    component: TypeRealtyInput
   },
   section: {},
   street: {
     id: "street",
     label: "Улица",
-    type: "custom"
+    type: "custom",
+    component: Street
   },
   address: {
     id: "address",
@@ -80,11 +85,13 @@ const values = {
 const initialState = {
   fields,
   values,
-  form
+  form,
+  current: null
 };
 
 export default function reducer (state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
+  const newFormState = formData(state, { type, payload });
 
   if (entityId === ENTITIES.show) {
     if (type === showActions.SHOW_ADD_NEW_OBJECT) {
@@ -96,9 +103,17 @@ export default function reducer (state = initialState, { type, payload }) {
           ...values,
           [showId]: {
             ...state.values[showId],
-            objects: [...state.values[showId], object]
+            objects: [...state.values[showId].objects, object]
           }
         }
+      }
+    }
+
+    if (type === showActions.SHOW_SET_CURRENT) {
+      const { showId } = payload;
+      return {
+        ...state,
+        current: showId
       }
     }
   }
@@ -139,28 +154,23 @@ export default function reducer (state = initialState, { type, payload }) {
     const uf_crm_type_realty = get(payload, "data.uf_crm_type_realty", null);
     const section = get (payload, "data.section", null);
 
-      if (uf_crm_type_realty) {
-        newState = {
-            ...state,
-            fields: {
-              ...state.fields,
-              uf_crm_type_realty
-            }
-        }
+    if (uf_crm_type_realty && section) {
+      newState = {
+          ...state,
+          fields: {
+            ...state.fields,
+            uf_crm_type_realty: {
+              ...state.fields.uf_crm_type_realty,
+              items: uf_crm_type_realty.items
+            },
+            section
+          }
       }
-
-      if (section) {
-        newState = {
-            ...state,
-            fields: {
-              ...state.fields,
-              section
-            }
-        }
-      }
-
-      if (newState) return newState;
     }
+    if (newState) return newState;
+  }
+
+  if (newFormState) return { ...newFormState };
 
   return state;
 };

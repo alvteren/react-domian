@@ -51,7 +51,7 @@ export function typeRealtyConverter(lead, fields) {
       },
       []
     );
-    const checkedChildren = children.filter(reatyItem => reatyItem.checked);
+    const checkedChildren = children.filter(realtyItem => realtyItem.checked);
 
     return {
       ...sectionItem,

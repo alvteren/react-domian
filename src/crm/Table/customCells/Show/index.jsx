@@ -2,8 +2,10 @@ import React, { Fragment } from "react";
 import { Button, Tooltip, Grid, List, ListItem, Avatar, ListItemText, Typography } from "material-ui";
 import { AddCircleOutline as AddIcon } from "material-ui-icons";
 import ShowDialog from "./ShowDialog";
-
+import { connect } from "react-redux";
+import { setCurrent } from "../../../actions/show";
 import styles from "./Show.module.css";
+import { ENTITIES } from "../../../../constants";
 
 const values = {
   1: {
@@ -15,24 +17,25 @@ const values = {
 };
 
 class ShowList extends React.PureComponent {
-  state = {
-    dialogOpen: false,
-    currentShow: null
-  };
 
   showDialog = (showId) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ dialogOpen: true, currentShow: showId });
+    this.props.setCurrent(showId);
   };
 
   handleDialogClose = (e) => {
     e.stopPropagation();
-    this.setState({ dialogOpen: false, currentShow: null });
+    this.props.setCurrent(null);
   };
 
+  componentWillUnmount() {
+    this.props.setCurrent(null);
+  }
+
   render() {
-    const { value, entityId, elementId } = this.props;
+    const { current, value, entityId, elementId } = this.props;
+    const dialogOpen = this.props.current !== null;
 
     if (Object.keys(values).length) {
       return (
@@ -66,9 +69,9 @@ class ShowList extends React.PureComponent {
             </Grid>
           </Grid>
           <ShowDialog
-            open={this.state.dialogOpen}
+            open={dialogOpen}
             handleClose={this.handleDialogClose}
-            showId={this.state.currentShow}
+            showId={current}
           />
         </Fragment>
       )
@@ -86,13 +89,29 @@ class ShowList extends React.PureComponent {
           </ListItemText>
         </ListItem>
         <ShowDialog
-          open={this.state.dialogOpen}
+          open={dialogOpen}
           handleClose={this.handleDialogClose}
-          showId={this.state.currentShow}
+          showId={current}
         />
       </Fragment>
     )
   }
 }
 
-export default ShowList;
+const mapStateToProps = (state, ownProps) => {
+  const { current, values } = state.crm[ENTITIES.show];
+  return {
+    current,
+    values
+  }
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    setCurrent(showId) {
+      dispatch(setCurrent(showId));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShowList);

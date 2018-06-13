@@ -31,11 +31,11 @@ export const setInitFormState = props => dispatch => {
   });
 };
 export const saveToStore = props => async dispatch => {
-  const { entityId, elementId, name, value } = props;
+  const { entityId, elementId, name, value, index } = props;
 
   dispatch({
     type: FORM_SAVE_TO_STORE,
-    payload: { entityId, elementId, name, value }
+    payload: { entityId, elementId, name, value, index }
   });
 };
 export const saveFile = props => async dispatch => {

@@ -2,22 +2,36 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 
 import List, { ListItem, ListItemText } from "material-ui/List";
-import { Checkbox } from "material-ui";
+import { Checkbox, RadioGroup, Radio, FormControlLabel } from "material-ui";
 import Collapse from "material-ui/transitions/Collapse";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import { typeRealtyConverter } from "./TypeRealtyConverter";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
 
 import styles from "./EditInput.module.css";
 import { ENTITIES } from "../../../constants";
-const entityId = ENTITIES.lead;
+const leadEntity = ENTITIES.lead;
+
+function getChecked(element, index, array) {
+  let arr = element.children.filter(item => item.checked);
+  if (arr.length) return arr[0]
+}
 
 class EditInput extends React.PureComponent {
-  state = {
-    typeRealty: typeRealtyConverter(this.props.lead, this.props.fields)
-  };
+  constructor(props) {
+    super(props);
+    const typeRealty = typeRealtyConverter(this.props[this.props.entityId], this.props.fields);
+    const checked = typeRealty.find(getChecked);
+
+    this.state = {
+      mode: this.props.entityId,
+      typeRealty,
+      checked: checked ? checked.value : ""
+    };
+  }
+
   toggleCollapse = id => () => {
     const isOpened = this.state[id];
     this.setState({ [id]: !isOpened });
@@ -61,6 +75,16 @@ class EditInput extends React.PureComponent {
       name: type,
       value: target.value,
       add: target.checked
+    });
+  };
+
+  onRadioChange = (realtyType) => e => {
+    e.stopPropagation();
+    this.setState({ checked: realtyType.value });
+    this.props.onTreeChange({
+      name: TYPE_REALTY,
+      value: realtyType.value,
+      add: true
     });
   };
 
@@ -111,7 +135,28 @@ class EditInput extends React.PureComponent {
                       disablePadding
                       className={styles.nested}
                     >
-                      {typeItem.children.map((realtyType, realtyTypeIndex) => {
+                      {
+                        this.state.mode === ENTITIES.show &&
+                        typeItem.children.map((realtyType, realtyTypeIndex) => {
+                          return (
+                            <ListItem
+                              key={realtyTypeIndex}
+                              button
+                              onClick={this.onRadioChange(realtyType)}
+                            >
+                              <Radio
+                                checked={this.state.checked === realtyType.value}
+                                color="primary"
+                                value={realtyType.value}
+                                name="realty-type"
+                                aria-label={realtyType.value}
+                              />
+                              <ListItemText inset primary={realtyType.label} />
+                            </ListItem>
+                          );
+                        })
+                      }
+                      {this.state.mode === ENTITIES.lead && typeItem.children.map((realtyType, realtyTypeIndex) => {
                         return (
                           <ListItem
                             key={realtyTypeIndex}
@@ -144,14 +189,19 @@ class EditInput extends React.PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { section, uf_crm_type_realty } = state.crm[entityId].fields;
-  const fields = { section, uf_crm_type_realty };
+  const { entityId, elementId } = ownProps;
 
-  const { elementId } = ownProps;
-
-  const lead = state.crm[entityId].values[elementId];
-
-  return { fields, lead };
+  if (entityId && entityId === ENTITIES.show) {
+    const { section, uf_crm_type_realty } = state.crm[entityId].fields;
+    const show = state.crm[entityId].values[elementId];
+    const fields = { section, uf_crm_type_realty };
+    return { fields, show, entityId };
+  } else {
+    const { section, uf_crm_type_realty } = state.crm[leadEntity].fields;
+    const lead = state.crm[leadEntity].values[elementId];
+    const fields = { section, uf_crm_type_realty };
+    return { fields, lead, entityId: leadEntity };
+  }
 };
 
 export default connect(mapStateToProps)(EditInput);

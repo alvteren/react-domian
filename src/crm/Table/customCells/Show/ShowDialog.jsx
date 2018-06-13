@@ -49,7 +49,7 @@ class ShowDialog extends React.PureComponent {
           <Toolbar>
             <IconButton
               color="inherit"
-              onClick={this.handleClose}
+              onClick={handleClose}
               aria-label="Close"
             >
               <Hidden mdUp>

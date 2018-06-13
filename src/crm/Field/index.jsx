@@ -100,6 +100,7 @@ class Field extends React.PureComponent {
     }
 
     const visibleValues = getVisibleValues(field, values);
+
     if (field.type === "custom" && field["component"] && visibleValues.show) {
       return React.createElement(field["component"], {
         ...this.props,

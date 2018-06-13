@@ -9,8 +9,7 @@ import IconButton from "material-ui/IconButton";
 import Button from "material-ui/Button";
 import {
   Close as CloseIcon,
-  ArrowBack as ArrowBackIcon,
-  Save as SaveIcon
+  ArrowBack as ArrowBackIcon
 } from "material-ui-icons"
 import { Hidden } from "material-ui";
 
@@ -55,7 +54,6 @@ const TypeRealtySelect = props => {
               variant="raised"
               size="small">
               Сохранить
-              <SaveIcon />
             </Button>
           }
         </Toolbar>

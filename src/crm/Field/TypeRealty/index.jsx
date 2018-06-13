@@ -12,21 +12,31 @@ import EditDialog from "./EditDialog";
 
 import styles from "./index.module.css";
 import { saveToStore } from "../../actions/form";
-import { SECTION, TYPE_REALTY } from "./TypeRealtyConverter";
+import {SECTION, TYPE_REALTY, typeRealtyConverter} from "./TypeRealtyConverter";
 import { ENTITIES } from "./../../../constants";
 
-const entityId = ENTITIES.lead;
+const leadEntity = ENTITIES.lead;
 
 class TypeRealty extends React.PureComponent {
-  state = {
-    open: false,
-    isTreeChanged: false,
-    [SECTION]: this.props[SECTION] || [],
-    [TYPE_REALTY]:
-      this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
+  constructor(props) {
+    super(props);
+    const { entityId } = props;
+    let typeRealty;
+    if (entityId === ENTITIES.lead) {
+      typeRealty = this.props[TYPE_REALTY] && Array.isArray(this.props[TYPE_REALTY])
         ? this.props[TYPE_REALTY]
-        : []
-  };
+        : [];
+    } else {
+      typeRealty = this.props[TYPE_REALTY] || "";
+    }
+
+    this.state = {
+      open: false,
+      isTreeChanged: false,
+      [SECTION]: this.props[SECTION] || [],
+      [TYPE_REALTY]: typeRealty
+    };
+  }
 
   onChangeValue = ({ name, value }) => () => {
     const updated = this.state[name].filter(item => String(item) !== value);
@@ -41,6 +51,11 @@ class TypeRealty extends React.PureComponent {
     this.setState({ open: false });
   };
   onTreeChange = ({ name, value, add }) => {
+    const { entityId } = this.props;
+    if (entityId === ENTITIES.show) {
+      this.setState({ isTreeChanged: true, [TYPE_REALTY]: value });
+      return;
+    }
     const updated = add
       ? this.state[name].splice(0).concat([parseInt(value)]) // if item was added
       : this.state[name].splice(0).filter(item => String(item) !== value); // for delete item case
@@ -48,13 +63,7 @@ class TypeRealty extends React.PureComponent {
   };
   onSaveToStore = () => {
     const { onChange } = this.props;
-    const data = [
-      {
-        name: TYPE_REALTY,
-        value: this.state[TYPE_REALTY]
-      }
-    ];
-    onChange(data);
+    onChange(TYPE_REALTY, this.state[TYPE_REALTY]);
     this.setState({ open: false });
   };
 
@@ -131,31 +140,59 @@ class TypeRealty extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { elementId, can, fields } = ownProps;
+  const { entityId, elementId, can, fields } = ownProps;
   const {
     section: sectionFields,
     uf_crm_type_realty: typeRealtyFields
   } = fields;
 
-  const { values } = state.crm[entityId];
-  const { section, uf_crm_type_realty } = values[elementId];
+  let section, uf_crm_type_realty;
   const { edit: canEdit = false } = can;
-  return {
-    canEdit,
-    section,
-    uf_crm_type_realty,
-    sectionFields,
-    typeRealtyFields
-  };
+
+  if (entityId === ENTITIES.show) {
+    /* SHOW branch */
+    const { values, current } = state.crm[entityId];
+    section = values[elementId].objects.section;
+    uf_crm_type_realty = values[elementId].objects.uf_crm_type_realty;
+
+    return {
+      current,
+      entityId,
+      canEdit,
+      section,
+      uf_crm_type_realty,
+      sectionFields,
+      typeRealtyFields
+    };
+  } else {
+    /* LEAD branch */
+    const { values } = state.crm[leadEntity];
+    section = values[elementId].section;
+    uf_crm_type_realty = values[elementId].uf_crm_type_realty;
+
+    return {
+      entityId,
+      canEdit,
+      section,
+      uf_crm_type_realty,
+      sectionFields,
+      typeRealtyFields
+    };
+  }
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { elementId } = ownProps;
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { current } = stateProps;
+  const { dispatch } = dispatchProps;
+  const { entityId, elementId } = ownProps;
   return {
+    ...stateProps,
+    ...ownProps,
     onChange(name, value) {
-      dispatch(saveToStore({ entityId, elementId, name, value }));
+      debugger;
+      dispatch(saveToStore({ entityId, elementId, name, value, index: current }));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TypeRealty);
+export default connect(mapStateToProps, null,  mergeProps)(TypeRealty);
