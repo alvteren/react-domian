@@ -137,6 +137,7 @@ class Card extends React.PureComponent {
                   return (
                     <div key={index}>
                       <Field
+                        path="objects"
                         index={objectIndex}
                         id={fields[key].id}
                         edit={true}

@@ -53,7 +53,7 @@ class TypeRealty extends React.PureComponent {
   onTreeChange = ({ name, value, add }) => {
     const { entityId } = this.props;
     if (entityId === ENTITIES.show) {
-      this.setState({ isTreeChanged: true, [TYPE_REALTY]: value });
+      this.setState({ isTreeChanged: true, [TYPE_REALTY]: [value] });
       return;
     }
     const updated = add
@@ -78,7 +78,7 @@ class TypeRealty extends React.PureComponent {
       canEdit
     } = this.props;
     let typeRealty = this.props.uf_crm_type_realty || [];
-    if (typeof typeRealty === "string") typeRealty = [typeRealty];
+
     return (
       <Fragment>
         <Grid item xs={12} sm={12}>
@@ -149,7 +149,7 @@ const mapStateToProps = (state, ownProps) => {
 
   let section, uf_crm_type_realty;
   const { edit: canEdit = false } = can;
-  console.log(index);
+
   if (entityId === ENTITIES.show) {
     /* SHOW branch */
     const { values, current } = state.crm[entityId];
@@ -190,7 +190,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...ownProps,
     onChange(name, value) {
-      debugger;
       dispatch(saveToStore({ entityId, elementId, name, value, index: current }));
     }
   };

@@ -117,7 +117,6 @@ class Field extends React.PureComponent {
     const visibleValues = getVisibleValues(field, values);
 
     if (field.type === "custom" && field["component"] && visibleValues.show) {
-      debugger;
       return React.createElement(field["component"], {
         ...this.props,
         state: this.state,
@@ -338,13 +337,17 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, entityId, elementId, gridType, index } = ownProps;
+  const { id, entityId, elementId, gridType, index, path } = ownProps;
   const { fields, values, validity } = state.crm[entityId];
 
   const field = get(fields, id, false);
 
   const elementValues = get(values, elementId, null);
-  const value = elementValues != null ? get(elementValues, id, null) : null;
+  let value;
+  value = elementValues != null ? get(elementValues, id, null) : null;
+  if (!value && path && !isNaN(Number(index))) {
+    value = elementValues != null ? get(elementValues, `${path}[${index}].${id}`, null) : null;
+  }
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
 
   if (elementId === 0) {
@@ -366,7 +369,7 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { field } = stateProps;
-  const { entityId, elementId } = ownProps;
+  const { entityId, elementId, index } = ownProps;
   const name = field.id;
 
   return {
@@ -374,7 +377,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: arValue => {
       const { value } = arValue;
-      dispatch(saveToStore({ entityId, elementId, name, value }));
+      dispatch(saveToStore({ entityId, elementId, name, value, index }));
     },
     handleChangeSwitch: (e, checked) => {
       dispatch(saveToStore({ entityId, elementId, name, value: checked }));

@@ -73,7 +73,7 @@ const defaultValues = {
 };
 
 export const object = {
-  uf_crm_type_realty: "",
+  uf_crm_type_realty: [],
   street: "",
   address: "",
   price: "",
@@ -144,6 +144,7 @@ export default function reducer(state = initialState, { type, payload }) {
         }
 
         const oldValues = get(state.values, `${elementId}.objects`, {});
+
         const newValues = oldValues.splice(0); // copy of objects Array
         newValues[index][name] = value;
         return {
