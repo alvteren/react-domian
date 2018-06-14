@@ -115,6 +115,12 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === showActions.SHOW_SET_CURRENT) {
       const { showId, location } = payload;
+      if (showId === null) {
+        return {
+          ...state,
+          current: showId
+        };
+      }
       return {
         ...state,
         values: {

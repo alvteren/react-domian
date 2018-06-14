@@ -42,6 +42,10 @@ class ShowDialog extends React.PureComponent {
     };
   }
 
+  stopPropagation = e => {
+    e.stopPropagation()
+  };
+
   render() {
     const {
       classes,
@@ -54,6 +58,7 @@ class ShowDialog extends React.PureComponent {
 
     return (
       <Dialog
+        onClick={this.stopPropagation}
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}

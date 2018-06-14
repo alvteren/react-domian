@@ -39,9 +39,9 @@ class ShowList extends React.PureComponent {
     this.props.setCurrent(null);
   };
 
-  componentWillUnmount() {
-    this.props.setCurrent(null);
-  }
+  stopPropagation = e => {
+    e.stopPropagation()
+  };
 
   render() {
     const { current, value, entityId, elementId } = this.props;
@@ -50,7 +50,7 @@ class ShowList extends React.PureComponent {
     if (Object.keys(values).length) {
       return (
         <Fragment>
-          <Grid container justify="center" alignItems="center">
+          <Grid onClick={this.stopPropagation} container justify="center" alignItems="center">
             <Grid item xs={12} sm={10}>
               <List>
                 {Object.keys(values).map((showId, index) => {
@@ -95,7 +95,7 @@ class ShowList extends React.PureComponent {
     }
     return (
       <Fragment>
-        <ListItem className={styles.showAddListItem}>
+        <ListItem onClick={this.stopPropagation} className={styles.showAddListItem}>
           <Avatar className={styles.showFullAddBtn}>
             <AddIcon />
           </Avatar>

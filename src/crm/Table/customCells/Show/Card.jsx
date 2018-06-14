@@ -101,6 +101,7 @@ class Card extends React.PureComponent {
 
   render() {
     const { classes, show, fields, showId } = this.props;
+
     if (!show) {
       return (
         <div className={styles.emptyFormWrapper}>
@@ -123,13 +124,22 @@ class Card extends React.PureComponent {
           gridType={GRID.singleColumn}
         />
         {show.objects.map((object, objectIndex) => {
+          const preview = Object.keys(object).reduce((accumulator, key) => {
+            if (accumulator.length && accumulator.slice(-1) !== "/") accumulator += "/";
+            const isFilled = object[key].length;
+            if (isFilled && key !== "comment") {
+              if (key === "uf_crm_type_realty") {
+                return accumulator += fields.uf_crm_type_realty.items[object[key][0]].label;
+              }
+              return accumulator += object[key];
+            }
+            return accumulator;
+          }, "");
           return (
             <ExpansionPanel key={objectIndex}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.secondaryHeading}>
-                  {`${objectIndex + 1}. ${fields[object.uf_crm_type_realty]} ${
-                    object.address
-                  }`}
+                  {`${objectIndex + 1}. ${preview}`}
                 </Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails className={classes.columnDirection}>
