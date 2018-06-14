@@ -5,6 +5,7 @@ import { ENTITIES } from "../../constants";
 import * as reminderActions from "../actions/reminder";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
+const dateType = "datetime-local";
 export const fields = {
   subject: {
     id: "subject",
@@ -32,7 +33,8 @@ export const fields = {
     id: "date",
     label: "Когда",
     type: "date",
-    required: true
+    required: true,
+    dateType: dateType
   },
   reminder: {
     id: "reminder",
@@ -44,6 +46,7 @@ export const fields = {
     id: "remindInterval",
     label: "Дата напоминания",
     type: "date",
+    dateType: dateType,
     required: true,
     depended: "reminder",
     dependedValue: true,
@@ -66,9 +69,9 @@ const defaultValues = {
   subject: "",
   type: "",
   description: "",
-  date: getTomorrowDate(),
+  date: getTomorrowDate(dateType),
   reminder: false,
-  remindInterval: getTomorrowDate()
+  remindInterval: getTomorrowDate(dateType)
 };
 
 export const formFields = (() => {
@@ -123,8 +126,8 @@ export default function reducer(state = initialState, { type, payload }) {
           /* Date fields convert for Mui */
           dateFields.forEach((field) => {
             accumulator[reminderId][field] = items[key].reminders[reminderId][field] ?
-              convertDateForMui(items[key].reminders[reminderId][field]) :
-              getTomorrowDate();
+              convertDateForMui(items[key].reminders[reminderId][field], dateType) :
+              getTomorrowDate(dateType);
           });
         }
         return accumulator;

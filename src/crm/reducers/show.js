@@ -7,12 +7,14 @@ import Street from "../Field/Street";
 import { FORM_SAVE_TO_STORE } from "../actions/form";
 import { ENTITIES } from "../../constants";
 
+const dateType = "date";
 export const fields = {
   date: {
     id: "date",
     label: "Дата показа",
     type: "date",
-    required: true
+    required: true,
+    dateType: dateType
   },
   uf_crm_type_realty: {
     id: "uf_crm_type_realty",
@@ -68,7 +70,7 @@ toArray(fields).forEach((item, index) => {
 });
 
 const defaultValues = {
-  date: getTomorrowDate(),
+  date: getTomorrowDate(dateType),
   objects: []
 };
 
@@ -174,8 +176,8 @@ export default function reducer(state = initialState, { type, payload }) {
           /* Date fields convert for Mui */
           dateFields.forEach((field) => {
             accumulator[showId][field] = items[key].shows[showId][field] ?
-              convertDateForMui(items[key].shows[showId][field]) :
-              getTomorrowDate();
+              convertDateForMui(items[key].shows[showId][field], dateType) :
+              getTomorrowDate(dateType);
           });
         }
         return accumulator;
