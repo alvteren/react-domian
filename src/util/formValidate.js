@@ -113,7 +113,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /*
       Branch for iterate over whole form (on new instance create)
      */
-    debugger;
     Object.keys(forms[entityId]).forEach(propId => {
       const visibleValues = getVisibleValues(fields[propId], form);
 
@@ -164,8 +163,11 @@ function isEmpty(prop) {
     case "string":
       return Boolean(prop.length);
     case "object":
-      if (Array.isArray(prop)) return Boolean(prop.length);
-      return true;
+      if (Array.isArray(prop)) {
+        return Boolean(prop.length);
+      } else {
+        return Boolean(prop.value);
+      }
     case "number":
       return prop.toString().length;
     default:

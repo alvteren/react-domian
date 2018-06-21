@@ -78,7 +78,7 @@ class Field extends React.PureComponent {
       classes,
       can,
       gridType,
-      validity,
+      validateError,
       elementId,
       ...other
     } = this.props;
@@ -86,11 +86,6 @@ class Field extends React.PureComponent {
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
-    const validateError = get(
-      validity,
-      `${elementId}.validateErrors.${id}`,
-      null
-    );
 
     if (field === false) {
       return <span />;
@@ -337,6 +332,11 @@ class Field extends React.PureComponent {
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId, elementId, gridType } = ownProps;
   const { fields, values, validity } = state.crm[entityId];
+  const validateError = get(
+    validity,
+    `${elementId}.validateErrors.${id}`,
+    null
+  );
 
   const field = get(fields, id, false);
 
@@ -355,7 +355,7 @@ const mapStateToProps = (state, ownProps) => {
     value,
     can,
     gridType,
-    validity,
+    validateError,
     elementId
   };
 };

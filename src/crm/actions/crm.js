@@ -131,7 +131,6 @@ export const savePropToServer = props => async dispatch => {
 
 export const saveFormToServer = props => async dispatch => {
   const { entityId, elementId } = props;
-  debugger;
   try {
     dispatch({
       type: FORM_SAVE_TO_SERVER_START,

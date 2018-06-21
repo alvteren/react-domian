@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 
 import LocationSearch from "./Search";
 
-import Input, { InputLabel } from "material-ui/Input";
-import { FormControl, FormHelperText } from "material-ui/Form";
+import { get } from "lodash";
+
+import { TextField } from "material-ui";
 
 import { openSearch } from "../../../actions/form";
 
@@ -14,27 +15,29 @@ const Location = props => {
   const onFocus = () => {
     props.openSearch();
   };
-  const { id, value, field, onChange, formControl } = props;
+  const { id, value, field, onChange, formControl, validateError } = props;
   const onChangeValue = value => {
     onChange({ target: { name: id, value: value } });
   };
 
-  const locationName =
-    value && value.hasOwnProperty("name") && value.name ? value.name : "";
-  const locationId =
-    value && value.hasOwnProperty("value") && value.value
-      ? String(value.value)
-      : "";
+  const locationName = get(value, "name", "");
+  const locationId = String(get(value, "value", ""));
+
+  const hint = get(validateError, "message", get(field, "hint", ""));
 
   return (
     <Fragment>
-      <FormControl fullWidth className={formControl} key={id}>
-        <InputLabel htmlFor={id} required={field.required}>
-          {field.label}
-        </InputLabel>
-        <Input value={locationName} onFocus={onFocus} />
-        {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
-      </FormControl>
+      <TextField
+        className={formControl}
+        fullWidth
+        required={field.required}
+        name={field.id}
+        label={field.label}
+        value={locationName}
+        error={Boolean(validateError)}
+        onFocus={onFocus}
+        helperText={hint}
+      />
       <LocationSearch value={locationId} onChangeValue={onChangeValue} />
     </Fragment>
   );
@@ -46,4 +49,7 @@ const mapDispatchToProps = dispatch => {
     }
   };
 };
-export default connect(null, mapDispatchToProps)(Location);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Location);
