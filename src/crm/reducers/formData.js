@@ -93,13 +93,12 @@ export default (state, { type, payload }) => {
     }
 
     if (type === crmActions.FORM_SAVE_TO_SERVER_ERROR) {
-      const { elementId, key, data } = payload;
+      const { elementId, key, validateErrors } = payload;
       newstate = {
-        values: {
-          ...state.values,
+        validity: {
+          ...state.validity,
           [elementId]: {
-            ...state.values[elementId],
-            [key]: data
+            validateErrors
           }
         }
       };
