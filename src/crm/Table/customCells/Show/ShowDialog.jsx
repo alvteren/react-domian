@@ -112,7 +112,7 @@ class ShowDialog extends React.PureComponent {
           <Card
             save={this.state.save}
             showSaveBtn={this.showSaveBtn}
-            close={this.handleClose}
+            close={handleClose}
             showId={showId}
             elementId={elementId}
           />

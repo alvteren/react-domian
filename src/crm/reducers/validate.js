@@ -7,11 +7,21 @@ export default (state, { type, payload }) => {
   if (state) {
 
     if (type === typeActions.VALIDATE_FORM_SUBMIT) {
-      const { parent, child } = payload;
-      const { entityId, elementId } = child;
+      const { child, path } = payload;
+
+      let entityId, elementId;
+      if (!child) {
+        entityId = payload.entityId;
+        elementId = payload.elementId;
+        debugger;
+      } else {
+        entityId = child.entityId;
+        elementId = child.elementId;
+      }
+
       const form = get(state, `values.${elementId}`, null);
       const fields = get(state, "fields");
-      const validateErrors = formValidate({ form, fields, entityId });
+      const validateErrors = formValidate({ form, fields, entityId, path });
       if (validateErrors) throw({ action: typeActions.VALIDATE_SET_FORM_ERRORS, validateErrors });
       newState = {
         ...state,

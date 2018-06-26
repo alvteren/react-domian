@@ -35,7 +35,7 @@ class ShowList extends React.PureComponent {
   };
 
   handleDialogClose = e => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     this.props.setCurrent(null);
   };
 
@@ -149,7 +149,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     setCurrent(showId) {
-      dispatch(setCurrent({ showId, location }));
+      dispatch(setCurrent({ elementId: showId, location }));
     }
   };
 };

@@ -1,5 +1,6 @@
 import * as crmActions from "../actions/crm";
 import * as showActions from "../actions/show";
+import validateData from "./validate";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 import { keyBy, omit, toArray, get } from "lodash";
 import TypeRealtyInput from "../Field/TypeRealty";
@@ -51,7 +52,7 @@ export const fields = {
   }
 };
 
-const form = {
+export const formFields =  {
   date: true,
   items: [
     {
@@ -90,7 +91,7 @@ const values = {
 const initialState = {
   fields,
   values,
-  form,
+  form: formFields,
   current: null
 };
 
@@ -98,36 +99,38 @@ export default function reducer(state = initialState, { type, payload }) {
   const entityId = get(payload, "entityId", null);
 
   if (entityId === ENTITIES.show) {
+    const newValidateData = validateData(state, { type, payload: { ...payload, path: "items" }});
+
     if (type === showActions.SHOW_ADD_NEW_OBJECT) {
-      const { showId } = payload;
+      const { elementId } = payload;
 
       return {
         ...state,
         values: {
           ...values,
-          [showId]: {
-            ...state.values[showId],
-            items: [...state.values[showId].items, object]
+          [elementId]: {
+            ...state.values[elementId],
+            items: [...state.values[elementId].items, object]
           }
         }
       };
     }
 
     if (type === showActions.SHOW_SET_CURRENT) {
-      const { showId, location } = payload;
-      if (showId === null) {
+      const { elementId, location } = payload;
+      if (elementId === null) {
         return {
           ...state,
-          current: showId
+          current: elementId
         };
       }
       return {
         ...state,
         values: {
           ...state.values,
-          [showId]: { ...state.values[showId], location }
+          [elementId]: { ...state.values[elementId], location }
         },
-        current: showId
+        current: elementId
       };
     }
 
@@ -169,14 +172,21 @@ export default function reducer(state = initialState, { type, payload }) {
     }
 
     if (type === showActions.SHOW_SET_EDITED) {
-      const { showId } = payload;
+      const { elementId } = payload;
 
       return {
         ...state,
         edited: {
           ...state.edited,
-          [showId]: true
+          [elementId]: true
         }
+      }
+    }
+
+    if (newValidateData) {
+      return {
+        ...state,
+        ...newValidateData
       }
     }
   }

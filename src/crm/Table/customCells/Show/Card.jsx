@@ -185,6 +185,7 @@ class Card extends React.PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  // const parentId = ENTITIES.lead;
   const { close, save, showSaveBtn, showId, elementId } = ownProps;
   const { form, fields, validity } = state.crm[entityId];
   const { uf_location: location } = state.crm[ENTITIES.lead].data[elementId];
@@ -196,7 +197,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { location } = stateProps;
-  const { showId } = ownProps;
+  const { showId: elementId } = ownProps;
   const { dispatch } = dispatchProps;
 
   return {
@@ -204,13 +205,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     addObject(object) {
-      dispatch(addObject({ showId, entityId }));
+      dispatch(addObject({ elementId, entityId }));
     },
     setEdited() {
-      dispatch(setEdited({ showId, entityId }));
+      dispatch(setEdited({ elementId, entityId }));
     },
     saveShow() {
-      dispatch(saveShow({ showId, entityId }));
+      dispatch(saveShow({ elementId, entityId }));
     }
   };
 };
