@@ -153,8 +153,8 @@ const mapStateToProps = (state, ownProps) => {
   if (entityId === ENTITIES.show) {
     /* SHOW branch */
     const { values, current } = state.crm[entityId];
-    section = values[elementId].objects.section;
-    uf_crm_type_realty = values[elementId].objects[index].uf_crm_type_realty;
+    section = values[elementId].items.section;
+    uf_crm_type_realty = values[elementId].items[index].uf_crm_type_realty;
 
     return {
       current,

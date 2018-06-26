@@ -53,7 +53,7 @@ export const fields = {
 
 const form = {
   date: true,
-  objects: [
+  items: [
     {
       uf_crm_type_realty: true,
       street: true,
@@ -71,7 +71,7 @@ toArray(fields).forEach((item, index) => {
 
 const defaultValues = {
   date: getTomorrowDate(dateType),
-  objects: []
+  items: []
 };
 
 export const object = {
@@ -107,7 +107,7 @@ export default function reducer(state = initialState, { type, payload }) {
           ...values,
           [showId]: {
             ...state.values[showId],
-            objects: [...state.values[showId].objects, object]
+            items: [...state.values[showId].items, object]
           }
         }
       };
@@ -134,7 +134,7 @@ export default function reducer(state = initialState, { type, payload }) {
     if (type === FORM_SAVE_TO_STORE) {
       const { name, value, elementId, entityId } = payload;
       if (entityId === ENTITIES.show) {
-        // For show if we want to save some objects prop we pass index of object we want to modify
+        // For show if we want to save some items (objects) prop we pass index of object we want to modify
         // else it should be a common show's date
         const { index } = payload;
         if (!index && name === "date") {
@@ -151,9 +151,9 @@ export default function reducer(state = initialState, { type, payload }) {
           };
         }
 
-        const oldValues = get(state.values, `${elementId}.objects`, {});
+        const oldValues = get(state.values, `${elementId}.items`, {});
 
-        const newValues = oldValues.splice(0); // copy of objects Array
+        const newValues = oldValues.splice(0); // copy of items Array
         newValues[index][name] = value;
         return {
           ...state,
@@ -161,10 +161,22 @@ export default function reducer(state = initialState, { type, payload }) {
             ...state.values,
             [elementId]: {
               ...state.values[elementId],
-              objects: newValues
+              items: newValues
             }
           }
         };
+      }
+    }
+
+    if (type === showActions.SHOW_SET_EDITED) {
+      const { showId } = payload;
+
+      return {
+        ...state,
+        edited: {
+          ...state.edited,
+          [showId]: true
+        }
       }
     }
   }

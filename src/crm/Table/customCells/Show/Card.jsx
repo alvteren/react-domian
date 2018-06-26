@@ -12,7 +12,7 @@ import { ExpandMore as ExpandMoreIcon } from "material-ui-icons";
 import { withStyles } from "material-ui/styles";
 import Field from "../../../Field";
 import { ENTITIES, GRID } from "../../../../constants";
-import { addObject } from "../../../actions/show";
+import { addObject, saveShow, setEdited } from "../../../actions/show";
 
 import { isEqual, get, map } from "lodash";
 
@@ -63,21 +63,21 @@ class Card extends React.PureComponent {
   componentDidUpdate(prevProps) {
     /* Set local init state for equal check */
     if (!this.state.initState && this.props.show) {
-      // this.setInitState(prevProps.show);
+      this.setInitState(prevProps.show);
     }
     /* Equal check for save button render */
     if (!isEqual(prevProps.show, this.props.show) && prevProps.show) {
-      const showSave = !isEqual(this.state.initState, this.props.show);
-      // this.setState({ isFormEdited: showSave }, this.props.showSaveBtn(showSave));
+      const isEdited = !isEqual(this.state.initState, this.props.show);
+      this.props.setEdited();
     }
     /* Form submit */
     const showId = this.props.showId;
     if (get(this.props, `validity.${showId}.submit`, null)) {
-      // this.props.close();
+      this.props.close();
     }
     /* On saving */
     if (!prevProps.save && this.props.save) {
-      // this.onSave();
+      this.onSave();
     }
   }
 
@@ -92,11 +92,18 @@ class Card extends React.PureComponent {
   }
 
   onSave = event => {
-    // this.props.saveReminder(this.props.show);
+    this.props.saveShow(this.props.show);
   };
 
   addObject = () => {
     this.props.addObject();
+  };
+
+  handleKeyPress = e => {
+    // space keyDown lead to table row check
+    if (e.which === 32) {
+      e.stopPropagation();
+    }
   };
 
   render() {
@@ -115,7 +122,7 @@ class Card extends React.PureComponent {
     }
 
     return (
-      <form className={styles.showForm} action="">
+      <form className={styles.showForm} action="" onKeyDown={this.handleKeyPress}>
         <Field
           id="date"
           edit={true}
@@ -123,7 +130,7 @@ class Card extends React.PureComponent {
           entityId={entityId}
           gridType={GRID.singleColumn}
         />
-        {show.objects.map((object, objectIndex) => {
+        {show.items.map((object, objectIndex) => {
           const preview = Object.keys(object).reduce((accumulator, key) => {
             if (accumulator.length && accumulator.slice(-1) !== "/") accumulator += "/";
             const isFilled = object[key].length;
@@ -136,9 +143,12 @@ class Card extends React.PureComponent {
             return accumulator;
           }, "");
           return (
-            <ExpansionPanel key={objectIndex}>
+            <ExpansionPanel className={styles.expansionPanel} key={objectIndex}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.secondaryHeading}>
+                <Typography
+                  className={classes.secondaryHeading}
+                  noWrap // not working ??
+                >
                   {`${objectIndex + 1}. ${preview}`}
                 </Typography>
               </ExpansionPanelSummary>
@@ -147,7 +157,7 @@ class Card extends React.PureComponent {
                   return (
                     <div key={index}>
                       <Field
-                        path="objects"
+                        path="items"
                         index={objectIndex}
                         id={fields[key].id}
                         edit={true}
@@ -162,7 +172,11 @@ class Card extends React.PureComponent {
             </ExpansionPanel>
           );
         })}
-        <Button variant="raised" onClick={this.addObject}>
+        <Button
+          className={styles.addShowBtn}
+          variant="raised"
+          onClick={this.addObject}
+        >
           Добавить объект
         </Button>
       </form>
@@ -191,6 +205,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     addObject(object) {
       dispatch(addObject({ showId, entityId }));
+    },
+    setEdited() {
+      dispatch(setEdited({ showId, entityId }));
+    },
+    saveShow() {
+      dispatch(saveShow({ showId, entityId }));
     }
   };
 };

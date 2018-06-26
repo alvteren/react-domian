@@ -44,13 +44,19 @@ class ShowList extends React.PureComponent {
   };
 
   render() {
-    const { current, value, entityId, elementId } = this.props;
+    const { current, value, entityId, elementId, edited } = this.props;
     const dialogOpen = this.props.current !== null;
+    const isEdited = dialogOpen && edited instanceof Object && edited.hasOwnProperty(current);
 
     if (Object.keys(values).length) {
       return (
         <Fragment>
-          <Grid onClick={this.stopPropagation} container justify="center" alignItems="center">
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            onClick={this.stopPropagation}
+          >
             <Grid item xs={12} sm={10}>
               <List>
                 {Object.keys(values).map((showId, index) => {
@@ -85,6 +91,7 @@ class ShowList extends React.PureComponent {
             </Grid>
           </Grid>
           <ShowDialog
+            edited={isEdited}
             open={dialogOpen}
             handleClose={this.handleDialogClose}
             showId={current}
@@ -95,7 +102,10 @@ class ShowList extends React.PureComponent {
     }
     return (
       <Fragment>
-        <ListItem onClick={this.stopPropagation} className={styles.showAddListItem}>
+        <ListItem
+          onClick={this.stopPropagation}
+          className={styles.showAddListItem}
+        >
           <Avatar className={styles.showFullAddBtn}>
             <AddIcon />
           </Avatar>
@@ -106,6 +116,7 @@ class ShowList extends React.PureComponent {
           </ListItemText>
         </ListItem>
         <ShowDialog
+          edited={isEdited}
           open={dialogOpen}
           handleClose={this.handleDialogClose}
           elementId={elementId}
@@ -117,14 +128,15 @@ class ShowList extends React.PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { current, values } = state.crm[entityId];
+  const { current, values, edited } = state.crm[entityId];
   const { elementId } = ownProps;
   const { uf_location: location } = state.crm[ENTITIES.lead].data[elementId];
 
   return {
     current,
     values,
-    location
+    location,
+    edited
   };
 };
 

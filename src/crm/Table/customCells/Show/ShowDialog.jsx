@@ -42,9 +42,22 @@ class ShowDialog extends React.PureComponent {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.edited === true) this.setState({ showSaveBtn: true });
+  }
+
   stopPropagation = e => {
     e.stopPropagation()
   };
+
+  handleClickSave = () => {
+    this.setState({ save: true }, this.restore);
+  };
+
+  restore() {
+    this.setState({ save: false });
+  }
+
 
   render() {
     const {
