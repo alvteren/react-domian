@@ -13,7 +13,6 @@ export default (state, { type, payload }) => {
       if (!child) {
         entityId = payload.entityId;
         elementId = payload.elementId;
-        debugger;
       } else {
         entityId = child.entityId;
         elementId = child.elementId;

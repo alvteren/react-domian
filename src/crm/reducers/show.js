@@ -21,6 +21,7 @@ export const fields = {
     id: "uf_crm_type_realty",
     label: "Тип недвижимости",
     type: "custom",
+    required: true,
     items: [],
     component: TypeRealtyInput,
     props: {
@@ -32,6 +33,7 @@ export const fields = {
     id: "street",
     label: "Улица",
     type: "custom",
+    required: true,
     component: Street
   },
   address: {
@@ -43,7 +45,8 @@ export const fields = {
   price: {
     id: "price",
     label: "Цена",
-    type: "number"
+    type: "number",
+    required: true,
   },
   comment: {
     id: "comment",

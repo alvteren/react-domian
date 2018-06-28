@@ -123,6 +123,7 @@ class Field extends React.PureComponent {
         onChange: this.onChange,
         onStartEdit: this.onStartEdit,
         onSave: this.onSave,
+        validateError,
         ...field.props
       });
     }

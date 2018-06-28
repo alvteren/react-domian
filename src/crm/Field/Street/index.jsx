@@ -32,7 +32,8 @@ class Street extends React.PureComponent {
       onSave,
       classes,
       can,
-      open
+      open,
+      validateError
     } = this.props;
 
     const { needSave, edit } = this.props.state;
@@ -43,6 +44,12 @@ class Street extends React.PureComponent {
     };
     const onClick = () => {
       canEdit && onStartEdit();
+    };
+
+    const helperText = () => {
+      if (validateError) return <FormHelperText>{validateError.message}</FormHelperText>;
+      if (field.hint) return <FormHelperText>{field.hint}</FormHelperText>;
+      return ""
     };
 
     return (
@@ -63,12 +70,17 @@ class Street extends React.PureComponent {
           </div>
         ) : (
           <Fragment>
-            <FormControl fullWidth className={classes.formControl} key={id}>
+            <FormControl
+              fullWidth
+              className={classes.formControl}
+              key={id}
+              error={validateError instanceof Object}
+            >
               <InputLabel htmlFor={id} required={field.required}>
                 {field.label}
               </InputLabel>
               <Input value={value} name={id} onFocus={this.onFocus} />
-              {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
+              {helperText()}
             </FormControl>
             {needSave && (
               <IconButton
