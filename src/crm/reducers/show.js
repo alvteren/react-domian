@@ -94,7 +94,7 @@ const values = {
 const initialState = {
   fields,
   values,
-  form: formFields,
+  // form: formFields,
   current: null
 };
 
@@ -106,6 +106,7 @@ export default function reducer(state = initialState, { type, payload }) {
 
     if (type === showActions.SHOW_ADD_NEW_OBJECT) {
       const { elementId } = payload;
+      const newEmptyItem = Object.assign({}, object);
 
       return {
         ...state,
@@ -113,7 +114,7 @@ export default function reducer(state = initialState, { type, payload }) {
           ...values,
           [elementId]: {
             ...state.values[elementId],
-            items: [...state.values[elementId].items, object]
+            items: [...state.values[elementId].items, newEmptyItem]
           }
         }
       };
@@ -144,6 +145,7 @@ export default function reducer(state = initialState, { type, payload }) {
         // else it should be a common show's date
         const { index } = payload;
         if (!index && name === "date") {
+
           const oldValues = get(state.values, elementId, {});
           return {
             ...state,
@@ -185,6 +187,51 @@ export default function reducer(state = initialState, { type, payload }) {
         }
       }
     }
+
+    if (type === showActions.SHOW_PREPARE_FOR_SAVE) {
+      const { elementId } = payload;
+
+      /* removing empty items before validation */
+      const filteredItems = state.values[elementId].items.filter(item => {
+        /* try to save if at least one prop is filled */
+        return Object.keys(item).some(key => {
+          return Boolean(item[key].length)
+        });
+      });
+
+      if (!filteredItems.length) {
+        throw({ action: showActions.SHOW_EMPTY_ITEMS_SAVE, payload: {}});
+      }
+
+      return {
+        ...state,
+        values: {
+          ...state.values,
+          [elementId]: {
+            ...state.values[elementId],
+            items: filteredItems
+          }
+        },
+        validity: {
+          ...state.validity,
+          emptyItems: false
+        }
+      }
+    }
+
+    if (type === showActions.SHOW_EMPTY_ITEMS_SAVE) {
+      const { elementId } = payload;
+
+      return {
+        ...state,
+        validity: {
+          ...state.validity,
+          emptyItems: true
+        }
+      }
+    }
+
+    /* Below handles outer module actions */
 
     if (newValidateData) {
       return {

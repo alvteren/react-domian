@@ -8,6 +8,8 @@ export const SHOW_ADD = "SHOW_ADD";
 export const SHOW_REMOVE = "SHOW_REMOVE";
 export const SHOW_SET_EDITED = "SHOW_SET_EDITED";
 export const SHOW_ADD_ERROR = "SHOW_ADD_ERROR";
+export const SHOW_PREPARE_FOR_SAVE = "SHOW_PREPARE_FOR_SAVE";
+export const SHOW_EMPTY_ITEMS_SAVE = "SHOW_EMPTY_ITEMS_SAVE";
 
 export const setCurrent = props => dispatch => {
   const { elementId, location } = props;
@@ -39,9 +41,11 @@ export const saveShow = props => dispatch => {
   const { entityId, elementId } = props;
 
   try {
-    dispatch({ type: VALIDATE_FORM_SUBMIT, payload: { entityId, ...props } });
+    dispatch({ type: SHOW_PREPARE_FOR_SAVE, payload: { entityId, elementId }});
+    dispatch({ type: VALIDATE_FORM_SUBMIT, payload: { entityId, ...props }});
   } catch (err) {
-    dispatch({ type: err.action || SHOW_ADD_ERROR, payload: { entityId, elementId, ...err}, error: true });
+    console.warn(err);
+    dispatch({ type: err.action || SHOW_ADD_ERROR, payload: { entityId, elementId, ...err }, error: true });
   }
 
   console.log("SAVE", elementId);

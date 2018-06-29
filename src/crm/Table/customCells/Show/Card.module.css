@@ -20,3 +20,13 @@
     display: block;
     margin: 10px auto 0;
 }
+
+.error {
+    margin: 5px 0;
+    font-size: 0.75rem;
+    text-align: left;
+    min-height: 1em;
+    line-height: 1em;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: #f44336;
+}

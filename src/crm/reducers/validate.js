@@ -7,7 +7,7 @@ export default (state, { type, payload }) => {
   if (state) {
 
     if (type === typeActions.VALIDATE_FORM_SUBMIT) {
-      const { child, path } = payload;
+      const { child } = payload;
 
       let entityId, elementId;
       if (!child) {
@@ -18,9 +18,11 @@ export default (state, { type, payload }) => {
         elementId = child.elementId;
       }
 
+      if (elementId !== 0 && !elementId || !entityId) throw({ message: "no required data for validation" });
+
       const form = get(state, `values.${elementId}`, null);
       const fields = get(state, "fields");
-      const validateErrors = formValidate({ form, fields, entityId, path });
+      const validateErrors = formValidate({ form, fields, entityId });
       if (validateErrors) throw({ action: typeActions.VALIDATE_SET_FORM_ERRORS, validateErrors });
       newState = {
         ...state,

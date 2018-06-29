@@ -54,12 +54,6 @@ class Card extends React.PureComponent {
     };
   }
 
-  // componentWillMount() {
-  //   if (get(this.props, "reminder.edited", null)) {
-  //     this.props.showSaveBtn(true);
-  //   }
-  // }
-
   componentDidUpdate(prevProps) {
     /* Set local init state for equal check */
     if (!this.state.initState && this.props.show) {
@@ -107,7 +101,7 @@ class Card extends React.PureComponent {
   };
 
   render() {
-    const { classes, show, fields, showId } = this.props;
+    const { classes, show, fields, showId, validity } = this.props;
 
     if (!show) {
       return (
@@ -123,6 +117,9 @@ class Card extends React.PureComponent {
 
     return (
       <form className={styles.showForm} action="" onKeyDown={this.handleKeyPress}>
+        {validity && validity.emptyItems &&
+          <p className={styles.error}>Нужно заполнить данные хотя бы для одного объекта</p>
+        }
         <Field
           id="date"
           edit={true}
