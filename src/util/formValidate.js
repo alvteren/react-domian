@@ -5,16 +5,11 @@ import getVisibleValues from "../crm/Field/getVisibleValues";
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
 import { rules as reminderRules } from "../crm/Reminder/validate";
-// import { rules as showRules } from "../crm/Reminder/validate";
+import { showRules } from "../crm/reducers/show";
 import { formFields as leadFormFields } from "../crm/reducers/lead";
 import { formFields as saleFormFields } from "../crm/reducers/sale";
 import { formFields as reminderFields } from "../crm/reducers/reminder";
 import { formFields as showFields } from "../crm/reducers/show";
-
-const showRules = {
-  rules: {},
-  excludeValidationProps: []
-};
 
 export const typeRules = {
   email(val) {
@@ -128,9 +123,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
 
       if (Array.isArray(forms[entityId][propId])) {
         form[propId].forEach(item => {
-          const path = propId;
           Object.keys(item).forEach(prop => {
-            console.log(prop);
             checkProps(item, prop);
           });
         })

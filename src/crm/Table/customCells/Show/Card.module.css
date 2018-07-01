@@ -30,3 +30,9 @@
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     color: #f44336;
 }
+
+.preview {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

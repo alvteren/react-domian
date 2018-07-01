@@ -2,7 +2,7 @@ import * as crmActions from "../actions/crm";
 import * as showActions from "../actions/show";
 import validateData from "./validate";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
-import { keyBy, omit, toArray, get } from "lodash";
+import { keyBy, omit, toArray, get, cloneDeep } from "lodash";
 import TypeRealtyInput from "../Field/TypeRealty";
 import Street from "../Field/Street";
 import { FORM_SAVE_TO_STORE } from "../actions/form";
@@ -91,9 +91,15 @@ const values = {
   0: defaultValues
 };
 
+export const showRules = {
+  rules: {},
+  excludeValidationProps: ["location", "can"]
+};
+
 const initialState = {
   fields,
   values,
+  validity: {},
   // form: formFields,
   current: null
 };
@@ -188,7 +194,7 @@ export default function reducer(state = initialState, { type, payload }) {
       }
     }
 
-    if (type === showActions.SHOW_PREPARE_FOR_SAVE) {
+    if (type === showActions.SHOW_PREPARE_FOR_VALIDATE) {
       const { showId } = payload;
 
       /* removing empty items before validation */
@@ -200,7 +206,7 @@ export default function reducer(state = initialState, { type, payload }) {
       });
 
       if (!filteredItems.length) {
-        throw({ action: showActions.SHOW_EMPTY_ITEMS_SAVE, payload: {}});
+        throw({ action: showActions.SHOW_EMPTY_ITEMS_SAVE, payload: { showId }});
       }
 
       return {
@@ -226,13 +232,16 @@ export default function reducer(state = initialState, { type, payload }) {
         ...state,
         validity: {
           ...state.validity,
-          emptyItems: true
+          [elementId]: {
+            ...state.validity[elementId],
+            emptyItems: true
+          }
         }
       }
     }
 
     if (type === showActions.SHOW_ADD_ERROR) {
-      console.error(payload.err);
+      console.error(`${showActions.SHOW_ADD_ERROR} ERROR`, payload);
     }
 
     /* Below handles outer module actions */

@@ -117,7 +117,7 @@ class Card extends React.PureComponent {
 
     return (
       <form className={styles.showForm} action="" onKeyDown={this.handleKeyPress}>
-        {validity && validity.emptyItems &&
+        {validity && get(validity, `${showId}.emptyItems`, null) &&
           <p className={styles.error}>Нужно заполнить данные хотя бы для одного объекта</p>
         }
         <Field
@@ -142,10 +142,7 @@ class Card extends React.PureComponent {
           return (
             <ExpansionPanel className={styles.expansionPanel} key={objectIndex}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
-                  className={classes.secondaryHeading}
-                  noWrap // not working ??
-                >
+                <Typography className={`${classes.secondaryHeading} ${styles.preview}`}>
                   {`${objectIndex + 1}. ${preview}`}
                 </Typography>
               </ExpansionPanelSummary>
@@ -203,8 +200,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { location } = stateProps;
-  const { showId } = ownProps;
+  const { showId, elementId } = ownProps;
   const { dispatch } = dispatchProps;
+  console.log(elementId, "<<<");
 
   return {
     ...stateProps,
@@ -216,8 +214,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     setEdited() {
       dispatch(setEdited({ showId, entityId }));
     },
-    saveShow() {
-      dispatch(saveShow({ showId, entityId }));
+    saveShow(show) {
+      dispatch(saveShow({ entityId, elementId, showId, show }));
     }
   };
 };
