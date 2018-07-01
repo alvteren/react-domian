@@ -189,12 +189,21 @@ const mapStateToProps = (state, ownProps) => {
 
   const show = get(state, `crm.${entityId}.values.${showId}`, null);
 
-  return { show, close, save, showSaveBtn, form, fields, validity, location };
+  return { show,
+    close,
+    save,
+    showSaveBtn,
+    form,
+    fields,
+    validity,
+    location,
+    elementId,
+    showId };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { location } = stateProps;
-  const { showId: elementId } = ownProps;
+  const { showId } = ownProps;
   const { dispatch } = dispatchProps;
 
   return {
@@ -202,13 +211,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     addObject(object) {
-      dispatch(addObject({ elementId, entityId }));
+      dispatch(addObject({ showId, entityId }));
     },
     setEdited() {
-      dispatch(setEdited({ elementId, entityId }));
+      dispatch(setEdited({ showId, entityId }));
     },
     saveShow() {
-      dispatch(saveShow({ elementId, entityId }));
+      dispatch(saveShow({ showId, entityId }));
     }
   };
 };

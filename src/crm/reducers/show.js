@@ -105,36 +105,36 @@ export default function reducer(state = initialState, { type, payload }) {
     const newValidateData = validateData(state, { type, payload: { ...payload, path: "items" }});
 
     if (type === showActions.SHOW_ADD_NEW_OBJECT) {
-      const { elementId } = payload;
+      const { showId } = payload;
       const newEmptyItem = Object.assign({}, object);
 
       return {
         ...state,
         values: {
           ...values,
-          [elementId]: {
-            ...state.values[elementId],
-            items: [...state.values[elementId].items, newEmptyItem]
+          [showId]: {
+            ...state.values[showId],
+            items: [...state.values[showId].items, newEmptyItem]
           }
         }
       };
     }
 
     if (type === showActions.SHOW_SET_CURRENT) {
-      const { elementId, location } = payload;
-      if (elementId === null) {
+      const { showId, location } = payload;
+      if (showId === null) {
         return {
           ...state,
-          current: elementId
+          current: showId
         };
       }
       return {
         ...state,
         values: {
           ...state.values,
-          [elementId]: { ...state.values[elementId], location }
+          [showId]: { ...state.values[showId], location }
         },
-        current: elementId
+        current: showId
       };
     }
 
@@ -177,22 +177,22 @@ export default function reducer(state = initialState, { type, payload }) {
     }
 
     if (type === showActions.SHOW_SET_EDITED) {
-      const { elementId } = payload;
+      const { showId } = payload;
 
       return {
         ...state,
         edited: {
           ...state.edited,
-          [elementId]: true
+          [showId]: true
         }
       }
     }
 
     if (type === showActions.SHOW_PREPARE_FOR_SAVE) {
-      const { elementId } = payload;
+      const { showId } = payload;
 
       /* removing empty items before validation */
-      const filteredItems = state.values[elementId].items.filter(item => {
+      const filteredItems = state.values[showId].items.filter(item => {
         /* try to save if at least one prop is filled */
         return Object.keys(item).some(key => {
           return Boolean(item[key].length)
@@ -207,8 +207,8 @@ export default function reducer(state = initialState, { type, payload }) {
         ...state,
         values: {
           ...state.values,
-          [elementId]: {
-            ...state.values[elementId],
+          [showId]: {
+            ...state.values[showId],
             items: filteredItems
           }
         },
@@ -229,6 +229,10 @@ export default function reducer(state = initialState, { type, payload }) {
           emptyItems: true
         }
       }
+    }
+
+    if (type === showActions.SHOW_ADD_ERROR) {
+      console.error(payload.err);
     }
 
     /* Below handles outer module actions */

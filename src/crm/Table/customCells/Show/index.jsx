@@ -136,7 +136,8 @@ const mapStateToProps = (state, ownProps) => {
     current,
     values,
     location,
-    edited
+    edited,
+    elementId
   };
 };
 
@@ -149,7 +150,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     setCurrent(showId) {
-      dispatch(setCurrent({ elementId: showId, location }));
+      dispatch(setCurrent({ showId, location }));
     }
   };
 };
