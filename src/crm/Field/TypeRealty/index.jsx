@@ -86,7 +86,7 @@ class TypeRealty extends React.PureComponent {
           <div className={styles.fieldWrapper}>
             <div>
               <Typography className={validateError? styles.error: ""} variant="subheading" gutterBottom={true}>
-                {field.label}
+                {field.required ? `${field.label}*` : field.label}
               </Typography>
               {
                 validateError &&

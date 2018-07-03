@@ -38,7 +38,6 @@ const Pagination = props => {
       page={page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
-      rowsPerPageOptions={[1,2,3]}
       labelDisplayedRows={({ from, to, count }) => `${from}-${to} из ${count}`}
     />
   );
