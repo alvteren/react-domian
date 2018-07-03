@@ -147,7 +147,7 @@ export default (state, { type, payload }) => {
     }
   }
   if (newstate) {
-    return { ...state, ...newstate };
+    return newstate;
   }
 
   return null;

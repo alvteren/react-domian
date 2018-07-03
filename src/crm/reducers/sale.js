@@ -8,6 +8,7 @@ import validate from "./validate";
 
 import { ENTITIES } from "../../constants";
 import Street from "../Field/Street";
+import { FORM_FIELDS_FETCH_SUCCESS } from "../actions/crm";
 
 const chips = {
   chips: {},
@@ -220,14 +221,32 @@ const form = {
   // values for form of editing
   editValues: {},
   // values for detail card
-  detail: {},
-  filterFields: {
-    type_apartment: null,
-    type_deal: null,
-    section_id: null,
-    district: null,
-    subdistrict: null
-  }
+  detail: {}
+};
+
+const filter = {
+  fields: {
+    type_deal: true,
+    section_id: true,
+    type_premises: true,
+    type_object: true,
+    type_obj_commercia: true,
+    type_obj_area: true,
+    type_obj_houses: true,
+    location: true,
+    district: true,
+    subdistrict: true,
+    street_string: true,
+    price: true,
+    etage: true,
+    s_all: true,
+    s_live: true,
+    s_kitchen: true,
+    s_area: true,
+    date_create: true
+  },
+  open: false,
+  values: {}
 };
 const rightTools = {
   search: {
@@ -254,7 +273,7 @@ export const initialState = {
   fields,
   rightTools,
   formFields,
-  filter: {},
+  filter,
   wish: {},
   loading: {
     card: false,
@@ -298,12 +317,16 @@ export default (state = initialState, { type, payload }) => {
       };
     }
 
+    let newState = { ...state };
+
     if (newTableState) {
-      return { ...state, ...newTableState };
-    } else if (newFilterState) {
-      return { ...state, ...newFilterState };
-    } else if (newFormState) {
-      if (type === "FORM_FIELDS_FETCH_SUCCESS") {
+      newState = { ...newState, ...newTableState };
+    }
+    if (newFilterState) {
+      newState = { ...newState, ...newFilterState };
+    }
+    if (newFormState) {
+      if (type === FORM_FIELDS_FETCH_SUCCESS) {
         const { street_string: fieldStreet } = newFormState.fields;
 
         newFormState.fields.street_string = {
@@ -312,12 +335,16 @@ export default (state = initialState, { type, payload }) => {
           component: Street
         };
       }
-      return { ...state, ...newFormState };
-    } else if (newValidateState) {
-      return newValidateState;
-    } else if (newWishState) {
-      return { ...state, wish: newWishState };
+      newState = { ...newState, ...newFormState };
     }
+    if (newValidateState) {
+      newState = { ...newState, ...newValidateState };
+    }
+    if (newWishState) {
+      newState = { ...newState, wish: newWishState };
+    }
+
+    return newState;
   }
   return state;
 };

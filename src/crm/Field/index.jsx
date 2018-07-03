@@ -28,6 +28,7 @@ import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
+import getFormatValue from "./getFormatValue";
 
 class Field extends React.PureComponent {
   state = {
@@ -82,6 +83,7 @@ class Field extends React.PureComponent {
       elementId,
       ...other
     } = this.props;
+
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
@@ -283,22 +285,6 @@ class Field extends React.PureComponent {
         (!canEdit && value != null && value !== "");
 
       if (isShowedField) {
-        const formatValue = () => {
-          if (field.items) {
-            const listValue = field.hasOwnProperty("items")
-              ? get(field.items, value, null) ||
-                get(field.items, String(value).toLowerCase(), null)
-              : null;
-            return listValue ? listValue.label : "";
-          }
-          if (field.type === "switch") {
-            return value === true || value === "Y" ? "Да" : "Нет";
-          }
-          if (field.type === "location") {
-            return value.name;
-          }
-          return value;
-        };
         const col = field.type === "textarea" ? 12 : 6;
         return (
           <Grid item xs={12} sm={col}>
@@ -310,7 +296,7 @@ class Field extends React.PureComponent {
             >
               <ListItem className={classes.value}>
                 <ListItemText
-                  primary={<Fragment>{formatValue()}</Fragment>}
+                  primary={<Fragment>{getFormatValue(field, value)}</Fragment>}
                   secondary={field.label}
                 />
               </ListItem>

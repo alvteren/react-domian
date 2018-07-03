@@ -9,6 +9,11 @@
   flex-wrap: wrap;
   align-items: baseline;
 }
+.filterDesktopWrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
 .textFieldWrapper {
   display: flex;
   flex-direction: column;
@@ -24,4 +29,8 @@
     overflow-x: visible;
     flex-wrap: wrap;
   }
+}
+.filterIcon {
+  cursor: pointer;
+  margin-left: 16px;
 }

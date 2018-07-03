@@ -1,0 +1,28 @@
+.chips {
+  width: 100%;
+}
+.chip {
+  margin-right: 4px;
+}
+.fieldWrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+}
+.fieldSubheader {
+  top: 0;
+  z-index: 1;
+  position: sticky;
+  background-color: inherit;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  list-style: none;
+  line-height: 48px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+}
+.buttonSave {
+  max-width: 48px;
+  flex: 1 1 auto;
+}
