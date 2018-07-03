@@ -7,6 +7,7 @@ import TypeRealtyInput from "../Field/TypeRealty";
 import Street from "../Field/Street";
 import { FORM_SAVE_TO_STORE } from "../actions/form";
 import { ENTITIES } from "../../constants";
+import {SHOW_SET_NEW} from "../actions/show";
 
 const dateType = "date";
 export const fields = {
@@ -240,6 +241,19 @@ export default function reducer(state = initialState, { type, payload }) {
       }
     }
 
+    if (type === showActions.SHOW_SET_NEW) {
+      const { id, show } = payload;
+
+      return {
+        ...state,
+        values: {
+          ...state.values,
+          [id]: show,
+          0: defaultValues
+        }
+      }
+    }
+
     if (type === showActions.SHOW_ADD_ERROR) {
       console.error(`${showActions.SHOW_ADD_ERROR} ERROR`, payload);
     }
@@ -315,4 +329,29 @@ export default function reducer(state = initialState, { type, payload }) {
 /* exported state to another reducers */
 export const showData = (state, { type, payload }) => {
   let newState = null;
+
+  if (state) {
+    if (type === showActions.SHOW_SET_NEW) {
+      const { entity } = state;
+      const { elementId, id, show } = payload;
+      const fullID = `${entity}_${elementId}`;
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [fullID]: {
+            ...state.data[fullID],
+            shows: {
+              ...state.data[fullID].shows,
+              [id]: show
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (newState) return { ...state, ...newState };
+  return null;
 };

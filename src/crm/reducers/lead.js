@@ -4,6 +4,7 @@ import tableData from "./tableData";
 import formData from "./formData";
 import filterData from "./filterData";
 import { reminderData } from "./reminder";
+import { showData } from "./show";
 import validate from "./validate";
 import convert from "../../util/leadDataConverter";
 
@@ -152,7 +153,8 @@ export const initialState = {
     chips: false,
     data: true
   },
-  validity: {}
+  validity: {},
+  entity: ENTITIES.lead
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -164,6 +166,7 @@ export default function reducer(state = initialState, { type, payload }) {
     const newWishState = wishData(state, { type, payload });
     const newValidateState = validate(state, { type, payload });
     const newReminderState = reminderData(state, { type, payload });
+    const newShowState = showData(state, { type, payload });
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
@@ -219,6 +222,8 @@ export default function reducer(state = initialState, { type, payload }) {
       return { ...newValidateState }
     } else if (newReminderState) {
       return { ...newReminderState }
+    } else if (newShowState) {
+      return { ...newShowState }
     }
   }
   return state;
