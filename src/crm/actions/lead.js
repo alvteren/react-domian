@@ -2,6 +2,7 @@ import { fetchLeads as fetchLeadsApi } from "../../api/lead";
 import { fetchLead as fetchLeadApi } from "../../api/lead";
 import { fetchLeadFields as fetchLeadFieldsApi } from "../../api/lead";
 import { fetchLeadField as fetchLeadFieldApi } from "../../api/lead";
+import { ENTITIES } from "../../constants";
 
 // Action types
 
@@ -10,7 +11,7 @@ export const fetchLeads = props => async dispatch => {
   try {
     dispatch({
       type: "TABLE_FETCH_DATA_START",
-      payload: { id: "lead" }
+      payload: { entityId: ENTITIES.lead }
     });
     const data = await fetchLeadsApi({
       filter,
@@ -20,7 +21,7 @@ export const fetchLeads = props => async dispatch => {
     });
     dispatch({
       type: "TABLE_FETCH_DATA_SUCCESS",
-      payload: { id: "lead", ...data }
+      payload: { entityId: ENTITIES.lead, ...data }
     });
   } catch (err) {
     dispatch({ type: "TABLE_FETCH_DATA_ERROR", payload: err, error: true });
@@ -31,12 +32,12 @@ export const fetchLead = id => async dispatch => {
   try {
     dispatch({
       type: "DETAIL_FETCH_DATA_START",
-      payload: { id: "lead" }
+      payload: { entityId: ENTITIES.lead }
     });
     const data = await fetchLeadApi({ id });
     dispatch({
       type: "DETAIL_FETCH_DATA_SUCCESS",
-      payload: { id: "lead", ...data }
+      payload: { ientityId: ENTITIES.lead, ...data }
     });
   } catch (err) {
     dispatch({ type: "DETAIL_FETCH_DATA_ERROR", payload: err, error: true });
@@ -46,7 +47,7 @@ export const onInitLead = props => async dispatch => {
   const { id } = props;
   dispatch({
     type: "DETAIL_INIT",
-    payload: { id: "lead", current: id }
+    payload: { entityId: ENTITIES.lead, current: id }
   });
 };
 

@@ -37,11 +37,11 @@ export const fields = {
     required: true,
     component: Street
   },
-  address: {
-    id: "address",
+  number: {
+    id: "number",
     label: "Номер дома/участка",
-    type: "text"
-    // required: true // ?
+    type: "text",
+    required: true
   },
   price: {
     id: "price",
@@ -62,7 +62,7 @@ export const formFields =  {
     {
       uf_crm_type_realty: true,
       street: true,
-      address: true,
+      number: true,
       price: true,
       comment: true
     }
@@ -82,7 +82,7 @@ const defaultValues = {
 export const object = {
   uf_crm_type_realty: [],
   street: "",
-  address: "",
+  number: "",
   price: "",
   comment: ""
 };

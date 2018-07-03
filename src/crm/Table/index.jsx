@@ -89,6 +89,7 @@ class EnhancedTable extends React.Component {
       groupActionsComponent,
       controlComponents,
       onChangePage,
+      onChangeRowsPerPage,
       classes
     } = this.props;
 
@@ -128,7 +129,7 @@ class EnhancedTable extends React.Component {
         if (get(row, "can.edit", false)) {
           return (
             <ShowList
-              value={value}
+              value={value || []}
               entityId={entityId}
               elementId={row.id}
             />
@@ -289,7 +290,11 @@ class EnhancedTable extends React.Component {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <Pagination entityId={entityId} onChangePage={onChangePage} />
+                <Pagination
+                  entityId={entityId}
+                  onChangePage={onChangePage}
+                  onChangeRowsPerPage={onChangeRowsPerPage}
+                />
               </TableRow>
             </TableFooter>
           </Table>

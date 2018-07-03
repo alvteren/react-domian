@@ -38,6 +38,7 @@ const Pagination = props => {
       page={page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
+      rowsPerPageOptions={[1,2,3]}
       labelDisplayedRows={({ from, to, count }) => `${from}-${to} из ${count}`}
     />
   );
@@ -58,6 +59,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onChangeRowsPerPage: rowsPerPage => {
       dispatch(changeRowsPerPage({ entityId, rowsPerPage }));
+      const onChangeRowsPerPage = get(ownProps, "onChangeRowsPerPage", null);
+      if (onChangeRowsPerPage) {
+        onChangeRowsPerPage(rowsPerPage);
+      }
     }
   };
 };

@@ -41,7 +41,6 @@ export const setEdited = props => dispatch => {
 
 export const saveShow = props => async dispatch => {
   const { entityId, elementId, showId, show } = props;
-  console.log(entityId, "<<");
 
   try {
     dispatch({ type: SHOW_PREPARE_FOR_VALIDATE, payload: { entityId, showId }});

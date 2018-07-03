@@ -85,7 +85,7 @@ const list = {
   selected: [],
   loadedPages: {},
   page: 0,
-  rowsPerPage: 5,
+  rowsPerPage: 1,
   tooltipTitle: "Покупатели",
   orderBy: "",
   order: "desc"

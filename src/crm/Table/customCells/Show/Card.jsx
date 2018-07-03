@@ -202,7 +202,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { location } = stateProps;
   const { showId, elementId } = ownProps;
   const { dispatch } = dispatchProps;
-  console.log(elementId, "<<<");
 
   return {
     ...stateProps,

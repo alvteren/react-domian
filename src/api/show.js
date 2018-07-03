@@ -9,8 +9,8 @@ export const saveShow = async props => {
     credentials: "include",
     mode: "cors",
     body: showId ?
-      JSON.stringify({ entityId, elementId, showId, show }) :
-      JSON.stringify({ entityId, elementId,  show })
+      JSON.stringify({ entityId, elementId, showId, ...show }) :
+      JSON.stringify({ entityId, elementId,  ...show })
   });
   return response.json();
 };

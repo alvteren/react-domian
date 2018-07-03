@@ -48,7 +48,7 @@ class ShowList extends React.PureComponent {
     const dialogOpen = this.props.current !== null;
     const isEdited = dialogOpen && edited instanceof Object && edited.hasOwnProperty(current);
 
-    if (Object.keys(values).length) {
+    if (Object.keys(value).length) {
       return (
         <Fragment>
           <Grid
