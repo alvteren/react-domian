@@ -69,9 +69,8 @@ const idRules = {
 export default function formValidate({ form, fields, entityId, propId }) {
   const validateErrors = {};
   const customRules = idRules[entityId];
-  const excludeProps  = excludeValidationProps[entityId];
+  const excludeProps = excludeValidationProps[entityId];
   let checked = false;
-
   if (propId) {
     /*
       Branch for check only one prop (on edit)
@@ -79,7 +78,8 @@ export default function formValidate({ form, fields, entityId, propId }) {
 
     const visibleValues = getVisibleValues(fields[propId], form);
     if (!visibleValues) return;
-    if (visibleValues instanceof Object && !get(visibleValues, "show", true)) return;
+    if (visibleValues instanceof Object && !get(visibleValues, "show", true))
+      return;
     const isFilled = isEmpty(form[propId]);
 
     /* Check for required props */
@@ -113,17 +113,16 @@ export default function formValidate({ form, fields, entityId, propId }) {
     /*
       Branch for iterate over whole form (on new instance create)
      */
-
     Object.keys(forms[entityId]).forEach(propId => {
       const visibleValues = getVisibleValues(fields[propId], form);
 
       if (!visibleValues) return;
-      if (visibleValues instanceof Object && !get(visibleValues, "show", true)) return;
+      if (visibleValues instanceof Object && !get(visibleValues, "show", true))
+        return;
 
       const isFilled = isEmpty(form[propId]);
       /* Service props exclude */
-      if (excludeProps && excludeProps.includes(propId))
-        return;
+      if (excludeProps && excludeProps.includes(propId)) return;
 
       /* Check for required props */
       if (fields[propId].required) {
@@ -164,8 +163,11 @@ function isEmpty(prop) {
     case "string":
       return Boolean(prop.length);
     case "object":
-      if (Array.isArray(prop)) return Boolean(prop.length);
-      return true;
+      if (Array.isArray(prop)) {
+        return Boolean(prop.length);
+      } else {
+        return Boolean(prop.value);
+      }
     case "number":
       return prop.toString().length;
     default:

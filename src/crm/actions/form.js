@@ -9,8 +9,11 @@ export const SET_INIT_FORM_STATE = "SET_INIT_FORM_STATE";
 export const FORM_SAVE_TO_STORE = "FORM_SAVE_TO_STORE";
 export const FORM_SAVE_FILE = "FORM_SAVE_FILE";
 export const FORM_LOCATION_SEARCH_OPENED = "FORM_LOCATION_SEARCH_OPENED";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_START = "FORM_LOCATION_SEARCH_FETCH_START";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_SUCCESS = "FORM_LOCATION_SEARCH_FETCH_SUCCESS";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_ERROR = "FORM_LOCATION_SEARCH_FETCH_ERROR";
 
 export const FORM_SEARCH_OPENED = "FORM_SEARCH_OPENED";
@@ -23,11 +26,11 @@ export const FORM_SEARCH_SAVE_PHRASE_SUCCESS = "FORM_SEARCH_SAVE_PHRASE_SUCCESS"
 export const FORM_SEARCH_SAVE_PHRASE_ERROR = "FORM_SEARCH_SAVE_PHRASE_ERROR";
 
 export const setInitFormState = props => dispatch => {
-  const { initState, entityId } = props;
+  const { entityId } = props;
 
   dispatch({
     type: SET_INIT_FORM_STATE,
-    payload: { initState, entityId }
+    payload: { entityId }
   });
 };
 export const saveToStore = props => async dispatch => {
@@ -110,4 +113,3 @@ export const saveSelectedValue = props => async dispatch => {
     });
   }
 };
-

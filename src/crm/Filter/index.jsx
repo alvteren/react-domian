@@ -1,11 +1,17 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { TextField, Chip, Avatar, Hidden } from "material-ui";
+import { TextField, Chip, Avatar, Hidden, Tooltip } from "material-ui";
+import FilterListIcon from "material-ui-icons/FilterList";
 import { connect } from "react-redux";
 import { map, get, size } from "lodash";
 
-import { deleteChip, fetchChips, selectChip } from "../actions/filter";
+import {
+  deleteChip,
+  fetchChips,
+  selectChip,
+  filterToggle
+} from "../actions/filter";
 
 import SearchResult from "./SearchResult";
 import SearchResultMobile from "./SearchResultMobile";
@@ -13,6 +19,7 @@ import SearchResultMobile from "./SearchResultMobile";
 import delayedAction from "../../util/delayedAction";
 
 import styles from "./Filter.module.css";
+import FilterForm from "./Form";
 
 const muiStyles = theme => ({
   chipsWrapper: {
@@ -38,7 +45,7 @@ const muiStyles = theme => ({
   }
 });
 
-class Filter extends React.Component {
+class Filter extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -85,6 +92,10 @@ class Filter extends React.Component {
       open: false
     });
   };
+  handleFilterIconClick = e => {
+    e.preventDefault();
+    this.props.onFilterOpen();
+  };
 
   render() {
     const {
@@ -104,21 +115,30 @@ class Filter extends React.Component {
       <Fragment>
         <div className={styles.filterWrapper}>
           <Hidden smDown>
-            <div className={styles.textFieldWrapper}>
-              <TextField
-                id="searchField"
-                label="Поиск"
-                className={styles.filterTextField}
-                value={value}
-                onChange={this.handleChange}
-                onFocus={this.onFocus}
-                onBlur={this.onFocusOut}
-              />
-              <SearchResult
-                entityId={entityId}
-                open={open}
-                onClose={this.onCloseSearchResult}
-              />
+            <div className={styles.filterDesktopWrapper}>
+              <div className={styles.textFieldWrapper}>
+                <TextField
+                  id="searchField"
+                  label="Поиск"
+                  className={styles.filterTextField}
+                  value={value}
+                  onChange={this.handleChange}
+                  onFocus={this.onFocus}
+                  onBlur={this.onFocusOut}
+                />
+
+                <SearchResult
+                  entityId={entityId}
+                  open={open}
+                  onClose={this.onCloseSearchResult}
+                />
+              </div>
+              <Tooltip title="Открыть фильтр" enterDelay={300}>
+                <FilterListIcon
+                  className={styles.filterIcon}
+                  onClick={this.handleFilterIconClick}
+                />
+              </Tooltip>
             </div>
           </Hidden>
           <Hidden mdUp>
@@ -183,6 +203,7 @@ class Filter extends React.Component {
               );
             })}
         </div>
+        <FilterForm entityId={entityId} />
       </Fragment>
     );
   }
@@ -192,7 +213,7 @@ Filter.propTypes = {
   classes: PropTypes.object.isRequired
 };
 const mapStateToProps = (state, ownProps) => {
-  const table = state.crm[ownProps.entityId];
+  const entityStore = state.crm[ownProps.entityId];
   const {
     headers,
     selected,
@@ -204,7 +225,8 @@ const mapStateToProps = (state, ownProps) => {
     chips,
     presetsChips,
     selectedChips
-  } = table;
+  } = entityStore;
+
   return {
     headerData: headers,
     count,
@@ -228,12 +250,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onFilterChange: query => {
       dispatch(fetchChips({ entityId, query }));
     },
+    onFilterOpen: () => {
+      dispatch(filterToggle({ entityId, open: true }));
+    },
+    onFilterClose: () => {
+      dispatch(filterToggle({ entityId, open: false }));
+    },
     onApplyChips: chip => {
       dispatch(selectChip({ entityId, chip }));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(muiStyles)(Filter)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(muiStyles)(Filter));

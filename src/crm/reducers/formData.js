@@ -1,6 +1,6 @@
 import * as crmActions from "../actions/crm";
 import * as formActions from "../actions/form";
-import { keyBy, omit, toArray, get } from "lodash";
+import { keyBy, omit, toArray, get, size, reduce } from "lodash";
 import formValidate from "../../util/formValidate";
 
 export default (state, { type, payload }) => {
@@ -8,29 +8,44 @@ export default (state, { type, payload }) => {
   if (state) {
     if (type === crmActions.FORM_FIELDS_FETCH_START) {
       newstate = {
-        ...state,
         loading: { ...state.loading, form: true }
       };
     }
     if (type === crmActions.FORM_FIELDS_FETCH_SUCCESS) {
       const { data } = payload;
       newstate = {
-        ...state,
         fields: keyBy(data, "id"),
         loading: { ...state.loading, form: false }
       };
     }
     if (type === formActions.SET_INIT_FORM_STATE) {
-      const { initState } = payload;
+      const { entityId } = payload;
+      const { fields } = state;
+
+      if (!fields || size(fields) === 0) return null;
+      const initState = reduce(
+        fields,
+        (result, field) => {
+          const initValue = field.multiple
+            ? []
+            : field.hasOwnProperty("default")
+              ? field.default
+              : "";
+          return { ...result, [field.id]: initValue };
+        },
+        {}
+      );
+
+      initState.can = { edit: true };
+
       newstate = {
-        ...state,
         values: {
           ...state.values,
           "0": {
             ...initState
           }
         }
-      }
+      };
     }
     if (type === formActions.FORM_SAVE_TO_STORE) {
       const { name, value, elementId } = payload;
@@ -42,7 +57,6 @@ export default (state, { type, payload }) => {
           update[key] = item.value;
         });
         newstate = {
-          ...state,
           values: {
             ...state.values,
             [elementId]: {
@@ -53,7 +67,6 @@ export default (state, { type, payload }) => {
         };
       } else {
         newstate = {
-          ...state,
           values: {
             ...state.values,
             [elementId]: {
@@ -68,23 +81,27 @@ export default (state, { type, payload }) => {
     if (type === crmActions.FORM_SAVE_TO_SERVER_START) {
       const { entityId, elementId } = payload;
       const form = get(state, `values.${elementId}`, null);
-      const fields = get(state, "fields");
+      const { fields } = state;
       const validateErrors = formValidate({ form, fields, entityId });
-      if (validateErrors) throw({ action: "VALIDATE_SET_FORM_ERRORS", validateErrors, entityId, elementId });
+      if (validateErrors)
+        throw {
+          action: "VALIDATE_SET_FORM_ERRORS",
+          validateErrors,
+          entityId,
+          elementId
+        };
     }
 
     if (type === crmActions.FORM_SAVE_TO_SERVER_ERROR) {
-      const { elementId, key, data } = payload;
+      const { elementId, key, validateErrors } = payload;
       newstate = {
-        ...state,
-        values: {
-          ...state.values,
+        validity: {
+          ...state.validity,
           [elementId]: {
-            ...state.values[elementId],
-            [key]: data
+            validateErrors
           }
         }
-      }
+      };
     }
 
     if (type === formActions.FORM_SAVE_FILE) {
@@ -92,7 +109,6 @@ export default (state, { type, payload }) => {
       const oldValues = get(state.values, elementId, {});
       const oldFiles = get(oldValues, name, {});
       newstate = {
-        ...state,
         values: {
           ...state.values,
           [elementId]: {
@@ -105,7 +121,6 @@ export default (state, { type, payload }) => {
     if (type === crmActions.DETAIL_INIT) {
       const { current } = payload;
       newstate = {
-        ...state,
         current
       };
     }
@@ -125,11 +140,14 @@ export default (state, { type, payload }) => {
     }
     if (type === "DISTRICT_CHANGE") {
       const { districts, subDistricts } = payload;
-      newstate = { ...state, uf_crm_district: districts, uf_crm_subdistrict: subDistricts }
+      newstate = {
+        uf_crm_district: districts,
+        uf_crm_subdistrict: subDistricts
+      };
     }
   }
   if (newstate) {
-    return { ...state, ...newstate };
+    return newstate;
   }
 
   return null;

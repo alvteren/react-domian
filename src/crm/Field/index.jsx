@@ -17,7 +17,7 @@ import SwitchFieldEdit from "./edit/SwitchField";
 import LocationFieldEdit from "./edit/Location";
 import Date from "./edit/DateField";
 import Tel from "./edit/Tel";
-import Text from "./edit/Text"
+import Text from "./edit/Text";
 import TextArea from "./edit/TextArea";
 
 import styles from "./Field.module.css";
@@ -28,6 +28,7 @@ import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
 import { ListItem, ListItemText } from "material-ui/List";
+import getFormatValue from "./getFormatValue";
 
 class Field extends React.PureComponent {
   state = {
@@ -70,12 +71,23 @@ class Field extends React.PureComponent {
   };
 
   render() {
-    const { id, field, values, value, classes, can, gridType, validity, elementId, ...other } = this.props;
+    const {
+      id,
+      field,
+      values,
+      value,
+      classes,
+      can,
+      gridType,
+      validateError,
+      elementId,
+      ...other
+    } = this.props;
+
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
-    const validateError = get(validity, `${elementId}.validateErrors.${id}`, null);
 
     if (field === false) {
       return <span />;
@@ -241,7 +253,7 @@ class Field extends React.PureComponent {
                 validateError={validateError}
               />
             </Grid>
-          )
+          );
         }
         return (
           <Grid item xs={12} sm={col} className={classes.valueWrapper}>
@@ -268,27 +280,11 @@ class Field extends React.PureComponent {
     } else {
       const isShowedField =
         (field &&
-          ((canEdit && isDepended && visibleValues !== null) ||
+          ((canEdit && isDepended && visibleValues.show) ||
             (canEdit && !isDepended))) ||
         (!canEdit && value != null && value !== "");
 
       if (isShowedField) {
-        const formatValue = () => {
-          if (field.items) {
-            const listValue = field.hasOwnProperty("items")
-              ? get(field.items, value, null) ||
-                get(field.items, String(value).toLowerCase(), null)
-              : null;
-            return listValue ? listValue.label : "";
-          }
-          if (field.type === "switch") {
-            return value === true || value === "Y" ? "Да" : "Нет";
-          }
-          if (field.type === "location") {
-            return value.name;
-          }
-          return value;
-        };
         const col = field.type === "textarea" ? 12 : 6;
         return (
           <Grid item xs={12} sm={col}>
@@ -300,7 +296,7 @@ class Field extends React.PureComponent {
             >
               <ListItem className={classes.value}>
                 <ListItemText
-                  primary={<Fragment>{formatValue()}</Fragment>}
+                  primary={<Fragment>{getFormatValue(field, value)}</Fragment>}
                   secondary={field.label}
                 />
               </ListItem>
@@ -322,6 +318,11 @@ class Field extends React.PureComponent {
 const mapStateToProps = (state, ownProps) => {
   const { id, entityId, elementId, gridType } = ownProps;
   const { fields, values, validity } = state.crm[entityId];
+  const validateError = get(
+    validity,
+    `${elementId}.validateErrors.${id}`,
+    null
+  );
 
   const field = get(fields, id, false);
 
@@ -340,7 +341,7 @@ const mapStateToProps = (state, ownProps) => {
     value,
     can,
     gridType,
-    validity,
+    validateError,
     elementId
   };
 };

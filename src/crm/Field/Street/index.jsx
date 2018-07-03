@@ -4,17 +4,17 @@ import { connect } from "react-redux";
 import ModalSearch from "./ModalSearch";
 
 import { Grid, IconButton } from "material-ui";
-import Input, { InputLabel } from "material-ui/Input";
-import { FormControl, FormHelperText } from "material-ui/Form";
+import { TextField } from "material-ui";
 import { ListItem, ListItemText } from "material-ui/List";
 
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import Done from "material-ui-icons/Done";
 
 import { withStyles } from "material-ui/styles";
-import { stylesMUI } from "../../Field";
+import { stylesMUI as stylesFieldMUI } from "../../Field";
 
 import { openSearch } from "../../actions/form";
+import { omit, get } from "lodash";
 
 export const entitySearch = "street";
 
@@ -32,8 +32,10 @@ class Street extends React.PureComponent {
       onSave,
       classes,
       can,
+      validateError,
       open
     } = this.props;
+    const hint = get(validateError, "message", get(field, "hint", ""));
 
     const { needSave, edit } = this.props.state;
     const { edit: canEdit = false } = can;
@@ -63,13 +65,17 @@ class Street extends React.PureComponent {
           </div>
         ) : (
           <Fragment>
-            <FormControl fullWidth className={classes.formControl} key={id}>
-              <InputLabel htmlFor={id} required={field.required}>
-                {field.label}
-              </InputLabel>
-              <Input value={value} name={id} onFocus={this.onFocus} />
-              {field.hint && <FormHelperText>{field.hint}</FormHelperText>}
-            </FormControl>
+            <TextField
+              className={classes.formControl}
+              fullWidth
+              required={field.required}
+              name={field.id}
+              label={field.label}
+              value={value || ""}
+              error={Boolean(validateError)}
+              onFocus={this.onFocus}
+              helperText={hint}
+            />
             {needSave && (
               <IconButton
                 onClick={onSave(id)}
@@ -101,6 +107,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
   };
 };
+
+const stylesMUI = omit(stylesFieldMUI, ["formControlWithButton", "iconButton"]);
 
 export default connect(
   mapStateToProps,
