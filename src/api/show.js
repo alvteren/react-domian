@@ -4,7 +4,7 @@ const lastApiVersion = process.env.REACT_APP_LAST_API_VERSION_CRM;
 export const saveShow = async props => {
   const { entityId, elementId, showId, show } = props;
 
-  const response = await fetch(`${baseURL}/${lastApiVersion}/crm/show/`, {
+  const response = await fetch(`${baseURL}/${lastApiVersion}/crm/${entityId}/show/`, {
     method: "POST",
     credentials: "include",
     mode: "cors",

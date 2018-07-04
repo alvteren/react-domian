@@ -122,16 +122,33 @@ export default function formValidate({ form, fields, entityId, propId }) {
     Object.keys(forms[entityId]).forEach(propId => {
 
       if (Array.isArray(forms[entityId][propId])) {
-        form[propId].forEach(item => {
+        const path = propId;
+        validateErrors[path] = [];
+        form[propId].forEach((item, index) => {
+          validateErrors[path].push({});
           Object.keys(item).forEach(prop => {
-            checkProps(item, prop);
+            checkProps(item, { prop, path, index });
           });
         })
       } else {
         checkProps(form);
       }
 
-      function checkProps(form, prop) {
+      /**
+       *
+       * @param form - {Object}, required : form schema from entity reducer
+       * @param arrData - {Object} : object with information about prop in array data structure
+       */
+      function checkProps(form, arrData) {
+        /*
+          prop - prop name for validate
+          path - path in nested into array object
+          index - index of object in array
+        */
+        let prop, path, index;
+        if (arguments.length === 2) {
+          [prop, path, index] = [arrData.prop, arrData.path, arrData.index];
+        }
         if (prop) propId = prop;
         const visibleValues = getVisibleValues(fields[propId], form);
 
@@ -146,30 +163,33 @@ export default function formValidate({ form, fields, entityId, propId }) {
         /* Check for required props */
         if (fields[propId].required) {
           if (!isFilled) {
-            validateErrors[propId] = {
-              message: "Это поле обязательно для заполнения"
-            };
+            const error = { message: "Это поле обязательно для заполнения" };
+            if (path) {
+              validateErrors[path][index][propId] = error;
+            } else {
+              validateErrors[propId] = error;
+            }
             return;
           }
         }
 
         /* Check for rules follow by type */
-        if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
-          const isValid = typeRules[fields[propId].type](form[propId]);
-          if (isValid !== true) {
-            validateErrors[propId] = isValid;
-            return;
-          }
-        }
+        // if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+        //   const isValid = typeRules[fields[propId].type](form[propId]);
+        //   if (isValid !== true) {
+        //     validateErrors[propId] = isValid;
+        //     return;
+        //   }
+        // }
 
         /* Check for rules follow by id */
-        if (isFilled && customRules[propId]) {
-          const isValid = customRules[propId](form[propId], form);
-          if (isValid !== true) {
-            validateErrors[propId] = isValid;
-            return;
-          }
-        }
+        // if (isFilled && customRules[propId]) {
+        //   const isValid = customRules[propId](form[propId], form);
+        //   if (isValid !== true) {
+        //     validateErrors[propId] = isValid;
+        //     return;
+        //   }
+        // }
       }
     });
   }

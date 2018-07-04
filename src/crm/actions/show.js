@@ -47,7 +47,9 @@ export const saveShow = props => async dispatch => {
     dispatch({ type: VALIDATE_FORM_SUBMIT, payload: { entityId, ...props, elementId: showId }});
     const showForSave = prepareForSave(show);
     const res = await saveShowApi({ entityId: ENTITIES.lead, elementId, showId, show: showForSave });
+    console.log("AFTER");
     if (showId === 0) {
+      console.log("FIRE");
       const { id } = res;
       dispatch({ type: SHOW_SET_NEW, payload: { entityId, elementId, id, show }});
     }

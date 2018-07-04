@@ -35,6 +35,7 @@ class ShowList extends React.PureComponent {
   };
 
   handleDialogClose = e => {
+    debugger;
     if (e) e.stopPropagation();
     this.props.setCurrent(null);
   };

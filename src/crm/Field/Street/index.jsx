@@ -79,7 +79,7 @@ class Street extends React.PureComponent {
               <InputLabel htmlFor={id} required={field.required}>
                 {field.label}
               </InputLabel>
-              <Input value={value} name={id} onFocus={this.onFocus} />
+              <Input value={value || ""} name={id} onFocus={this.onFocus} />
               {helperText()}
             </FormControl>
             {needSave && (

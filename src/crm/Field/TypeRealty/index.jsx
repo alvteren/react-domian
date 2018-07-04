@@ -190,12 +190,12 @@ const mapStateToProps = (state, ownProps) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { current } = stateProps;
   const { dispatch } = dispatchProps;
-  const { entityId, elementId } = ownProps;
+  const { entityId, elementId, index } = ownProps;
   return {
     ...stateProps,
     ...ownProps,
     onChange(name, value) {
-      dispatch(saveToStore({ entityId, elementId, name, value, index: current }));
+      dispatch(saveToStore({ entityId, elementId, name, value, index }));
     }
   };
 };

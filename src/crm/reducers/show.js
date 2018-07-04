@@ -338,6 +338,10 @@ export const showData = (state, { type, payload }) => {
 
       return {
         ...state,
+        validity: {
+          ...state.validity,
+          submit: null
+        },
         data: {
           ...state.data,
           [fullID]: {
