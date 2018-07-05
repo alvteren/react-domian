@@ -277,6 +277,7 @@ export default function reducer(state = initialState, { type, payload }) {
         for (let showId in items[key].shows) {
           accumulator[showId] = items[key].shows[showId];
           accumulator[showId].can = { edit: true };
+          accumulator[showId].items = toArray(accumulator[showId].items);
 
           /* Date fields convert for Mui */
           dateFields.forEach((field) => {

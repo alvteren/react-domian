@@ -1,5 +1,5 @@
 import { ENTITIES } from "../constants";
-import { get } from "lodash";
+import { get, omit } from "lodash";
 import getVisibleValues from "../crm/Field/getVisibleValues";
 
 import { rules as leadRules } from "../crm/Lead/validate";
@@ -72,7 +72,7 @@ const idRules = {
  */
 
 export default function formValidate({ form, fields, entityId, propId }) {
-  const validateErrors = {};
+  let validateErrors = {};
   const customRules = idRules[entityId];
   const excludeProps  = excludeValidationProps[entityId];
   let checked = false;
@@ -129,6 +129,9 @@ export default function formValidate({ form, fields, entityId, propId }) {
           Object.keys(item).forEach(prop => {
             checkProps(item, { prop, path, index });
           });
+
+          let errorsNumber = Object.keys(get(validateErrors, `${path}.${index}`, {})).length;
+          if (!errorsNumber) validateErrors = omit(validateErrors, path);
         })
       } else {
         checkProps(form);
