@@ -80,17 +80,36 @@ class Field extends React.PureComponent {
       gridType,
       validity,
       elementId,
+      path,
+      index,
       ...other
     } = this.props;
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
-    const validateError = get(
-      validity,
-      `${elementId}.validateErrors.${id}`,
-      null
-    );
+    let validateError;
+    if (path) {
+      if (index || index === 0) {
+        validateError = get(
+          validity,
+          `${elementId}.validateErrors.${path}.${index}.${id}`,
+          null
+        );
+      } else {
+        validateError = get(
+          validity,
+          `${elementId}.validateErrors.${path}.${id}`,
+          null
+        );
+      }
+    } else {
+      validateError = get(
+        validity,
+        `${elementId}.validateErrors.${id}`,
+        null
+      );
+    }
 
     if (field === false) {
       return <span />;
@@ -364,7 +383,8 @@ const mapStateToProps = (state, ownProps) => {
     gridType,
     validity,
     elementId,
-    index // item index for array data
+    index, // item index for array data
+    path // for nested data structures
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

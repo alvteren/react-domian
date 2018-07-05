@@ -174,22 +174,30 @@ export default function formValidate({ form, fields, entityId, propId }) {
         }
 
         /* Check for rules follow by type */
-        // if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
-        //   const isValid = typeRules[fields[propId].type](form[propId]);
-        //   if (isValid !== true) {
-        //     validateErrors[propId] = isValid;
-        //     return;
-        //   }
-        // }
+        if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+          const isValid = typeRules[fields[propId].type](form[propId]);
+          if (isValid !== true) {
+            if (path) {
+              validateErrors[path][index][propId] = isValid;
+            } else {
+              validateErrors[propId] = isValid;
+            }
+            return;
+          }
+        }
 
         /* Check for rules follow by id */
-        // if (isFilled && customRules[propId]) {
-        //   const isValid = customRules[propId](form[propId], form);
-        //   if (isValid !== true) {
-        //     validateErrors[propId] = isValid;
-        //     return;
-        //   }
-        // }
+        if (isFilled && customRules[propId]) {
+          const isValid = customRules[propId](form[propId], form);
+          if (isValid !== true) {
+            if (path) {
+              validateErrors[path][index][propId] = isValid;
+            } else {
+              validateErrors[propId] = isValid;
+            }
+            return;
+          }
+        }
       }
     });
   }
