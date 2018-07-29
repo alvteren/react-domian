@@ -118,10 +118,10 @@ export default function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         values: {
-          ...values,
+          ...state.values,
           [showId]: {
             ...state.values[showId],
-            items: [...state.values[showId].items, newEmptyItem]
+            items: state.values[showId].items.concat([newEmptyItem])
           }
         }
       };
@@ -289,7 +289,6 @@ export default function reducer(state = initialState, { type, payload }) {
         return accumulator;
       }, {});
       console.log(values);
-      debugger;
     }
 
     return {

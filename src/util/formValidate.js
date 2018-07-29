@@ -125,6 +125,7 @@ export default function formValidate({ form, fields, entityId, propId }) {
         const path = propId;
         validateErrors[path] = [];
         form[propId].forEach((item, index) => {
+          debugger;
           validateErrors[path].push({});
           Object.keys(item).forEach(prop => {
             checkProps(item, { prop, path, index });
@@ -132,7 +133,9 @@ export default function formValidate({ form, fields, entityId, propId }) {
 
           let errorsNumber = Object.keys(get(validateErrors, `${path}.${index}`, {})).length;
           if (!errorsNumber) validateErrors = omit(validateErrors, path);
-        })
+        });
+        // let errorsNumber = validateErrors[path].filter((item) => item.length);
+        // if (!errorsNumber.length) validateErrors = omit(validateErrors, path);
       } else {
         checkProps(form);
       }

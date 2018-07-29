@@ -148,6 +148,7 @@ class Card extends React.PureComponent {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails className={classes.columnDirection}>
                 {Object.keys(object).map((key, index) => {
+                  if (key === "type_realty" || key === "id") return;
                   return (
                     <div key={index}>
                       <Field
@@ -186,7 +187,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const show = get(state, `crm.${entityId}.values.${showId}`, null);
 
-  return { show,
+  return {
+    show,
     close,
     save,
     showSaveBtn,

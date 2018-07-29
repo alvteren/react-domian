@@ -18,14 +18,14 @@ import { ENTITIES } from "../../../../constants";
 
 const entityId = ENTITIES.show;
 
-const values = {
-  1: {
-    date: "111"
-  },
-  2: {
-    date: "222"
-  }
-};
+// const values = {
+//   1: {
+//     date: "111"
+//   },
+//   2: {
+//     date: "222"
+//   }
+// };
 
 class ShowList extends React.PureComponent {
   showDialog = showId => e => {
@@ -59,8 +59,8 @@ class ShowList extends React.PureComponent {
           >
             <Grid item xs={12} sm={10}>
               <List>
-                {Object.keys(values).map((showId, index) => {
-                  const show = values[showId];
+                {Object.keys(value).map((showId, index) => {
+                  const show = value[showId];
                   return (
                     <ListItem
                       key={index}
@@ -129,7 +129,7 @@ class ShowList extends React.PureComponent {
 
 const mapStateToProps = (state, ownProps) => {
   const { current, values, edited } = state.crm[entityId];
-  const { elementId } = ownProps;
+  const { elementId, value } = ownProps;
   const { uf_location: location } = state.crm[ENTITIES.lead].data[elementId];
 
   return {
@@ -137,7 +137,8 @@ const mapStateToProps = (state, ownProps) => {
     values,
     location,
     edited,
-    elementId
+    elementId,
+    value
   };
 };
 
