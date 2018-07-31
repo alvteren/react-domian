@@ -5,7 +5,7 @@ import getVisibleValues from "../crm/Field/getVisibleValues";
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
 import { rules as reminderRules } from "../crm/Reminder/validate";
-import { showRules } from "../crm/reducers/show";
+import {object, showRules} from "../crm/reducers/show";
 import { formFields as leadFormFields } from "../crm/reducers/lead";
 import { formFields as saleFormFields } from "../crm/reducers/sale";
 import { formFields as reminderFields } from "../crm/reducers/reminder";
@@ -125,17 +125,13 @@ export default function formValidate({ form, fields, entityId, propId }) {
         const path = propId;
         validateErrors[path] = [];
         form[propId].forEach((item, index) => {
-          debugger;
           validateErrors[path].push({});
           Object.keys(item).forEach(prop => {
             checkProps(item, { prop, path, index });
           });
-
-          let errorsNumber = Object.keys(get(validateErrors, `${path}.${index}`, {})).length;
-          if (!errorsNumber) validateErrors = omit(validateErrors, path);
         });
-        // let errorsNumber = validateErrors[path].filter((item) => item.length);
-        // if (!errorsNumber.length) validateErrors = omit(validateErrors, path);
+        let errorsNumber = validateErrors[path].some((object) => Boolean(Object.keys(object).length));
+        if (!errorsNumber) validateErrors = omit(validateErrors, path);
       } else {
         checkProps(form);
       }

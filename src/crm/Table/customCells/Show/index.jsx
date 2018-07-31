@@ -18,24 +18,22 @@ import { ENTITIES } from "../../../../constants";
 
 const entityId = ENTITIES.show;
 
-// const values = {
-//   1: {
-//     date: "111"
-//   },
-//   2: {
-//     date: "222"
-//   }
-// };
-
 class ShowList extends React.PureComponent {
+
+  state = {
+    currentID: null
+  };
+
   showDialog = showId => e => {
     e.preventDefault();
     e.stopPropagation();
+    this.setState({ currentID: this.props.elementId });
     this.props.setCurrent(showId);
   };
 
   handleDialogClose = e => {
     if (e) e.stopPropagation();
+    this.setState({ currentID: null });
     this.props.setCurrent(null);
   };
 
@@ -45,7 +43,7 @@ class ShowList extends React.PureComponent {
 
   render() {
     const { current, value, entityId, elementId, edited } = this.props;
-    const dialogOpen = this.props.current !== null;
+    const dialogOpen = this.props.current !== null && this.state.currentID;
     const isEdited = dialogOpen && edited instanceof Object && edited.hasOwnProperty(current);
 
     if (Object.keys(value).length) {

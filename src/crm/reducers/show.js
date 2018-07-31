@@ -336,7 +336,7 @@ export const showData = (state, { type, payload }) => {
     if (type === showActions.SHOW_SET_NEW) {
       const { entity } = state;
       const { elementId, id, show } = payload;
-      const fullID = `${entity}_${elementId}`;
+      const fullID = `${elementId}`;
 
       return {
         ...state,

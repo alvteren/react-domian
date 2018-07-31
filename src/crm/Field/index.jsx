@@ -93,7 +93,7 @@ class Field extends React.PureComponent {
       if (index || index === 0) {
         validateError = get(
           validity,
-          `${elementId}.validateErrors.${path}.${index}.${id}`,
+          `${elementId}.validateErrors.${path}[${index}].${id}`,
           null
         );
       } else {
