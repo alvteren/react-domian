@@ -1,3 +1,16 @@
+.addListItem:hover .reminderAvatarDefault {
+    background-color: #1976d2;
+}
+
+
+.addLink {
+    text-decoration: none;
+}
+
+.addLink:hover {
+    text-decoration: underline;
+}
+
 .reminderWrapper:not(:last-of-type)::after {
     content: "";
     display: block;

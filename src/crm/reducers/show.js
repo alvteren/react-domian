@@ -288,7 +288,6 @@ export default function reducer(state = initialState, { type, payload }) {
         }
         return accumulator;
       }, {});
-      console.log(values);
     }
 
     return {

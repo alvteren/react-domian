@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { setCurrent } from "../../../actions/show";
 import styles from "./Show.module.css";
 import { ENTITIES } from "../../../../constants";
+import { dateToString } from "../../../../util/dateConverter";
 
 const entityId = ENTITIES.show;
 
@@ -69,7 +70,7 @@ class ShowList extends React.PureComponent {
                         onClick={this.showDialog(showId)}
                         disableTypography
                         primary={
-                          <Typography type="Subheading">{show.date}</Typography>
+                          <Typography type="Subheading">{dateToString(show.date)}</Typography>
                         }
                       />
                     </ListItem>

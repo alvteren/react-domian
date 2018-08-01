@@ -163,7 +163,6 @@ export default function formValidate({ form, fields, entityId, propId }) {
           return;
 
         /* Check for required props */
-        // debugger;
         if (fields[propId].required) {
           if (!isFilled) {
             const error = { message: "Это поле обязательно для заполнения" };
