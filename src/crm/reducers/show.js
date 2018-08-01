@@ -94,7 +94,7 @@ const values = {
 
 export const showRules = {
   rules: {},
-  excludeValidationProps: ["location", "can"]
+  excludeValidationProps: ["location", "can", "id", "date"]
 };
 
 const initialState = {
