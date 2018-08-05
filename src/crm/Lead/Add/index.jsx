@@ -124,7 +124,10 @@ class Add extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Form loadFields={this.state.loading} />
+          <Form
+            loadFields={this.state.loading}
+            match={this.props.match}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -132,8 +135,9 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const { match } = ownProps;
   const { fields, values } = state.crm[entityId];
-  return { fields, values };
+  return { fields, values, match };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
