@@ -3,6 +3,7 @@ import * as formActions from "../actions/form";
 import { keyBy, omit, toArray, get } from "lodash";
 import formValidate from "../../util/formValidate";
 import { ENTITIES } from "../../constants";
+import {STORE_FORM_DEFAULTS} from "../actions/form";
 
 export default (state, { type, payload }) => {
   let newstate = null;
@@ -21,14 +22,22 @@ export default (state, { type, payload }) => {
         loading: { ...state.loading, form: false }
       };
     }
-    if (type === formActions.SET_INIT_FORM_STATE) {
+    if (type === formActions.STORE_FORM_DEFAULTS) {
       const { initState } = payload;
+      newstate = {
+        ...state,
+        formDefaults: {
+          ...initState
+        }
+      }
+    }
+    if (type === formActions.SET_INIT_FORM_STATE) {
       newstate = {
         ...state,
         values: {
           ...state.values,
           "0": {
-            ...initState
+            ...state.formDefaults
           }
         }
       }
