@@ -7,6 +7,7 @@ import { reminderData } from "./reminder";
 import { showData } from "./show";
 import validate from "./validate";
 import convert from "../../util/leadDataConverter";
+import validateData from "./validate";
 
 import DistrictInput from "../Field/District";
 import TypeRealtyInput from "../Field/TypeRealty";
@@ -167,6 +168,7 @@ export default function reducer(state = initialState, { type, payload }) {
     const newValidateState = validate(state, { type, payload });
     const newReminderState = reminderData(state, { type, payload });
     const newShowState = showData(state, { type, payload });
+    const newValidateData = validateData(state, { type, payload });
 
     if (type === "DETAIL_FETCH_DATA_SUCCESS") {
       const { values } = payload;
@@ -196,6 +198,7 @@ export default function reducer(state = initialState, { type, payload }) {
           component: DistrictInput,
           label: "Районы",
           depended: "uf_crm_district_all",
+          required: true,
           link: [false]
         };
         newFormState.fields["uf_crm_type_realty"] = {
@@ -211,19 +214,30 @@ export default function reducer(state = initialState, { type, payload }) {
             depended: null
           }
         };
+        newFormState.fields["uf_type_object_2"].required = true;
       }
       return {
         ...state,
         ...newFormState
       };
-    } else if (newWishState) {
+    }
+    if (newWishState) {
       return { ...state, wish: newWishState };
-    } else if (newValidateState) {
+    }
+    if (newValidateState) {
       return { ...newValidateState }
-    } else if (newReminderState) {
+    }
+    if (newReminderState) {
       return { ...newReminderState }
-    } else if (newShowState) {
+    }
+    if (newShowState) {
       return { ...newShowState }
+    }
+    if (newValidateData) {
+      return {
+        ...state,
+        ...newValidateData
+      }
     }
   }
   return state;

@@ -72,7 +72,8 @@ class District extends React.PureComponent {
       // onChange,
       // onSave,
       // formControl,
-      canEdit
+      canEdit,
+      validateError
     } = this.props;
     const districts = this.props.uf_crm_district || [];
     // This filter for non-duplicate district and sub district values output
@@ -92,9 +93,13 @@ class District extends React.PureComponent {
         <Grid item xs={12} sm={12}>
           <div className={styles.fieldWrapper}>
             <div>
-              <Typography variant="subheading" gutterBottom={true}>
-                {field.label}
+              <Typography className={validateError? styles.error: ""} variant="subheading" gutterBottom={true}>
+                {field.required ? `${field.label}*` : field.label}
               </Typography>
+              {
+                validateError &&
+                <p className={styles.validateError}>{validateError.message}</p>
+              }
               <div className={styles.chips}>
                 {districts.map((district, districtIndex) => {
                   return (

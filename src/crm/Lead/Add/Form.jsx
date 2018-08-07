@@ -46,8 +46,10 @@ class Form extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { fieldsSections, validateErrors } = this.props;
+    const { fieldsSections, validateErrors, close, submit } = this.props;
     let errorSections, openedSection;
+
+    /* Control for toggle active tab to tab with error inputs */
     if (validateErrors) {
       errorSections = Object.keys(fieldsSections).reduce((accumulator, key, index, array) => {
         const valid = Object.keys(validateErrors).every((error) => !fieldsSections[key].fields.hasOwnProperty(error));
@@ -56,6 +58,10 @@ class Form extends React.Component {
       }, {});
       if (Object.keys(errorSections).length) openedSection = Object.keys(errorSections)[0];
       if (!isEqual(this.state.errorSections, errorSections)) this.setState({ openedSection, errorSections });
+    }
+    /* Close dialog after submit */
+    if (submit) {
+      close();
     }
   }
 
@@ -148,11 +154,12 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { loadFields, match } = ownProps;
+  const { loadFields, match, close } = ownProps;
   const { fieldsSections } = state.crm[entityId];
   let validateErrors = get(state, `crm.${entityId}.validity[0].validateErrors`, null);
+  let submit = get(state, `crm.${entityId}.validity[0].submit`, null);
 
-  return { fieldsSections, loadFields, validateErrors, match };
+  return { fieldsSections, loadFields, validateErrors, match, submit, close };
 };
 
 Form.propTypes = {

@@ -127,6 +127,7 @@ class Add extends React.Component {
           <Form
             loadFields={this.state.loading}
             match={this.props.match}
+            close={this.handleClose}
           />
         </DialogContent>
       </Dialog>

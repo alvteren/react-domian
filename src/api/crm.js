@@ -85,7 +85,6 @@ export const savePropToServer = async props => {
 export const saveFormToServer = async props => {
   const { entityId, formData } = props;
   const version = get(props, "version", lastApiVersion);
-  debugger;
 
   const params = {
     method: "POST",

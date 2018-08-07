@@ -76,11 +76,7 @@ export default (state, { type, payload }) => {
     }
 
     if (type === crmActions.FORM_SAVE_TO_SERVER_START) {
-      const { entityId, elementId } = payload;
-      const form = get(state, `values.${elementId}`, null);
-      const fields = get(state, "fields");
-      const validateErrors = formValidate({ form, fields, entityId });
-      if (validateErrors) throw({ action: "VALIDATE_SET_FORM_ERRORS", validateErrors, entityId, elementId });
+      // TODO: set loader to form - validate set the same flag, it can be used as trigger
     }
 
     if (type === crmActions.FORM_SAVE_TO_SERVER_ERROR) {
@@ -94,6 +90,23 @@ export default (state, { type, payload }) => {
             [key]: data
           }
         }
+      }
+    }
+
+    if (type === crmActions.FORM_SAVE_TO_SERVER_SUCCESS) {
+      // TODO: add new lead to store data - is Lead structure same as Sale???
+      // crm.{entity}.data
+      const { elementId, data } = payload;
+      newstate = {
+        ...state,
+        // data: {
+        //   ...state.data,
+        //   [data.id]: { ...state.values[elementId] }
+        // },
+        values: {
+          ...state.values,
+          [elementId]: { ...state.formDefaults }
+          }
       }
     }
 
