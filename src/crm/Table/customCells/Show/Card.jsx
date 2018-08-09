@@ -12,7 +12,7 @@ import { ExpandMore as ExpandMoreIcon } from "material-ui-icons";
 import { withStyles } from "material-ui/styles";
 import Field from "../../../Field";
 import { ENTITIES, GRID } from "../../../../constants";
-import { addObject, saveShow, setEdited } from "../../../actions/show";
+import { addObject, saveShow, setEdited, removeObject } from "../../../actions/show";
 
 import { isEqual, get, map } from "lodash";
 
@@ -100,6 +100,10 @@ class Card extends React.PureComponent {
     }
   };
 
+  removeObject = objectIndex => (e) => {
+    this.props.removeObject(objectIndex);
+  };
+
   render() {
     const { classes, show, fields, showId, validity } = this.props;
 
@@ -163,6 +167,17 @@ class Card extends React.PureComponent {
                     </div>
                   );
                 })}
+                {
+                  showId === 0 &&
+                  <Button
+                    className={styles.addShowBtn}
+                    variant="raised"
+                    color="secondary"
+                    onClick={this.removeObject(objectIndex)}
+                  >
+                    Удалить объект
+                  </Button>
+                }
               </ExpansionPanelDetails>
             </ExpansionPanel>
           );
@@ -170,6 +185,7 @@ class Card extends React.PureComponent {
         <Button
           className={styles.addShowBtn}
           variant="raised"
+          color="primary"
           onClick={this.addObject}
         >
           Добавить объект
@@ -209,8 +225,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    addObject(object) {
+    addObject() {
       dispatch(addObject({ showId, entityId }));
+    },
+    removeObject(index) {
+      dispatch(removeObject({ entityId, index }));
     },
     setEdited() {
       dispatch(setEdited({ showId, entityId }));

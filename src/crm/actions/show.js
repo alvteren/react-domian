@@ -5,6 +5,7 @@ import { showRules } from "../reducers/show";
 import { omit, get, cloneDeep } from "lodash";
 
 export const SHOW_ADD_NEW_OBJECT = "SHOW_ADD_NEW_OBJECT";
+export const SHOW_REMOVE_OBJECT = "SHOW_REMOVE_OBJECT";
 export const SHOW_SET_CURRENT = "SHOW_SET_CURRENT";
 export const SHOW_SET_EDITED = "SHOW_SET_EDITED";
 export const SHOW_ADD_ERROR = "SHOW_ADD_ERROR";
@@ -28,6 +29,15 @@ export const addObject = props => dispatch => {
     type: SHOW_ADD_NEW_OBJECT,
     payload: { entityId: ENTITIES.show, showId }
   });
+};
+
+export const removeObject = props => dispatch => {
+  const { entityId, index } = props;
+
+  dispatch({
+    type: SHOW_REMOVE_OBJECT,
+    payload: { entityId, index }
+  })
 };
 
 export const setEdited = props => dispatch => {

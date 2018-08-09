@@ -127,6 +127,24 @@ export default function reducer(state = initialState, { type, payload }) {
       };
     }
 
+    if (type === showActions.SHOW_REMOVE_OBJECT) {
+      const { index } = payload;
+      const showId = 0;
+      // immutable remove item in array by index
+      const items = state.values[showId].items.slice(0, index).concat(state.values[showId].items.slice(index+1));
+
+      return {
+        ...state,
+        values: {
+          ...state.values,
+          [showId]: {
+            ...state.values[showId],
+            items: items
+          }
+        }
+      }
+    }
+
     if (type === showActions.SHOW_SET_CURRENT) {
       const { showId, location } = payload;
       if (showId === null) {
