@@ -79,15 +79,39 @@ class Field extends React.PureComponent {
       classes,
       can,
       gridType,
-      validateError,
+      validity,
       elementId,
+      path,
+      index,
       ...other
     } = this.props;
-
+    
     const { edit, needSave } = this.state;
     const canEdit = get(can, "edit", false);
     const isDepended = get(field, "depended", null) !== null;
     const col = gridType ? gridType : 6;
+    let validateError;
+    if (path) {
+      if (index || index === 0) {
+        validateError = get(
+          validity,
+          `${elementId}.validateErrors.${path}[${index}].${id}`,
+          null
+        );
+      } else {
+        validateError = get(
+          validity,
+          `${elementId}.validateErrors.${path}.${id}`,
+          null
+        );
+      }
+    } else {
+      validateError = get(
+        validity,
+        `${elementId}.validateErrors.${id}`,
+        null
+      );
+    }
 
     if (field === false) {
       return <span />;
@@ -112,13 +136,16 @@ class Field extends React.PureComponent {
     }
 
     const visibleValues = getVisibleValues(field, values);
+
     if (field.type === "custom" && field["component"] && visibleValues.show) {
       return React.createElement(field["component"], {
         ...this.props,
         state: this.state,
         onChange: this.onChange,
         onStartEdit: this.onStartEdit,
-        onSave: this.onSave
+        onSave: this.onSave,
+        validateError,
+        ...field.props
       });
     }
 
@@ -316,7 +343,7 @@ class Field extends React.PureComponent {
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  const { id, entityId, elementId, gridType } = ownProps;
+  const { id, entityId, elementId, gridType, index, path } = ownProps;
   const { fields, values, validity } = state.crm[entityId];
   const validateError = get(
     validity,
@@ -327,7 +354,11 @@ const mapStateToProps = (state, ownProps) => {
   const field = get(fields, id, false);
 
   const elementValues = get(values, elementId, null);
-  const value = elementValues != null ? get(elementValues, id, null) : null;
+  let value;
+  value = elementValues != null ? get(elementValues, id, null) : null;
+  if (!value && path && !isNaN(Number(index))) {
+    value = elementValues != null ? get(elementValues, `${path}[${index}].${id}`, null) : null;
+  }
   const can = elementValues != null ? get(elementValues, "can", {}) : {};
 
   if (elementId === 0) {
@@ -341,14 +372,16 @@ const mapStateToProps = (state, ownProps) => {
     value,
     can,
     gridType,
-    validateError,
-    elementId
+    validity,
+    elementId,
+    index, // item index for array data
+    path // for nested data structures
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
   const { field } = stateProps;
-  const { entityId, elementId } = ownProps;
+  const { entityId, elementId, index } = ownProps;
   const name = field.id;
 
   return {
@@ -356,7 +389,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     handleChange: arValue => {
       const { value } = arValue;
-      dispatch(saveToStore({ entityId, elementId, name, value }));
+      dispatch(saveToStore({ entityId, elementId, name, value, index }));
     },
     handleChangeSwitch: (e, checked) => {
       dispatch(saveToStore({ entityId, elementId, name, value: checked }));

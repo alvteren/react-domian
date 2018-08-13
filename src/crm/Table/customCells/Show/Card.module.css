@@ -1,0 +1,39 @@
+.emptyFormWrapper {
+    min-height: 100px;
+}
+
+.progressBar {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.showForm {
+    padding: 30px 0 15px;
+}
+
+.expansionPanel {
+    margin: 15px 0;
+}
+
+.addShowBtn {
+    display: block;
+    margin: 10px auto 0;
+}
+
+.error {
+    margin: 5px 0;
+    font-size: 0.75rem;
+    text-align: left;
+    min-height: 1em;
+    line-height: 1em;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: #f44336;
+}
+
+.preview {
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

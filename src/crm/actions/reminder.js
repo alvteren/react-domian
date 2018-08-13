@@ -1,5 +1,4 @@
 import { saveReminder as addNewReminderApi } from "../../api/reminder";
-import { updateReminder as updateReminderApi } from "../../api/reminder";
 import { removeReminder as removeReminderApi } from "../../api/reminder";
 import { omit } from "lodash";
 import * as validateActions from "../actions/validate";

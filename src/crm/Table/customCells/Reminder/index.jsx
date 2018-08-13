@@ -30,8 +30,10 @@ const RemindeList = (props) => {
     return (
       <Link
         to={`${entityId}/${elementId}/reminder/add`}
-        onClick={e => {e.stopPropagation();}}>
-        <ListItem>
+        onClick={e => {e.stopPropagation();}}
+        className={styles.addLink}
+      >
+        <ListItem className={styles.addListItem}>
           <Avatar className={styles.reminderAvatarDefault}>
             <AddAlarmIcon />
           </Avatar>

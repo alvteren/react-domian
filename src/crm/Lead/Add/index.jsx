@@ -14,7 +14,7 @@ import Typography from "material-ui/Typography";
 import CloseIcon from "material-ui-icons/Close";
 import Slide from "material-ui/transitions/Slide";
 import { Hidden } from "material-ui";
-import { setInitFormState } from "../../actions/form";
+import { storeFormDefaults, setInitFormState } from "../../actions/form";
 import { saveFormToServer, saveToStore, fetchFields } from "../../actions/crm";
 import { formSubmit, validateFormError } from "../../actions/validate";
 import { find } from "lodash";
@@ -124,7 +124,11 @@ class Add extends React.Component {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialogContent}>
-          <Form loadFields={this.state.loading} />
+          <Form
+            loadFields={this.state.loading}
+            match={this.props.match}
+            close={this.handleClose}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -132,8 +136,9 @@ class Add extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { fields, values } = state.crm[entityId];
-  return { fields, values };
+  const { match } = ownProps;
+  const { fields, values, formDefaults } = state.crm[entityId];
+  return { fields, values, match, formDefaults };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
@@ -144,17 +149,19 @@ const mapDispatchToProps = (dispatch, props) => {
   };
 };
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { fields } = stateProps;
+  const { fields, formDefaults } = stateProps;
   const { dispatch } = dispatchProps;
 
   return {
     ...stateProps,
     ...ownProps,
     setInitFormState(initState) {
-      dispatch(setInitFormState({ initState, entityId }));
+      if (formDefaults) return;
+      dispatch(storeFormDefaults({ initState, entityId }));
+      dispatch(setInitFormState({ entityId }));
     },
     saveFormToServer(formData) {
-      dispatch(saveFormToServer({ entityId, elementId: 0 }));
+      dispatch(saveFormToServer({ entityId, elementId: 0, formData }));
     }
   };
 };

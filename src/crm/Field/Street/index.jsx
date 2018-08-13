@@ -47,6 +47,12 @@ class Street extends React.PureComponent {
       canEdit && onStartEdit();
     };
 
+    const helperText = () => {
+      if (validateError) return <FormHelperText>{validateError.message}</FormHelperText>;
+      if (field.hint) return <FormHelperText>{field.hint}</FormHelperText>;
+      return ""
+    };
+
     return (
       <Grid item xs={12} sm={6} className={classes.valueWrapper}>
         {!edit ? (

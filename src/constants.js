@@ -1,7 +1,8 @@
 export const ENTITIES = {
   lead: "lead",
   sale: "sale",
-  reminder: "reminder"
+  reminder: "reminder",
+  show: "show"
 };
 
 export const GRID = {

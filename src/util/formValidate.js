@@ -1,13 +1,15 @@
 import { ENTITIES } from "../constants";
-import { get } from "lodash";
+import { get, omit } from "lodash";
 import getVisibleValues from "../crm/Field/getVisibleValues";
 
 import { rules as leadRules } from "../crm/Lead/validate";
 import { rules as saleRules } from "../crm/SaleList/validate";
 import { rules as reminderRules } from "../crm/Reminder/validate";
+import {object, showRules} from "../crm/reducers/show";
 import { formFields as leadFormFields } from "../crm/reducers/lead";
 import { formFields as saleFormFields } from "../crm/reducers/sale";
 import { formFields as reminderFields } from "../crm/reducers/reminder";
+import { formFields as showFields } from "../crm/reducers/show";
 
 export const typeRules = {
   email(val) {
@@ -42,19 +44,22 @@ export const typeRules = {
 const forms = {
   [ENTITIES.lead]: leadFormFields,
   [ENTITIES.sale]: saleFormFields,
-  [ENTITIES.reminder]: reminderFields
+  [ENTITIES.reminder]: reminderFields,
+  [ENTITIES.show]: showFields
 };
 
 const excludeValidationProps = {
   [ENTITIES.lead]: leadRules.excludeValidationProps,
   [ENTITIES.sale]: saleRules.excludeValidationProps,
-  [ENTITIES.reminder]: reminderRules.excludeValidationProps
+  [ENTITIES.reminder]: reminderRules.excludeValidationProps,
+  [ENTITIES.show]: showRules.excludeValidationProps
 };
 
 const idRules = {
   [ENTITIES.lead]: leadRules.rules,
   [ENTITIES.sale]: saleRules.rules,
-  [ENTITIES.reminder]: reminderRules.rules
+  [ENTITIES.reminder]: reminderRules.rules,
+  [ENTITIES.show]: showRules.rules,
 };
 
 /**
@@ -67,7 +72,7 @@ const idRules = {
  */
 
 export default function formValidate({ form, fields, entityId, propId }) {
-  const validateErrors = {};
+  let validateErrors = {};
   const customRules = idRules[entityId];
   const excludeProps = excludeValidationProps[entityId];
   let checked = false;
@@ -114,41 +119,84 @@ export default function formValidate({ form, fields, entityId, propId }) {
       Branch for iterate over whole form (on new instance create)
      */
     Object.keys(forms[entityId]).forEach(propId => {
-      const visibleValues = getVisibleValues(fields[propId], form);
-
-      if (!visibleValues) return;
-      if (visibleValues instanceof Object && !get(visibleValues, "show", true))
-        return;
-
-      const isFilled = isEmpty(form[propId]);
-      /* Service props exclude */
-      if (excludeProps && excludeProps.includes(propId)) return;
-
-      /* Check for required props */
-      if (fields[propId].required) {
-        if (!isFilled) {
-          validateErrors[propId] = {
-            message: "Это поле обязательно для заполнения"
-          };
-          return;
-        }
+      if (Array.isArray(forms[entityId][propId])) {
+        const path = propId;
+        validateErrors[path] = [];
+        form[propId].forEach((item, index) => {
+          validateErrors[path].push({});
+          Object.keys(item).forEach(prop => {
+            checkProps(item, { prop, path, index });
+          });
+        });
+        let errorsNumber = validateErrors[path].some((object) => Boolean(Object.keys(object).length));
+        if (!errorsNumber) validateErrors = omit(validateErrors, path);
+      } else {
+        checkProps(form);
       }
 
-      /* Check for rules follow by type */
-      if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
-        const isValid = typeRules[fields[propId].type](form[propId]);
-        if (isValid !== true) {
-          validateErrors[propId] = isValid;
-          return;
+      /**
+       *
+       * @param form - {Object}, required : form schema from entity reducer
+       * @param arrData - {Object} : object with information about prop in array data structure
+       */
+      function checkProps(form, arrData) {
+        /*
+          prop - prop name for validate
+          path - path in nested into array object
+          index - index of object in array
+        */
+        let prop, path, index;
+        if (arguments.length === 2) {
+          [prop, path, index] = [arrData.prop, arrData.path, arrData.index];
         }
-      }
+        if (prop) propId = prop;
+        const visibleValues = getVisibleValues(fields[propId], form);
 
-      /* Check for rules follow by id */
-      if (isFilled && customRules[propId]) {
-        const isValid = customRules[propId](form[propId], form);
-        if (isValid !== true) {
-          validateErrors[propId] = isValid;
+        if (!visibleValues) return;
+        if (visibleValues instanceof Object && !get(visibleValues, "show", true)) return;
+
+        const isFilled = isEmpty(form[propId]);
+        /* Service props exclude */
+        if (excludeProps && excludeProps.includes(propId))
           return;
+
+        /* Check for required props */
+        if (fields[propId].required) {
+          if (!isFilled) {
+            const error = { message: "Это поле обязательно для заполнения" };
+            if (path) {
+              validateErrors[path][index][propId] = error;
+            } else {
+              validateErrors[propId] = error;
+            }
+            return;
+          }
+        }
+
+        /* Check for rules follow by type */
+        if (isFilled && typeRules.hasOwnProperty(fields[propId].type)) {
+          const isValid = typeRules[fields[propId].type](form[propId]);
+          if (isValid !== true) {
+            if (path) {
+              validateErrors[path][index][propId] = isValid;
+            } else {
+              validateErrors[propId] = isValid;
+            }
+            return;
+          }
+        }
+
+        /* Check for rules follow by id */
+        if (isFilled && customRules[propId]) {
+          const isValid = customRules[propId](form[propId], form);
+          if (isValid !== true) {
+            if (path) {
+              validateErrors[path][index][propId] = isValid;
+            } else {
+              validateErrors[propId] = isValid;
+            }
+            return;
+          }
         }
       }
     });

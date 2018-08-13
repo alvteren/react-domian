@@ -6,6 +6,7 @@ import {
   savePropToServer as savePropToServerApi,
   saveFormToServer as saveFormToServerApi
 } from "../../api/crm";
+import { VALIDATE_FORM_SUBMIT, VALIDATE_SUBMIT_CLEAR } from "./validate";
 
 export const TABLE_FETCH_DATA_START = "TABLE_FETCH_DATA_START";
 export const TABLE_FETCH_DATA_SUCCESS = "TABLE_FETCH_DATA_SUCCESS";
@@ -133,15 +134,24 @@ export const saveFormToServer = props => async dispatch => {
   const { entityId, elementId } = props;
   try {
     dispatch({
+      type: VALIDATE_FORM_SUBMIT,
+      payload: { entityId, elementId }
+    });
+    dispatch({
       type: FORM_SAVE_TO_SERVER_START,
       payload: { ...props }
     });
     const data = await saveFormToServerApi(props);
     dispatch({
       type: FORM_SAVE_TO_SERVER_SUCCESS,
-      payload: { ...data, entityId }
+      payload: { data, entityId, elementId }
     });
+    dispatch({
+      type: VALIDATE_SUBMIT_CLEAR,
+      payload: { entityId, elementId }
+    })
   } catch (err) {
+    console.warn("SAVE FORM ERROR", err);
     dispatch({
       type: FORM_SAVE_TO_SERVER_ERROR,
       payload: err,

@@ -7,7 +7,7 @@ const Date = props => {
     <TextField
       id={props.field.id}
       label={props.label}
-      type={props.dateType || "datetime-local"}
+      type={props.field.dateType}
       defaultValue={props.value}
       onChange={props.onChange}
       disabled={get(props, "visibleValues.disabled")}

@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { map, get } from "lodash";
+import { map, get, isEqual } from "lodash";
 
 import Field from "../../Field";
 import TabContainer from "../../../app/TabContainer";
@@ -28,13 +28,42 @@ const styles = theme => ({
     minWidth: 200,
     width: "100%",
     whiteSpace: "nowrap"
+  },
+  textColorPrimary: {
+    color: "#f44336"
   }
 });
 
 class Form extends React.Component {
-  state = {
-    openedSection: "main"
-  };
+  constructor(props) {
+    super(props);
+    const { fieldsSections } = props;
+
+    this.state = {
+      openedSection: "main",
+      errorSections: {}
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { fieldsSections, validateErrors, close, submit } = this.props;
+    let errorSections, openedSection;
+
+    /* Control for toggle active tab to tab with error inputs */
+    if (validateErrors) {
+      errorSections = Object.keys(fieldsSections).reduce((accumulator, key, index, array) => {
+        const valid = Object.keys(validateErrors).every((error) => !fieldsSections[key].fields.hasOwnProperty(error));
+        if (!valid) accumulator[key] = true;
+        return accumulator;
+      }, {});
+      if (Object.keys(errorSections).length) openedSection = Object.keys(errorSections)[0];
+      if (!isEqual(this.state.errorSections, errorSections)) this.setState({ openedSection, errorSections });
+    }
+    /* Close dialog after submit */
+    if (submit) {
+      close();
+    }
+  }
 
   handleChangeTab = (event, value) => {
     this.setState({ openedSection: value });
@@ -83,7 +112,7 @@ class Form extends React.Component {
 
   render() {
     const { fieldsSections, classes } = this.props;
-    const { openedSection } = this.state;
+    const { openedSection, errorSections } = this.state;
 
     return (
       <div className={classes.root}>
@@ -102,6 +131,7 @@ class Form extends React.Component {
                 label={section.name}
                 value={code}
                 key={code}
+                className={errorSections.hasOwnProperty(code) ? this.props.classes.textColorPrimary : ""}
               />
             ))}
           </Tabs>
@@ -124,9 +154,12 @@ class Form extends React.Component {
   }
 }
 const mapStateToProps = (state, ownProps) => {
+  const { loadFields, match, close } = ownProps;
   const { fieldsSections } = state.crm[entityId];
-  const { loadFields } = ownProps;
-  return { fieldsSections, loadFields };
+  let validateErrors = get(state, `crm.${entityId}.validity[0].validateErrors`, null);
+  let submit = get(state, `crm.${entityId}.validity[0].submit`, null);
+
+  return { fieldsSections, loadFields, validateErrors, match, submit, close };
 };
 
 Form.propTypes = {

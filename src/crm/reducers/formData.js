@@ -2,6 +2,8 @@ import * as crmActions from "../actions/crm";
 import * as formActions from "../actions/form";
 import { keyBy, omit, toArray, get, size, reduce } from "lodash";
 import formValidate from "../../util/formValidate";
+import { ENTITIES } from "../../constants";
+import {STORE_FORM_DEFAULTS} from "../actions/form";
 
 export default (state, { type, payload }) => {
   let newstate = null;
@@ -17,6 +19,15 @@ export default (state, { type, payload }) => {
         fields: keyBy(data, "id"),
         loading: { ...state.loading, form: false }
       };
+    }
+    if (type === formActions.STORE_FORM_DEFAULTS) {
+      const { initState } = payload;
+      newstate = {
+        ...state,
+        formDefaults: {
+          ...initState
+        }
+      }
     }
     if (type === formActions.SET_INIT_FORM_STATE) {
       const { entityId } = payload;
@@ -42,7 +53,7 @@ export default (state, { type, payload }) => {
         values: {
           ...state.values,
           "0": {
-            ...initState
+            ...state.formDefaults
           }
         }
       };
@@ -79,6 +90,7 @@ export default (state, { type, payload }) => {
     }
 
     if (type === crmActions.FORM_SAVE_TO_SERVER_START) {
+      // TODO: set loader to form - validate set the same flag, it can be used as trigger
       const { entityId, elementId } = payload;
       const form = get(state, `values.${elementId}`, null);
       const { fields } = state;
@@ -102,6 +114,23 @@ export default (state, { type, payload }) => {
           }
         }
       };
+    }
+
+    if (type === crmActions.FORM_SAVE_TO_SERVER_SUCCESS) {
+      // TODO: add new lead to store data - is Lead structure same as Sale???
+      // crm.{entity}.data
+      const { elementId, data } = payload;
+      newstate = {
+        ...state,
+        // data: {
+        //   ...state.data,
+        //   [data.id]: { ...state.values[elementId] }
+        // },
+        values: {
+          ...state.values,
+          [elementId]: { ...state.formDefaults }
+          }
+      }
     }
 
     if (type === formActions.FORM_SAVE_FILE) {

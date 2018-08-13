@@ -5,6 +5,7 @@ import { ENTITIES } from "../../constants";
 import * as reminderActions from "../actions/reminder";
 import { getTomorrowDate, convertDateForMui } from "../../util/dateConverter";
 
+const dateType = "datetime-local";
 export const fields = {
   subject: {
     id: "subject",
@@ -32,7 +33,8 @@ export const fields = {
     id: "date",
     label: "Когда",
     type: "date",
-    required: true
+    required: true,
+    dateType: dateType
   },
   reminder: {
     id: "reminder",
@@ -44,6 +46,7 @@ export const fields = {
     id: "remindInterval",
     label: "Дата напоминания",
     type: "date",
+    dateType: dateType,
     required: true,
     depended: "reminder",
     dependedValue: true,
@@ -66,9 +69,9 @@ const defaultValues = {
   subject: "",
   type: "",
   description: "",
-  date: getTomorrowDate(),
+  date: getTomorrowDate(dateType),
   reminder: false,
-  remindInterval: getTomorrowDate()
+  remindInterval: getTomorrowDate(dateType)
 };
 
 export const formFields = (() => {
@@ -112,25 +115,25 @@ export default function reducer(state = initialState, { type, payload }) {
 
   if (type === "TABLE_FETCH_DATA_SUCCESS") {
     const items = get(payload, "data", {});
-    const values = {};
+    let values;
 
     if (items) {
-      Object.keys(items).forEach((key) => {
-        if (items[key].reminders) {
-          for (let reminderId in items[key].reminders) {
-            values[reminderId] = items[key].reminders[reminderId];
-            values[reminderId].can = { edit: true };
+      values = Object.keys(items).reduce((accumulator, key, currentIndex, array) => {
+        for (let reminderId in items[key].reminders) {
+          accumulator[reminderId] = items[key].reminders[reminderId];
+          accumulator[reminderId].can = { edit: true };
 
-            /* Date fields convert for Mui */
-            dateFields.forEach((field) => {
-              values[reminderId][field] = items[key].reminders[reminderId][field] ?
-                convertDateForMui(items[key].reminders[reminderId][field]) :
-                getTomorrowDate();
-            });
-          }
+          /* Date fields convert for Mui */
+          dateFields.forEach((field) => {
+            accumulator[reminderId][field] = items[key].reminders[reminderId][field] ?
+              convertDateForMui(items[key].reminders[reminderId][field], dateType) :
+              getTomorrowDate(dateType);
+          });
         }
-      });
+        return accumulator;
+      }, {});
     }
+
     return {
       ...state,
       values: {
@@ -212,8 +215,9 @@ export const reminderData = (state, { type, payload }) => {
     }
 
     if (type === reminderActions.REMINDER_REMOVE_SUCCESS) {
+      const { entity } = state;
       const { elementId, reminderId } = payload;
-      const fullID = `${ENTITIES.lead}_${elementId}`;
+      const fullID = `${entity}_${elementId}`;
       const reminders = omit(state.data[fullID].reminders, reminderId);
       newState = {
         ...state,

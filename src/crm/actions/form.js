@@ -6,6 +6,7 @@ import {
 
 import { savePropToServer } from "./crm";
 export const SET_INIT_FORM_STATE = "SET_INIT_FORM_STATE";
+export const STORE_FORM_DEFAULTS = "STORE_FORM_DEFAULTS";
 export const FORM_SAVE_TO_STORE = "FORM_SAVE_TO_STORE";
 export const FORM_SAVE_FILE = "FORM_SAVE_FILE";
 export const FORM_LOCATION_SEARCH_OPENED = "FORM_LOCATION_SEARCH_OPENED";
@@ -25,6 +26,15 @@ export const FORM_SEARCH_SAVE_PHRASE_START = "FORM_SEARCH_SAVE_PHRASE_START";
 export const FORM_SEARCH_SAVE_PHRASE_SUCCESS = "FORM_SEARCH_SAVE_PHRASE_SUCCESS";
 export const FORM_SEARCH_SAVE_PHRASE_ERROR = "FORM_SEARCH_SAVE_PHRASE_ERROR";
 
+export const storeFormDefaults = props => dispatch => {
+  const { initState, entityId } = props;
+
+  dispatch({
+    type: STORE_FORM_DEFAULTS,
+    payload: { initState, entityId }
+  });
+};
+
 export const setInitFormState = props => dispatch => {
   const { entityId } = props;
 
@@ -33,12 +43,22 @@ export const setInitFormState = props => dispatch => {
     payload: { entityId }
   });
 };
+
+export const setInitFormState = props => dispatch => {
+  const { entityId } = props;
+
+  dispatch({
+    type: SET_INIT_FORM_STATE,
+    payload: { entityId }
+  });
+};
+
 export const saveToStore = props => async dispatch => {
-  const { entityId, elementId, name, value } = props;
+  const { entityId, elementId, name, value, index } = props;
 
   dispatch({
     type: FORM_SAVE_TO_STORE,
-    payload: { entityId, elementId, name, value }
+    payload: { entityId, elementId, name, value, index }
   });
 };
 export const saveFile = props => async dispatch => {

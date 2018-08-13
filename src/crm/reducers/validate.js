@@ -7,7 +7,19 @@ export default (state, { type, payload }) => {
   let newState = null;
   if (state) {
     if (type === typeActions.VALIDATE_FORM_SUBMIT) {
-      const { entityId, elementId } = payload;
+      const { child } = payload;
+
+      let entityId, elementId;
+      if (!child) {
+        entityId = payload.entityId;
+        elementId = payload.elementId;
+      } else {
+        entityId = child.entityId;
+        elementId = child.elementId;
+      }
+
+      if (elementId !== 0 && !elementId || !entityId) throw({ message: "no required data for validation" });
+
       const form = get(state, `values.${elementId}`, null);
       const fields = get(state, "fields");
       const validateErrors = formValidate({ form, fields, entityId });

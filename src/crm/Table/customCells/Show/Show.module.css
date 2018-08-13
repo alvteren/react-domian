@@ -1,0 +1,49 @@
+.showAddListItem:hover .showFullAddBtn {
+    visibility: visible;
+}
+
+.showListItem {
+    cursor: pointer;
+}
+
+.showListItem:hover {
+    background-color: #cecece;
+}
+
+.showListItem:not(:last-of-type)::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: #cccccc;
+}
+
+.showFullAddBtn {
+    visibility: hidden;
+    width: 30px;
+    height: 30px;
+    background-color: #1976d2;
+}
+
+.showAddIcon {
+    width: 30px;
+    height: 30px;
+}
+
+.showAddIcon:hover {
+    cursor: pointer;
+    background-color: #1976d2;
+}
+
+.saveBtnHidden {
+    margin-left: 16px;
+    visibility: hidden;
+}
+
+.saveBtnVisible {
+    margin-left: 16px;
+    visibility: visible;
+}

@@ -54,6 +54,7 @@ class Lead extends React.Component {
         <EnhancedTable
           entityId={entityId}
           onChangePage={this.props.onChangePage}
+          onChangeRowsPerPage={this.props.onChangeRowsPerPage}
           filterComponent={<Filter entityId={entityId} />}
           groupActionsComponent={GroupActions}
           controlComponents={Controls}
@@ -113,6 +114,19 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             filter,
             page: newPage,
             rowsPerPage,
+            orderBy,
+            order
+          })
+        );
+    },
+    onChangeRowsPerPage(val) {
+      if (val * page >= size(data) || (page === 0 && val >= size(data)))
+        dispatch(
+          fetchList({
+            entityId,
+            filter,
+            page,
+            rowsPerPage: val,
             orderBy,
             order
           })

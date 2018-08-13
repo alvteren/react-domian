@@ -58,6 +58,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onChangeRowsPerPage: rowsPerPage => {
       dispatch(changeRowsPerPage({ entityId, rowsPerPage }));
+      const onChangeRowsPerPage = get(ownProps, "onChangeRowsPerPage", null);
+      if (onChangeRowsPerPage) {
+        onChangeRowsPerPage(rowsPerPage);
+      }
     }
   };
 };
