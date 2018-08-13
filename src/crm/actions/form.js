@@ -10,8 +10,11 @@ export const STORE_FORM_DEFAULTS = "STORE_FORM_DEFAULTS";
 export const FORM_SAVE_TO_STORE = "FORM_SAVE_TO_STORE";
 export const FORM_SAVE_FILE = "FORM_SAVE_FILE";
 export const FORM_LOCATION_SEARCH_OPENED = "FORM_LOCATION_SEARCH_OPENED";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_START = "FORM_LOCATION_SEARCH_FETCH_START";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_SUCCESS = "FORM_LOCATION_SEARCH_FETCH_SUCCESS";
+//prettier-ignore
 export const FORM_LOCATION_SEARCH_FETCH_ERROR = "FORM_LOCATION_SEARCH_FETCH_ERROR";
 
 export const FORM_SEARCH_OPENED = "FORM_SEARCH_OPENED";
@@ -29,6 +32,15 @@ export const storeFormDefaults = props => dispatch => {
   dispatch({
     type: STORE_FORM_DEFAULTS,
     payload: { initState, entityId }
+  });
+};
+
+export const setInitFormState = props => dispatch => {
+  const { entityId } = props;
+
+  dispatch({
+    type: SET_INIT_FORM_STATE,
+    payload: { entityId }
   });
 };
 
@@ -121,4 +133,3 @@ export const saveSelectedValue = props => async dispatch => {
     });
   }
 };
-

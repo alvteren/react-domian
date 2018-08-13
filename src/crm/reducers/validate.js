@@ -1,11 +1,11 @@
 import * as typeActions from "../actions/validate";
 import formValidate from "../../util/formValidate";
-import {get} from "lodash";
+import { FORM_SAVE_TO_SERVER_START } from "../actions/crm";
+import { get } from "lodash";
 
 export default (state, { type, payload }) => {
   let newState = null;
   if (state) {
-
     if (type === typeActions.VALIDATE_FORM_SUBMIT) {
       const { child } = payload;
 
@@ -23,7 +23,8 @@ export default (state, { type, payload }) => {
       const form = get(state, `values.${elementId}`, null);
       const fields = get(state, "fields");
       const validateErrors = formValidate({ form, fields, entityId });
-      if (validateErrors) throw({ action: typeActions.VALIDATE_SET_FORM_ERRORS, validateErrors });
+      if (validateErrors)
+        throw { action: typeActions.VALIDATE_SET_FORM_ERRORS, validateErrors };
       newState = {
         ...state,
         validity: {
@@ -63,4 +64,4 @@ export default (state, { type, payload }) => {
   }
 
   return newState;
-}
+};

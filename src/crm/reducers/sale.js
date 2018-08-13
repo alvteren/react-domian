@@ -4,9 +4,11 @@ import tableData from "./tableData";
 import filterData from "./filterData";
 import formData from "./formData";
 import wishData from "./wishData";
+import validate from "./validate";
 
 import { ENTITIES } from "../../constants";
 import Street from "../Field/Street";
+import { FORM_FIELDS_FETCH_SUCCESS } from "../actions/crm";
 
 const chips = {
   chips: {},
@@ -138,130 +140,7 @@ const list = {
   orderBy: "date_create",
   order: "desc"
 };
-const fields = {
-  type_deal: {
-    type: "select",
-    label: "Тип сделки",
-    required: true,
-    items: {}
-  },
-  section_id: {
-    type: "select",
-    label: "Раздел",
-    value: "",
-    required: true,
-    items: {}
-  },
-  district: {
-    type: "select",
-    label: "Район",
-    value: "",
-    required: true,
-    items: {}
-  },
-  subdistrict: {
-    type: "select",
-    depended: "district",
-    label: "Подрайон",
-    value: "",
-    required: true,
-    items: {}
-  },
-  s_all: {
-    type: "text",
-    label: "Площадь общая",
-    value: "",
-    required: true
-  },
-  s_flat: {
-    type: "text",
-    label: "Площадь",
-    value: "",
-    required: true
-  },
-  s_live: {
-    type: "text",
-    label: "Площадь жилая",
-    value: "",
-    required: true
-  },
-  s_kitchen: {
-    type: "text",
-    label: "Площадь кухни",
-    value: "",
-    required: true
-  },
-  s_area: {
-    type: "text",
-    label: "Площадь участка",
-    value: "",
-    required: true
-  },
-  contact_name: {
-    type: "text",
-    label: "Контактное лицо",
-    value: "",
-    hint: "Поле отображается только Вам",
-    required: true
-  },
-  contact_phone: {
-    type: "text",
-    label: "Контактный телефон",
-    value: "",
-    hint: "Поле отображается только Вам",
-    required: true
-  },
-  contact_home_phone: {
-    type: "text",
-    label: "Дом. телефон",
-    hint: "Поле отображается только Вам",
-    value: ""
-  },
-  contact_email: {
-    type: "text",
-    label: "E-mail",
-    hint: "Поле отображается только Вам",
-    value: ""
-  },
-  publish_name: {
-    type: "text",
-    label: "Имя для выгрузки",
-    value: "",
-    required: true
-  },
-  publish_phone: {
-    type: "text",
-    label: "Телефон для выгрузки",
-    value: "",
-    required: true
-  },
-  is_real: {
-    type: "switch",
-    label: "Реальный объект",
-    value: false
-  },
-  is_exclusive: {
-    type: "switch",
-    depended: "is_real",
-    link: true,
-    label: "Эксклюзив",
-    value: false
-  },
-  number_contract: {
-    type: "text",
-    label: "Номер договора",
-    depended: "is_exclusive",
-    link: true,
-    value: "",
-    required: true
-  },
-  area_number: {
-    type: "text",
-    label: "Кадастровый номер",
-    hint: "Выгружается на внешние площадки",
-    value: ""
-  }
-};
+const fields = {}; // will fetch from API
 const form = {
   fieldsSections: {
     main: {
@@ -342,14 +221,32 @@ const form = {
   // values for form of editing
   editValues: {},
   // values for detail card
-  detail: {},
-  filterFields: {
-    type_apartment: null,
-    type_deal: null,
-    section_id: null,
-    district: null,
-    subdistrict: null
-  }
+  detail: {}
+};
+
+const filter = {
+  fields: {
+    type_deal: true,
+    section_id: true,
+    type_premises: true,
+    type_object: true,
+    type_obj_commercia: true,
+    type_obj_area: true,
+    type_obj_houses: true,
+    location: true,
+    district: true,
+    subdistrict: true,
+    street_string: true,
+    price: true,
+    etage: true,
+    s_all: true,
+    s_live: true,
+    s_kitchen: true,
+    s_area: true,
+    date_create: true
+  },
+  open: false,
+  values: {}
 };
 const rightTools = {
   search: {
@@ -375,7 +272,8 @@ export const initialState = {
   ...form,
   fields,
   rightTools,
-  filter: {},
+  formFields,
+  filter,
   wish: {},
   loading: {
     card: false,
@@ -393,6 +291,7 @@ export default (state = initialState, { type, payload }) => {
     const newFilterState = filterData(state, { type, payload });
     const newFormState = formData(state, { type, payload });
     const newWishState = wishData(state, { type, payload });
+    const newValidateState = validate(state, { type, payload });
 
     if (type === "FORM_SAVE_TO_STORE") {
       const { name, value, elementId } = payload;
@@ -418,12 +317,16 @@ export default (state = initialState, { type, payload }) => {
       };
     }
 
+    let newState = { ...state };
+
     if (newTableState) {
-      return { ...state, ...newTableState };
-    } else if (newFilterState) {
-      return { ...state, ...newFilterState };
-    } else if (newFormState) {
-      if (type === "FORM_FIELDS_FETCH_SUCCESS") {
+      newState = { ...newState, ...newTableState };
+    }
+    if (newFilterState) {
+      newState = { ...newState, ...newFilterState };
+    }
+    if (newFormState) {
+      if (type === FORM_FIELDS_FETCH_SUCCESS) {
         const { street_string: fieldStreet } = newFormState.fields;
 
         newFormState.fields.street_string = {
@@ -432,10 +335,16 @@ export default (state = initialState, { type, payload }) => {
           component: Street
         };
       }
-      return { ...state, ...newFormState };
-    } else if (newWishState) {
-      return { ...state, wish: newWishState };
+      newState = { ...newState, ...newFormState };
     }
+    if (newValidateState) {
+      newState = { ...newState, ...newValidateState };
+    }
+    if (newWishState) {
+      newState = { ...newState, wish: newWishState };
+    }
+
+    return newState;
   }
   return state;
 };

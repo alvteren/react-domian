@@ -13,7 +13,7 @@ export const TABLE_FETCH_DATA_SUCCESS = "TABLE_FETCH_DATA_SUCCESS";
 export const TABLE_FETCH_DATA_ERROR = "TABLE_FETCH_DATA_ERROR";
 
 export const DETAIL_FETCH_DATA_START = "DETAIL_FETCH_DATA_START";
-export const DETAIL_FETCH_DATA_SUCCESS ="DETAIL_FETCH_DATA_SUCCESS";
+export const DETAIL_FETCH_DATA_SUCCESS = "DETAIL_FETCH_DATA_SUCCESS";
 export const DETAIL_FETCH_DATA_ERROR = "DETAIL_FETCH_DATA_ERROR";
 
 export const DETAIL_INIT = "DETAIL_INIT";
@@ -114,7 +114,7 @@ export const savePropToServer = props => async dispatch => {
   try {
     dispatch({
       type: PROP_SAVE_TO_SERVER_START,
-      payload: {}
+      payload: { ...props }
     });
     const data = await savePropToServerApi(props);
     dispatch({
@@ -153,7 +153,7 @@ export const saveFormToServer = props => async dispatch => {
   } catch (err) {
     console.warn("SAVE FORM ERROR", err);
     dispatch({
-      type: err.action || FORM_SAVE_TO_SERVER_ERROR,
+      type: FORM_SAVE_TO_SERVER_ERROR,
       payload: err,
       error: true
     });

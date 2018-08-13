@@ -7,7 +7,7 @@ import { get } from "lodash";
 
 import { TextField } from "material-ui";
 
-import { openSearch } from "../../../actions/form";
+import { openSearch } from "../../../../actions/form";
 
 export const entitySearch = "location";
 

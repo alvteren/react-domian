@@ -49,7 +49,7 @@ class Add extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
 
-    this.props.history.push("/crm/sale");
+    this.props.history.push("/crm/lead");
   };
   handleClickSave = () => {
     this.props.saveFormToServer(this.props.values["0"]);
@@ -173,6 +173,10 @@ Add.propTypes = {
 
 export default withMobileDialog()(
   withStyles(styles)(
-    connect(mapStateToProps, mapDispatchToProps, mergeProps)(Add)
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+      mergeProps
+    )(Add)
   )
 );

@@ -8,7 +8,7 @@ import { Hidden, IconButton, Tooltip } from "material-ui";
 import styles from "./index.module.css";
 
 import { activeTool } from "../../actions/rightTools";
-import { ENTITIES } from "../../../constants";
+import { ENTITIES, RIGHT_TOOLS } from "../../../constants";
 const entityId = ENTITIES.sale;
 
 class RightTools extends React.Component {
@@ -23,10 +23,10 @@ class RightTools extends React.Component {
           <Hidden mdUp>
             {map(rightTools, arTool => {
               const Icon = () => {
-                if (arTool.id === "search") {
+                if (arTool.id === RIGHT_TOOLS.search) {
                   return <SearchIcon />;
                 }
-                if (arTool.id === "filter") {
+                if (arTool.id === RIGHT_TOOLS.filter) {
                   return <FilterListIcon />;
                 }
                 return "";
@@ -65,4 +65,7 @@ const mapToDispatchProps = dispatch => {
   };
 };
 
-export default connect(mapToStateProps, mapToDispatchProps)(RightTools);
+export default connect(
+  mapToStateProps,
+  mapToDispatchProps
+)(RightTools);

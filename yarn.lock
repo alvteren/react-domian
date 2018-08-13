@@ -3,13 +3,8 @@
 
 
 "@babel/runtime@^7.0.0-beta.42":
-<<<<<<< HEAD
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.47.tgz#273f5e71629e80f6cbcd7507503848615e59f7e0"
-=======
   version "7.0.0-beta.46"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.46.tgz#466a9c0498f6d12d054a185981eef742d59d4871"
->>>>>>> dev
   dependencies:
     core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
@@ -4285,7 +4280,7 @@ material-ui-icons@^1.0.0-beta.17:
   dependencies:
     recompose "^0.26.0"
 
-material-ui@^1.0.0-beta.22:
+material-ui@^1.0.0-beta.47:
   version "1.0.0-beta.47"
   resolved "https://registry.yarnpkg.com/material-ui/-/material-ui-1.0.0-beta.47.tgz#5deb97dc3e694299992d3c3cacb44051f8bc2166"
   dependencies:
